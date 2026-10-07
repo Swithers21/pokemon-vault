@@ -3,5 +3,5 @@
 // It isn't a secret. Google only sends sign-ins for it back to the addresses listed in that client
 // (your https://USERNAME.github.io address).
 window.POKEVAULT_SITE = {
-  googleClientId: "923006208047-15uv7rnc6a9srn2s8uqlbopfdr5hhuv5.apps.googleusercontent.com"
+  googleClientId: "923006208047-dkot9rrvgcoj212rk44t62bj7sdmh7o8.apps.googleusercontent.com"
 };
