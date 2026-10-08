@@ -18,7 +18,8 @@ In this guide, `YOUR-USERNAME` is your GitHub username. The website's address wi
 - **GitHub Actions**: every evening it downloads the day's TCGplayer prices (through TCGCSV) for English and Japanese
   Pokémon cards and publishes the website with them. It checks again overnight in case TCGCSV was late. An open
   Pokémon Vault picks up new prices by itself (within half an hour, or as soon as you switch back to it): nothing to
-  reload or tap.
+  reload or tap. It also looks at each grading company's public price page (`fee_watch.py`) so Pokémon Vault can warn
+  you when a company's fees may have changed (see "Grading fees" below).
 
 ## 1. GitHub: the website
 
@@ -154,12 +155,20 @@ personal app: click **Continue**.
   most, English and Japanese. Compare with the last update, 7 days or 30 days ago (those fill in as the daily updates
   stack up), rank by % or by dollars, leave out cheap ones (the default skips anything never worth $5) and show only the
   ones you have. Tap a card for its price page. Your own collection's gains and drops are in **Insights**.
-- **Set goals** (Sets tab): pick a set to finish ("Add a set goal", or "Set as goal" on a set's page) and it shows
-  how many cards you have, what the rest cost, and whether to count each card number once or every rarity. **Add all
-  missing cards to my want list** is a button you press: nothing goes on the want list by itself, it skips cards already
-  on it, and Undo takes them back off. Goals sync between your devices like the want list. They also show on the
-  **Collection** tab as slim rows (set name and progress bar): tap one to open its details and the Add all button, and
-  tap "Set goals" to fold the whole strip away.
+- **Goals** (Sets tab): two kinds, both shown on the Sets tab and as slim rows on the Collection tab.
+  - **Set goals**: pick a set to finish ("Add a set goal", or "Set as goal" on a set's page) and it shows how many
+    cards you have, what the rest cost, and whether to count each card number once or every rarity.
+  - **Pokémon goals**: "Add a Pokémon goal", then type a name (say Pikachu). It tracks every print of that Pokémon in
+    every set, English and Japanese (ex, V and VMAX cards and tag teams included; Trainers, Energy and sealed products
+    never are), with a progress bar, what the missing prints cost, and **See the prints** to browse the ones you're
+    missing or have, newest set first. A switch picks English only, Japanese only or both. The picker suggests the
+    Pokémon you collect most.
+  - **Add all missing cards to my want list** is a button you press: nothing goes on the want list by itself, it skips
+    cards already on it, and Undo takes them back off. Goals sync between your devices like the want list. On the
+    Collection tab, tap a slim row to open its details and the Add all button, and tap "Goals" to fold the strip away.
+- **Getting-started guide**: an empty collection shows a short guide (import a CSV, add by number, scan a card, sync to
+  Google Drive, add it to your phone's home screen). It goes away on its own once you add a card, or tap **Hide this
+  guide** (it can be shown again from the empty collection).
 - **Want list** sections: cards, booster boxes, booster packs, and other sealed products (decks, tins, collections), each
   with its count and total, and a switch at the top to show just one. Add from the Market or Card search, or with **Add
   sealed** on the want list. **I got it** adds the item to your collection and takes it off the list.
@@ -185,6 +194,12 @@ personal app: click **Continue**.
   $59.99, Beckett Express $79.95, CGC Economy $20, SGC Standard $50, TAG Priority $149). A fee you type wins. Add
   shipping per card. Worth grading lets you pick the company to estimate with, each card's details show every
   company's cost and gain at a 10, and "I sent it" fills in that company's cost. Your choices sync to your other devices.
+  **Fee watch**: every day the update also looks at each company's price page (`fee_watch.py`; it keeps only a
+  fingerprint of the dollar amounts and turnaround times on the page) and publishes `fee-watch.json` with the website.
+  If a page's prices change and stay changed on a later day, Settings, Worth grading and a card's grading section say
+  "PSA's fees may have changed since Oct 8" with a link to their price list. Pokémon Vault never copies prices from those
+  pages: it just tells you when to look. Pages it can't read are skipped. When the built-in list is updated (a newer
+  checked date), the warning clears.
 - **Price over time** (in a card's details): a chart of its TCGplayer market price. The daily update keeps every
   evening's prices (120 days, then monthly) and publishes them with the website, so the charts fill in day by day.
 - **Share…** (select cards, or Show: Extras > Share trade binder, or the Want list tab) makes a link to a page with those
@@ -203,7 +218,9 @@ personal app: click **Continue**.
 3. GitHub pauses scheduled workflows in repositories without new commits for 60 days. The workflow writes a
    one-line note twice a month to prevent that, but if GitHub shows "This scheduled workflow is disabled",
    click **Enable workflow**.
-4. Price comparisons (since the last update, 7 days, 30 days) are kept between runs in GitHub's cache. If the
+4. The fee watch is optional: if a grading company's page is down or can't be read, that company is skipped for the
+   day and the website is published as usual.
+5. Price comparisons (since the last update, 7 days, 30 days) are kept between runs in GitHub's cache. If the
    updates stopped for more than a week, they start over and fill in again day by day.
 
 ## Turning it off

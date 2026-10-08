@@ -33,13 +33,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Bring back yesterday's card lists and earlier prices
+      - name: Bring back yesterday's card lists, earlier prices and the last look at the grading price pages
         uses: actions/cache/restore@v4
         with:
           path: |
             tcgplayer-cache
             tcgplayer-data.js
             tcgplayer-data-version.js
+            fee-watch.json
           key: pokevault-tcgplayer-${{ github.run_id }}
           restore-keys: pokevault-tcgplayer-
 
@@ -49,6 +50,10 @@ jobs:
           POKEVAULT_PAUSE: "0.2"
         run: python update_tcgplayer_data.py
 
+      - name: Look at the grading companies' price pages (to warn if their fees change)
+        continue-on-error: true   # if a page is down, the website just keeps what it knew
+        run: python fee_watch.py
+
       - name: Keep the card lists and prices for tomorrow
         uses: actions/cache/save@v4
         with:
@@ -56,6 +61,7 @@ jobs:
             tcgplayer-cache
             tcgplayer-data.js
             tcgplayer-data-version.js
+            fee-watch.json
           key: pokevault-tcgplayer-${{ github.run_id }}
 
       - name: Put the website together
@@ -64,6 +70,7 @@ jobs:
           cp index.html config.js manifest.webmanifest oauth.html share.html sw.js _site/
           cp icons/*.png _site/icons/
           if [ -f tcgplayer-data.js ]; then cp tcgplayer-data.js tcgplayer-data-version.js _site/; fi
+          if [ -f fee-watch.json ]; then cp fee-watch.json _site/; fi
           python card_history.py _site/history || echo "No price history files this time."
           ls -la _site
 

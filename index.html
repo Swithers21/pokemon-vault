@@ -293,6 +293,18 @@
   .empty h2{margin:0 0 6px;color:var(--text);font:400 24px/1.2 "Fredoka",system-ui,sans-serif}
   .empty p{margin:0 auto 18px;max-width:52ch}
   .empty .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .welcome{padding:30px 22px}
+  .welcome-steps{list-style:none;counter-reset:ws;margin:20px auto 0;padding:0;max-width:640px;display:grid;gap:10px;text-align:left}
+  .welcome-steps li{counter-increment:ws;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:2px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+  .welcome-steps li::before{content:counter(ws);grid-row:1 / span 2;width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--gold-ink);font-weight:700;display:grid;place-items:center}
+  .welcome-steps b{color:var(--text);grid-column:2}
+  .welcome-steps .d{grid-column:2;color:var(--text-dim);font-size:13.5px;line-height:1.4}
+  .welcome-steps .btn{grid-column:3;grid-row:1 / span 2}
+  @media (max-width:560px){
+    .welcome{padding:22px 14px}
+    .welcome-steps li{grid-template-columns:34px minmax(0,1fr)}
+    .welcome-steps .btn{grid-column:2;grid-row:auto;justify-self:start;margin-top:8px}
+  }
   .empty::before{content:"";display:block;width:120px;height:92px;margin:0 auto 14px;background:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2240 90 432 330%22%3E%3Cdefs%3E%3CradialGradient id=%22ebg%22 cx=%2250%25%22 cy=%2242%25%22 r=%2272%25%22%3E%3Cstop offset=%220%22 stop-color=%22%2363b8ff%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%232a68cf%22/%3E%3Cstop offset=%221%22 stop-color=%22%230f2a69%22/%3E%3C/radialGradient%3E%3CradialGradient id=%22eglow%22 cx=%2250%25%22 cy=%2250%25%22 r=%2250%25%22%3E%3Cstop offset=%220%22 stop-color=%22%23ffe066%22 stop-opacity=%22.75%22/%3E%3Cstop offset=%221%22 stop-color=%22%23ffe066%22 stop-opacity=%220%22/%3E%3C/radialGradient%3E%3ClinearGradient id=%22egold%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23ffe680%22/%3E%3Cstop offset=%22.55%22 stop-color=%22%23ffcb05%22/%3E%3Cstop offset=%221%22 stop-color=%22%23eba800%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22ewater%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%238fe0ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%232f78e0%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22efire%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23ffbe62%22/%3E%3Cstop offset=%221%22 stop-color=%22%23e8452c%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22eholo%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23ff8fb4%22/%3E%3Cstop offset=%22.25%22 stop-color=%22%23ffd978%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%2386f5b8%22/%3E%3Cstop offset=%22.75%22 stop-color=%22%236fcfff%22/%3E%3Cstop offset=%221%22 stop-color=%22%23b793ff%22/%3E%3C/linearGradient%3E%3CclipPath id=%22eround%22%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22/%3E%3C/clipPath%3E%3C/defs%3E%3Cg transform=%22translate(150 260) rotate(-15)%22%3E%3Crect x=%22-66.0%22 y=%22-96.0%22 width=%22132%22 height=%22192%22 rx=%2211.22%22 fill=%22url(%23egold)%22 stroke=%22%230c1d4a%22 stroke-width=%226%22/%3E%3Crect x=%22-57.816%22 y=%22-87.816%22 width=%22115.632%22 height=%22175.632%22 rx=%226.171000000000001%22 fill=%22%23d4ecff%22/%3E%3Crect x=%22-49.816%22 y=%22-78.816%22 width=%2260.720000000000006%22 height=%2210.56%22 rx=%225.184%22 fill=%22%230c1d4a%22 opacity=%22.62%22/%3E%3Ccircle cx=%2246.596000000000004%22 cy=%22-73.536%22 r=%226.864%22 fill=%22url(%23ewater)%22 stroke=%22%23fff%22 stroke-width=%222.5%22/%3E%3Crect x=%22-50.816%22 y=%22-59.016000000000005%22 width=%22101.632%22 height=%2290.24%22 rx=%227%22 fill=%22url(%23ewater)%22 stroke=%22%23ffe9a0%22 stroke-width=%224%22/%3E%3CclipPath id=%22eclipwater%22%3E%3Crect x=%22-50.816%22 y=%22-59.016000000000005%22 width=%22101.632%22 height=%2290.24%22 rx=%227%22/%3E%3C/clipPath%3E%3Cg clip-path=%22url(%23eclipwater)%22%3E%3Cpath d=%22M-60.816 22.19999999999999 L5.081600000000002 -69.016 L30.48960000000001 -69.016 L-40.6528 41.22399999999999Z%22 fill=%22%23fff%22 opacity=%220.2%22/%3E%3Cpath d=%22M-50.816 13.175999999999988 Q-20.326400000000003 -9.384000000000007 5.081600000000002 11.371199999999988 T50.816 4.151999999999987 V31.22399999999999 H-50.816Z%22 fill=%22%23fff%22 opacity=%22.22%22/%3E%3C/g%3E%3Ccircle cx=%2220.326399999999992%22 cy=%22-33.7488%22 r=%2210.163200000000002%22 fill=%22%23fff%22 opacity=%22.55%22/%3E%3Crect x=%22-50.816%22 y=%2239.86399999999999%22 width=%2287.40352%22 height=%226.144%22 rx=%223.072%22 fill=%22%230c1d4a%22 opacity=%22.26%22/%3E%3Crect x=%22-50.816%22 y=%2251.383999999999986%22 width=%2260.9792%22 height=%226.144%22 rx=%223.072%22 fill=%22%230c1d4a%22 opacity=%22.26%22/%3E%3C/g%3E%3Cg transform=%22translate(362 260) rotate(15)%22%3E%3Crect x=%22-66.0%22 y=%22-96.0%22 width=%22132%22 height=%22192%22 rx=%2211.22%22 fill=%22url(%23egold)%22 stroke=%22%230c1d4a%22 stroke-width=%226%22/%3E%3Crect x=%22-57.816%22 y=%22-87.816%22 width=%22115.632%22 height=%22175.632%22 rx=%226.171000000000001%22 fill=%22%23ffe0cc%22/%3E%3Crect x=%22-49.816%22 y=%22-78.816%22 width=%2260.720000000000006%22 height=%2210.56%22 rx=%225.184%22 fill=%22%230c1d4a%22 opacity=%22.62%22/%3E%3Ccircle cx=%2246.596000000000004%22 cy=%22-73.536%22 r=%226.864%22 fill=%22url(%23efire)%22 stroke=%22%23fff%22 stroke-width=%222.5%22/%3E%3Crect x=%22-50.816%22 y=%22-59.016000000000005%22 width=%22101.632%22 height=%2290.24%22 rx=%227%22 fill=%22url(%23efire)%22 stroke=%22%23ffe9a0%22 stroke-width=%224%22/%3E%3CclipPath id=%22eclipfire%22%3E%3Crect x=%22-50.816%22 y=%22-59.016000000000005%22 width=%22101.632%22 height=%2290.24%22 rx=%227%22/%3E%3C/clipPath%3E%3Cg clip-path=%22url(%23eclipfire)%22%3E%3Cpath d=%22M-60.816 22.19999999999999 L5.081600000000002 -69.016 L30.48960000000001 -69.016 L-40.6528 41.22399999999999Z%22 fill=%22%23fff%22 opacity=%220.2%22/%3E%3Cpath d=%22M-50.816 13.175999999999988 Q-20.326400000000003 -9.384000000000007 5.081600000000002 11.371199999999988 T50.816 4.151999999999987 V31.22399999999999 H-50.816Z%22 fill=%22%23fff%22 opacity=%22.22%22/%3E%3C/g%3E%3Ccircle cx=%2220.326399999999992%22 cy=%22-33.7488%22 r=%2210.163200000000002%22 fill=%22%23fff%22 opacity=%22.55%22/%3E%3Crect x=%22-50.816%22 y=%2239.86399999999999%22 width=%2287.40352%22 height=%226.144%22 rx=%223.072%22 fill=%22%230c1d4a%22 opacity=%22.26%22/%3E%3Crect x=%22-50.816%22 y=%2251.383999999999986%22 width=%2260.9792%22 height=%226.144%22 rx=%223.072%22 fill=%22%230c1d4a%22 opacity=%22.26%22/%3E%3C/g%3E%3Cg transform=%22translate(256 240) rotate(0)%22%3E%3Crect x=%22-79.0%22 y=%22-115.0%22 width=%22158%22 height=%22230%22 rx=%2213.430000000000001%22 fill=%22url(%23egold)%22 stroke=%22%230c1d4a%22 stroke-width=%226%22/%3E%3Crect x=%22-69.20400000000001%22 y=%22-105.20400000000001%22 width=%22138.40800000000002%22 height=%22210.40800000000002%22 rx=%227.386500000000002%22 fill=%22%23fff6d2%22/%3E%3Crect x=%22-61.20400000000001%22 y=%22-96.20400000000001%22 width=%2272.68%22 height=%2212.65%22 rx=%226.21%22 fill=%22%230c1d4a%22 opacity=%22.62%22/%3E%3Ccircle cx=%2255.77400000000001%22 cy=%22-89.879%22 r=%228.216%22 fill=%22url(%23eholo)%22 stroke=%22%23fff%22 stroke-width=%222.5%22/%3E%3Crect x=%22-62.20400000000001%22 y=%22-70.70400000000001%22 width=%22124.40800000000002%22 height=%22108.1%22 rx=%227%22 fill=%22url(%23eholo)%22 stroke=%22%23ffe9a0%22 stroke-width=%224%22/%3E%3CclipPath id=%22eclipholo%22%3E%3Crect x=%22-62.20400000000001%22 y=%22-70.70400000000001%22 width=%22124.40800000000002%22 height=%22108.1%22 rx=%227%22/%3E%3C/clipPath%3E%3Cg clip-path=%22url(%23eclipholo)%22%3E%3Cpath d=%22M-72.20400000000001 26.585999999999984 L6.220400000000012 -80.70400000000001 L37.322400000000016 -80.70400000000001 L-49.763200000000005 47.39599999999999Z%22 fill=%22%23fff%22 opacity=%220.34%22/%3E%3Cpath d=%22M-62.20400000000001 15.775999999999996 Q-24.881600000000006 -11.24900000000001 6.220400000000012 13.61399999999999 T62.20400000000001 4.96599999999998 V37.39599999999999 H-62.20400000000001Z%22 fill=%22%23fff%22 opacity=%22.22%22/%3E%3C/g%3E%3Cpath d=%22M0.0 -38.9L10.5 -10.5L38.9 0.0L10.5 10.5L0.0 38.9L-10.5 10.5L-38.9 0.0L-10.5 -10.5Z%22 transform=%22translate(0.0 -20.97800000000001)%22 fill=%22%23fff%22 stroke=%22%230c1d4a%22 stroke-width=%222.4%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M0.0 -13.2L3.6 -3.6L13.2 0.0L3.6 3.6L0.0 13.2L-3.6 3.6L-13.2 0.0L-3.6 -3.6Z%22 transform=%22translate(-39.81056000000001 -46.92200000000001)%22 fill=%22%23fff%22/%3E%3Cpath d=%22M0.0 -10.1L2.7 -2.7L10.1 0.0L2.7 2.7L0.0 10.1L-2.7 2.7L-10.1 0.0L-2.7 -2.7Z%22 transform=%22translate(39.810559999999995 4.96599999999998)%22 fill=%22%23fff%22/%3E%3Crect x=%22-62.20400000000001%22 y=%2247.74599999999999%22 width=%22106.99088000000002%22 height=%227.36%22 rx=%223.68%22 fill=%22%230c1d4a%22 opacity=%22.26%22/%3E%3Crect x=%22-62.20400000000001%22 y=%2261.545999999999985%22 width=%2274.6448%22 height=%227.36%22 rx=%223.68%22 fill=%22%230c1d4a%22 opacity=%22.26%22/%3E%3C/g%3E%3Cpath d=%22M0.0 -22.0L5.9 -5.9L22.0 0.0L5.9 5.9L0.0 22.0L-5.9 5.9L-22.0 0.0L-5.9 -5.9Z%22 transform=%22translate(430 128)%22 fill=%22%23ffe066%22/%3E%3Cpath d=%22M0.0 -13.0L3.5 -3.5L13.0 0.0L3.5 3.5L0.0 13.0L-3.5 3.5L-13.0 0.0L-3.5 -3.5Z%22 transform=%22translate(92 140)%22 fill=%22%239ccaff%22/%3E%3Cpath d=%22M0.0 -10.0L2.7 -2.7L10.0 0.0L2.7 2.7L0.0 10.0L-2.7 2.7L-10.0 0.0L-2.7 -2.7Z%22 transform=%22translate(448 330)%22 fill=%22%23fff6c8%22/%3E%3C/svg%3E") center/contain no-repeat}
 
   /* ---------- bulk bar ---------- */
@@ -550,6 +562,10 @@
   .goal-mini.static{padding:9px 14px}
   .goal-mini .set-body{padding:8px 14px 12px}
   .goal-mini .goal-actions{margin-top:8px;padding-top:0;border-top:0}
+  .goals-btns{display:flex;flex-wrap:wrap;gap:8px}
+  .mon-tag{display:inline-block;font:600 11px/1 system-ui,sans-serif;letter-spacing:.02em;padding:3px 7px;border-radius:5px;border:1px solid var(--line-2);color:var(--text-dim);margin-left:8px;vertical-align:1px;white-space:nowrap}
+  .mon-prints{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .mon-prints .results{margin-top:8px}
   .mk-movers{margin-top:0}
 
   /* ---------- want list ---------- */
@@ -790,6 +806,7 @@
   .gl-co{display:flex;flex-direction:column;min-width:0}
   .gl-co .small{font-variant-numeric:tabular-nums}
   .wg-fee{margin:-6px 0 14px}
+  .fee-warn{color:var(--gold-hi)}
   .wg-controls .pct{display:inline-flex;margin-left:6px}
   .wg-controls .pct .input{margin-left:0}
   .fee-row{padding:12px 0 2px;border-top:1px solid var(--line);margin-top:10px}
@@ -1251,7 +1268,7 @@
   </nav>
 
   <section id="panel-collection" role="tabpanel" aria-labelledby="tab-collection">
-  <section class="coll-goals" id="collGoals" aria-label="Set goals" hidden></section>
+  <section class="coll-goals" id="collGoals" aria-label="Goals" hidden></section>
   <section class="controls" aria-label="Search and filters">
     <div class="controls-row controls-main">
       <div class="search-wrap">
@@ -1444,7 +1461,7 @@
   let collection = [];
   let wants = [];
   let decks = [];   // saved deck lists: [{id, name, text, updated}]
-  let goals = [];   // set goals: [{id: "g"+groupId, groupId, name, mode: "number"|"master", added}]
+  let goals = [];   // goals: set goals [{id: "g"+groupId, groupId, name, mode: "number"|"master", added}] and Pokémon goals [{id: "m"+slug, mon, name, lang: ""|"en"|"jp", added}]
   let sales = [];   // cards you sold (see recordSale)
   let valueHistory = [];   // [{d: "2026-09-25", v: 186.22, c: 37}] one point per TCGplayer price day
   // Syncing through the backup file: every card, want, deck and sale carries "mod" (when it last changed), and
@@ -1708,8 +1725,14 @@
       mod: modTime(k.mod)};
   }
   // A set goal: finish one set. "number" counts each card number once; "master" wants every printing of every card.
+  const monSlug = name => csNorm(name).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   function upgradeGoal(g) {
     if (!g || typeof g !== "object") return null;
+    if (g.mon != null) {   // a Pokémon goal: every print of one Pokémon, in any set ("lang": only English or only Japanese prints, or both)
+      const mon = String(g.mon).replace(/\s+/g, " ").trim(), slug = monSlug(mon);
+      if (!slug) return null;
+      return {id: "m" + slug, mon, name: mon, lang: g.lang === "en" || g.lang === "jp" ? g.lang : "", added: g.added || new Date().toISOString(), mod: modTime(g.mod)};
+    }
     const gid = idOrNull(g.groupId);
     if (gid == null) return null;
     return {id: "g" + gid, groupId: gid, name: String(g.name || "Set " + gid), mode: g.mode === "master" ? "master" : "number",
@@ -1910,7 +1933,7 @@
     if (typeof ds.gradingCo === "string" && ds.gradingCo) settings.gradingCo = ds.gradingCo;
   }
   function mergeSummary(res) {
-    const names = {collection: "collection", wants: "want list", decks: "decks", sales: "sales", goals: "set goals"};
+    const names = {collection: "collection", wants: "want list", decks: "decks", sales: "sales", goals: "goals"};
     const parts = [];
     for (const k of SYNC_KINDS) {
       const c = res.counts[k];
@@ -2776,14 +2799,39 @@
     renderCollection();
   }
 
+  // A new, empty vault: the quickest ways to fill it. It goes away by itself once there's a card (or when it's hidden).
+  function welcomeHTML() {
+    const ua = navigator.userAgent || "", ios = /iPhone|iPad|iPod/.test(ua), android = /Android/i.test(ua);
+    const installed = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+    const home = ios ? "In Safari, tap the Share button, then <b>Add to Home Screen</b>."
+      : android ? "In Chrome, open the menu (the three dots) and tap <b>Install app</b> or <b>Add to Home screen</b>."
+      : "On an iPhone, tap Share in Safari, then <b>Add to Home Screen</b>. On Android, open Chrome's menu and tap <b>Install app</b>.";
+    const step = (title, text, btn) => "<li><b>" + title + '</b><span class="d">' + text + "</span>" + (btn || "") + "</li>";
+    return '<div class="empty welcome"><h2>Welcome to your binder</h2>' +
+      "<p>It's empty for now. Here are the quickest ways to fill it:</p>" +
+      '<ol class="welcome-steps">' +
+      step("Import a CSV", "Export your collection from TCGplayer (or any list with card names and numbers) and bring it all in at once.",
+        '<button class="btn btn-primary" type="button" data-action="import">Import TCGplayer CSV</button>') +
+      step("Add by card number", "Type the number printed under the artwork, like 025/198, and pick the card. Names work too.",
+        '<button class="btn" type="button" data-action="add">Add a card</button>') +
+      step("Scan a card", "Point your phone's camera at the number and Pokémon Vault finds it.",
+        '<button class="btn" type="button" data-action="scan">Scan a card</button>') +
+      (DRIVE ? step("Keep it in Google Drive", "Sign in once and your phone and computer share one collection, and it stays safe if this browser's data is ever cleared.",
+        '<button class="btn" type="button" data-action="settings">Open Settings</button>') : "") +
+      (installed ? "" : step("Put it on your home screen", home)) +
+      '</ol><p style="margin:14px 0 0"><button class="link-btn" type="button" data-action="welcome-hide">Hide this guide</button></p></div>';
+  }
   function renderCollection() {
     const main = $("collection");
     syncFiltersButton();
     if (!collection.length) {
-      main.innerHTML = '<div class="empty"><h2>Your binder is empty</h2>' +
-        "<p>Import the CSV you exported from TCGplayer, or add cards one at a time by the number printed under the artwork.</p>" +
-        '<div class="actions"><button class="btn btn-primary" type="button" data-action="import">Import TCGplayer CSV</button>' +
-        '<button class="btn" type="button" data-action="add">Add a card</button></div></div>';
+      main.innerHTML = settings.welcomeHide
+        ? '<div class="empty"><h2>Your binder is empty</h2>' +
+          "<p>Import the CSV you exported from TCGplayer, or add cards one at a time by the number printed under the artwork.</p>" +
+          '<div class="actions"><button class="btn btn-primary" type="button" data-action="import">Import TCGplayer CSV</button>' +
+          '<button class="btn" type="button" data-action="add">Add a card</button></div>' +
+          '<p style="margin:16px 0 0"><button class="link-btn" type="button" data-action="welcome-show">Show the getting-started guide</button></p></div>'
+        : welcomeHTML();
       $("shown").textContent = "";
       return;
     }
@@ -5850,7 +5898,7 @@
     return "The file has " + plural(info.printings || 0, "printing") + (when ? " (saved " + esc(fmtDateTime(when)) + ")" : "") + "; " + HERE + " has " +
       plural(collection.length, "printing") + ". Pokémon Vault won't save to the file or sync until you choose. " +
       "<b>Combine both</b> keeps every card, want, deck and sale from both; where both have the same one, the file's version is kept. " +
-      "<b>Use the file's</b> switches " + HERE + " to the file's collection, want list, decks, set goals and sales. " +
+      "<b>Use the file's</b> switches " + HERE + " to the file's collection, want list, decks, goals and sales. " +
       "<b>Keep " + HERE + "'s</b> switches the file, and your other " + (SITE ? "devices" : "computers") + " that use it, to " + HERE + "'s." +
       (info.olderApp ? " The file was saved by an older Pokémon Vault (on another computer, probably), so " + HERE + "'s collection is likely the newest. Update Pokémon Vault on that computer too."
         : (info.shares ? "" : " These look like two separate collections, so combining them could list cards you have in both twice.") +
@@ -5994,7 +6042,7 @@
       '<div class="section" id="gradingFeesSection"><h3>Grading fees</h3>' +
       '<p class="small" style="margin:0 0 4px">What grading a card costs you at each company. Their price lists are built in (as of ' + esc(fmtDate(parseDay(GRADING_FEE_TABLE.PSA.checked))) +
       '): choose the service level you use and its fee fills in; a fee you type yourself wins. Add shipping and insurance per card (your share of an order\'s, both ways). ' +
-      "Pokémon Vault uses these in Insights &gt; Worth grading and when you send a card. Fees change often, so each company's own price list is linked.</p>" +
+      "Pokémon Vault uses these in Insights &gt; Worth grading and when you send a card. Fees change often, so each company's own price list is linked." + (SITE ? " Every day, Pokémon Vault also looks at each company's price page and tells you here if it changed after the date above." : "") + "</p>" +
       GRADING_COS.map(c => {
         const f = (settings.gradingFees || {})[c.id] || {}, levels = gradingLevels(c.id), picked = f.level ? gradingLevel(c.id, f.level) : null, custom = !!(f.level && !picked);
         const usual = gradingUsual(c.id);
@@ -6036,6 +6084,7 @@
   function feeNoteHTML(co) {
     const f = gradingFee(co), t = GRADING_FEE_TABLE[co], l = f && f.info;
     const parts = [];
+    if (feeStale(co)) parts.push('<b class="fee-warn">' + esc(feeStaleText(co)) + '</b> <a target="_blank" rel="noopener" href="' + esc(t.source) + '">Open their price list</a>, then choose or type the fee you pay.');
     if (l) parts.push("<b>" + esc(l.name) + "</b>" + (f.builtin && !(settings.gradingFees || {})[co] ? " (their usual level, assumed until you choose one)" : "") + (l.paused ? ", <b>paused</b> when checked" : "") +
       (levelDetails(l) ? ": " + esc(levelDetails(l)) : "") + ".");
     if (l && !f.builtin && l.fee != null && l.fee !== f.fee) parts.push("Their price list says " + esc(usdFee(l.fee)) + '. <button type="button" class="link-btn" data-gfee-use="' + co + '">Use it</button>');
@@ -6555,7 +6604,8 @@
       '<label class="basis">Cost per card <span class="pct">$<input class="input" id="wgCost" type="number" min="0" step="1" value="' + cost + '"></span></label>' +
       '<label class="basis">Show cards that gain at least <input class="input" id="wgMin" type="number" step="5" value="' + min + '"> at a 10</label></div>' +
       '<p class="small wg-fee">' + (fee ? esc(gradingCoName(co)) + (fee.level ? ", " + esc(fee.level) : "") + ": " + esc(usd(fee.fee)) + " fee" + (fee.ship ? " + " + esc(usd(fee.ship)) + " shipping" : "") + " per card" +
-          (fee.builtin ? " from their price list (" + esc(feeCheckedText(co)) + (fee.info && fee.info.days ? "; about " + esc(fee.info.days) + " business days" : "") + ")" : "") + ". "
+          (fee.builtin ? " from their price list (" + esc(feeCheckedText(co)) + (fee.info && fee.info.days ? "; about " + esc(fee.info.days) + " business days" : "") + ")" : "") + ". " +
+          (fee.builtin && feeStale(co) ? '<b class="fee-warn">' + esc(feeStaleText(co)) + "</b> " : "")
         : "No fees for " + esc(gradingCoName(co)) + " yet: this is your general estimate. ") +
         '<button type="button" class="link-btn" data-wg-fees>' + (fee && !fee.builtin ? "Edit grading fees" : "Choose a service level") + "</button></p>" +
       (!list.length ? '<div class="notice">No ungraded Near Mint card gains ' + esc(usd(min)) + " or more at a PSA 10 after " + esc(usd(cost)) + " in grading costs. Try a lower amount.</div>"
@@ -6775,6 +6825,30 @@
   const gradingLevel = (co, name) => gradingLevels(co).find(l => l.name === name) || null;
   const gradingUsual = co => gradingLevels(co).find(l => l.usual && l.fee != null) || null;
   const feeCheckedText = co => GRADING_FEE_TABLE[co] ? "checked " + fmtDate(parseDay(GRADING_FEE_TABLE[co].checked)) : "";
+  // The daily update looks at each company's public price page (fee_watch.py) and, when a page's prices changed after the
+  // day the built-in list was checked, says so here. It never reads prices off the pages: it only says "go and look".
+  let feeWatch = null;   // fee-watch.json: {companies: {PSA: {status, changed: "2026-11-02" or null, ...}}}
+  const feeShort = co => co === "BGS" ? "Beckett" : co;
+  function feeStale(co) {
+    const t = GRADING_FEE_TABLE[co], w = feeWatch && feeWatch.companies && feeWatch.companies[co];
+    const day = w && typeof w.changed === "string" ? w.changed : "";
+    return t && parseDay(day) && day > t.checked ? day : null;
+  }
+  const feeStaleCos = () => GRADING_COS.map(c => c.id).filter(co => feeStale(co));
+  function feeStaleText(co) {
+    const day = feeStale(co);
+    return day ? feeShort(co) + "'s fees may have changed since " + fmtDate(parseDay(GRADING_FEE_TABLE[co].checked)) + ": their price page was different when Pokémon Vault last looked (" + fmtDate(parseDay(day)) + ")." : "";
+  }
+  function loadFeeWatch() {
+    if (!/^https?:$/.test(location.protocol) || !window.fetch) return;
+    fetch("fee-watch.json", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).then(j => {
+      if (!j || typeof j !== "object" || !j.companies || typeof j.companies !== "object") return;
+      feeWatch = j;
+      if (!feeStaleCos().length) return;
+      document.querySelectorAll("#drawerBody [data-gnote]").forEach(el => { const h = feeNoteHTML(el.dataset.gnote); if (el._h !== h) { el.innerHTML = h; el._h = h; } });
+      if (settings.tab === "history" && $("wgCo")) renderPanel();
+    }).catch(() => { /* no watch file (opened from a file, or offline): the built-in list simply carries its own date */ });
+  }
   const usdFee = v => v == null ? "" : Number.isInteger(v) ? "$" + v.toLocaleString("en-US") : usd(v);
   // For the pick-list: "Standard — $59.99, 90–100 business days" (and "(paused)" or "price not posted")
   const levelLabel = l => l.name + " — " + (l.fee != null ? usdFee(l.fee) : "price not posted") + (l.days ? ", " + l.days + " business days" : "") + (l.paused ? " (paused)" : "");
@@ -6834,7 +6908,7 @@
       }).join("") + "</ul>" +
       '<div class="btn-row"><button type="button" class="btn btn-small" data-gi="copy">Copy card details for the form</button><button type="button" class="btn btn-small" data-gi="sent">I sent it…</button></div>' +
       '<p class="small" style="margin:8px 0 0">Each link opens that company\'s site, where you sign in, choose a service and pay them. The fees are from their price lists (' +
-      esc(feeCheckedText("PSA")) + ') and change often, so check their prices. <button type="button" class="link-btn" data-gi="fees">' + (ownFees ? "Edit your grading fees" : "Choose your service level at each company") + "</button></p>";
+      esc(feeCheckedText("PSA")) + ') and change often, so check their prices. ' + feeStaleCos().map(co => '<b class="fee-warn">' + esc(feeStaleText(co)) + "</b> ").join("") + '<button type="button" class="link-btn" data-gi="fees">' + (ownFees ? "Edit your grading fees" : "Choose your service level at each company") + "</button></p>";
   }
   function wireGradeIt(id) {
     const box = $("gradeIt");
@@ -7243,6 +7317,7 @@
           ? "Sets come from TCGplayer's catalog, so cards you added by hand (without picking them from search) aren't counted."
           : "Nothing here yet: your sets show up as you add cards.") + "</div>");
     renderSetsList();
+    fillMonLists();
   }
   function renderSetsList() {
     const box = $("setsList");
@@ -7296,6 +7371,9 @@
 
   /* ----- set goals: finish a set. Nothing goes on the want list unless you press "Add all" ----- */
   const goalFor = gid => goals.find(g => g.groupId === +gid) || null;
+  const setGoals = () => goals.filter(g => g.groupId != null);
+  const monGoals = () => goals.filter(g => g.mon);
+  const monGoalFor = id => goals.find(g => g.mon && g.id === String(id)) || null;
   const byCardNumber = (a, b) => String(a.products[0].number).localeCompare(String(b.products[0].number), undefined, {numeric: true}) || a.products[0].name.localeCompare(b.products[0].name);
   // How far along a goal is: the set's cards (each number once, or every rarity for a master set), what you have,
   // what's left and what the cheapest copies cost, and which of the missing ones aren't on your want list yet.
@@ -7360,13 +7438,14 @@
     if (!box) return;
     if (!catalog || !goals.length) { box.hidden = true; box.innerHTML = ""; return; }
     const owned = csOwnedMap(), wanted = wantedNow();
-    const list = goals.slice().sort((a, b) => a.name.localeCompare(b.name));
+    const byName = (a, b) => a.name.localeCompare(b.name);
+    const sg = setGoals().sort(byName), mg = monGoals().sort(byName);
     const shut = !!settings.goalsFold;
     box.hidden = false;
-    box.innerHTML = '<div class="coll-goals-head"><button type="button" class="goals-fold" data-goal-fold aria-expanded="' + !shut + '"><span>Set goals</span>' +
-      '<span class="small">' + list.length + '</span><span class="caret" aria-hidden="true"></span></button>' +
+    box.innerHTML = '<div class="coll-goals-head"><button type="button" class="goals-fold" data-goal-fold aria-expanded="' + !shut + '"><span>Goals</span>' +
+      '<span class="small">' + goals.length + '</span><span class="caret" aria-hidden="true"></span></button>' +
       '<button type="button" class="link-btn" data-goal-manage>Manage on the Sets tab</button></div>' +
-      (shut ? "" : list.map(g => goalMiniHTML(g, goalStat(g, owned, wanted))).join(""));
+      (shut ? "" : sg.map(g => goalMiniHTML(g, goalStat(g, owned, wanted))).join("") + mg.map(g => monMiniHTML(g, monStat(g, owned, wanted))).join(""));
   }
   function goalCardHTML(g, owned, wanted) {
     const st = goalStat(g, owned, wanted), gid = g.groupId;
@@ -7393,12 +7472,13 @@
   }
   function goalsHTML() {
     const owned = csOwnedMap(), wanted = wantedNow();
-    const list = goals.slice().sort((a, b) => a.name.localeCompare(b.name));
-    return '<section class="goals" id="setGoals" aria-label="Set goals"><div class="goals-head"><h3 class="mk-h">Set goals</h3>' +
-      '<button type="button" class="btn" data-goal-pick>Add a set goal</button></div>' +
-      (list.length ? list.map(g => goalCardHTML(g, owned, wanted)).join("") +
+    const byName = (a, b) => a.name.localeCompare(b.name);
+    const sg = setGoals().sort(byName), mg = monGoals().sort(byName);
+    return '<section class="goals" id="setGoals" aria-label="Goals"><div class="goals-head"><h3 class="mk-h">Goals</h3>' +
+      '<span class="goals-btns"><button type="button" class="btn" data-goal-pick>Add a set goal</button><button type="button" class="btn" data-mon-pick>Add a Pokémon goal</button></span></div>' +
+      (goals.length ? sg.map(g => goalCardHTML(g, owned, wanted)).join("") + mg.map(g => monCardHTML(g, monStat(g, owned, wanted))).join("") +
         '<p class="small">Nothing is added to your want list on its own: <b>Add all</b> puts the cheapest printing of each missing card on it when you press it, and you can Undo.</p>'
-        : '<p class="small" style="margin:0">Pick a set you want to finish and Pokémon Vault tracks how many cards you have, what the rest cost, and (only if you ask) adds every missing card to your want list.</p>') +
+        : '<p class="small" style="margin:0">Pick a set you want to finish, or a Pokémon you collect (like Pikachu, in every set). Pokémon Vault tracks how many cards you have, what the rest cost, and (only if you ask) adds every missing card to your want list.</p>') +
       "</section>";
   }
   // Redraw whatever shows goals
@@ -7480,6 +7560,208 @@
     $("goalQ").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 200); });
     run();
   }
+
+  /* ----- Pokémon goals: collect every print of one Pokémon, across sets. Like set goals, nothing goes on the want list unless you press "Add all" ----- */
+  const MON_NOT = /^(trainer|energy)$/i;   // (TCGplayer's card types that are never a Pokémon)
+  const monOpen = new Set(), monMini = new Set(), monView = new Map();
+  const MON_SHOWS = [["missing", "Missing"], ["have", "The ones I have"], ["all", "All prints"]];
+  const MON_LANGS = [["", "English and Japanese"], ["en", "English only"], ["jp", "Japanese only"]];
+  const monLangText = l => (MON_LANGS.find(x => x[0] === l) || MON_LANGS[0])[1];
+  const monRegex = name => {
+    const n = csNorm(name).replace(/\s+/g, " ").trim();
+    if (n.length < 2) return null;
+    return new RegExp("(?:^|[^a-z0-9])" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+") + "(?![a-z0-9])");
+  };
+  // A card's own name for matching: no number, no "(Full Art)" tag
+  const monHay = p => p.monHay != null ? p.monHay : (p.monHay = csNorm(withoutNumber(p.name).replace(/\([^()]*\)/g, " ")));
+  // Every print of a Pokémon (the name as a whole word: "Mew" finds Mew ex but not Mewtwo; "Pikachu" finds Pikachu V and Detective Pikachu),
+  // newest set first. Sealed products, Trainers and Energy are never included.
+  function monPrints(name, lang) {
+    if (!catalog) return [];
+    const key = monSlug(name) + "|" + (lang || "");
+    const cache = catalog.monCache || (catalog.monCache = new Map());
+    let out = cache.get(key);
+    if (out) return out;
+    const re = monRegex(name);
+    out = [];
+    if (re) {
+      for (const p of catalog.products) {
+        if (p.sealed || (p.ctype && MON_NOT.test(p.ctype))) continue;
+        if (lang === "en" ? p.group.jp : lang === "jp" ? !p.group.jp : false) continue;
+        if (re.test(monHay(p))) out.push(p);
+      }
+      out.sort((a, b) => String(b.group.published || "").localeCompare(String(a.group.published || "")) ||
+        String(a.number).localeCompare(String(b.number), undefined, {numeric: true}) || a.name.localeCompare(b.name));
+    }
+    cache.set(key, out);
+    return out;
+  }
+  const monCheapest = p => { let b = null; for (const ed in p.prices) { const v = firstPrice(p.prices[ed]); if (v != null && (b == null || v < b.price)) b = {price: v, edition: ed}; } return b; };
+  const monIsWanted = (p, wanted) => wanted.ids.has(p.id) || !!(p.number && wanted.keys.has(wantKey(cleanName(p.name, p.rarity), p.number)));
+  function monStat(g, owned, wanted) {
+    const prints = monPrints(g.mon, g.lang), missing = [], haveList = [];
+    for (const p of prints) (owned.get(p.id) ? haveList : missing).push(p);
+    let cost = 0, unpriced = 0;
+    for (const p of missing) { const b = monCheapest(p); if (b) cost += b.price; else unpriced++; }
+    return {goal: g, prints, total: prints.length, have: haveList.length, haveList, missing, toAdd: missing.filter(p => !monIsWanted(p, wanted)), cost, unpriced};
+  }
+  function monAddAllHTML(st, id) {
+    if (!st.total) return "";
+    if (!st.missing.length) return '<span class="small">You have every print.</span>';
+    if (st.toAdd.length) return '<button type="button" class="btn btn-primary" data-mon-all="' + id + '">Add all ' + plural(st.toAdd.length, "missing print") + " to my want list</button>" +
+      (st.toAdd.length < st.missing.length ? '<span class="small">' + (st.missing.length - st.toAdd.length) + " already on it</span>" : "");
+    return '<span class="small">' + (st.missing.length === 1 ? "The missing print is" : "All " + st.missing.length + " missing prints are") + " on your want list.</span>";
+  }
+  const monCostText = st => st.missing.length ? usd(st.cost) + " to finish" + (st.unpriced ? ", " + st.unpriced + " unpriced" : "") : "complete";
+  // On the Collection tab: one slim row (name and progress bar) that opens for the details, like a set goal
+  function monMiniHTML(g, st) {
+    const id = g.id, open = monMini.has(id), done = st.total > 0 && !st.missing.length, pct = st.total ? st.have / st.total * 100 : 0, shown = done ? 100 : Math.floor(pct);
+    return '<article class="set-row goal-mini' + (done ? " goal-done" : "") + '"><button type="button" class="goal-mini-toggle" aria-expanded="' + open + '" data-mon-mini="' + id + '"' +
+      ' aria-label="' + esc(g.name + ", every print, " + shown + "% complete") + '"><span class="set-name">' + esc(g.name) + ' <span class="mon-tag">every print</span></span>' +
+      '<span class="progress" aria-hidden="true"><span style="width:' + pct.toFixed(1) + '%"></span></span><span class="caret" aria-hidden="true"></span></button>' +
+      (open ? '<div class="set-body">' + (st.total
+        ? '<p class="small" style="margin:6px 0 0"><b>' + st.have + " of " + st.total + "</b> prints (" + shown + "%) · " + esc(monCostText(st)) + "</p>" +
+          '<div class="goal-actions">' + monAddAllHTML(st, id) + '<button type="button" class="link-btn" data-mon-see="' + id + '">See the prints</button></div>'
+        : '<p class="small" style="margin:6px 0 0">No prints of ' + esc(g.name) + ' found in TCGplayer\'s list. <button type="button" class="link-btn" data-mon-remove="' + id + '">Remove goal</button></p>') + "</div>" : "") + "</article>";
+  }
+  function monCardHTML(g, st) {
+    const id = g.id, done = st.total > 0 && !st.missing.length, open = monOpen.has(id), pct = st.total ? st.have / st.total * 100 : 0;
+    return '<article class="goal goal-mon' + (done ? " goal-done" : "") + '" data-mon="' + id + '"><div class="goal-top">' +
+      '<span style="min-width:0"><span class="set-name">' + esc(g.name) + '<span class="mon-tag">every print</span>' + (done ? '<span class="goal-badge">Complete</span>' : "") + '</span>' +
+      '<span class="set-sub">' + esc(monLangText(g.lang)) + ", in every set</span></span>" +
+      (st.total ? '<span class="set-prog"><span class="progress" aria-hidden="true"><span style="width:' + pct.toFixed(1) + '%"></span></span>' +
+        '<span class="set-count"><b>' + st.have + " of " + st.total + "</b> (" + (done ? 100 : Math.floor(pct)) + "%)</span></span>" +
+        '<span class="set-cost">' + (done ? "<b>Done</b>" : "<b>" + esc(usd(st.cost)) + "</b><small>to finish" + (st.unpriced ? ", " + st.unpriced + " unpriced" : "") + "</small>") + "</span>"
+        : '<span class="small" style="grid-column:span 2">No prints of ' + esc(g.name) + " found in TCGplayer's list.</span>") + "</div>" +
+      '<div class="goal-actions">' + monAddAllHTML(st, id) +
+      (st.total ? '<button type="button" class="link-btn" data-mon-see="' + id + '" aria-expanded="' + open + '">' + (open ? "Hide the prints" : "See the prints") + "</button>" : "") +
+      '<label class="goal-mode">Include <select class="select" data-mon-lang="' + id + '" aria-label="Which prints count for ' + esc(g.name) + '">' +
+      MON_LANGS.map(([k, l]) => '<option value="' + k + '"' + (g.lang === k ? " selected" : "") + ">" + l + "</option>").join("") + "</select></label>" +
+      '<button type="button" class="link-btn" data-mon-remove="' + id + '">Remove goal</button></div>' +
+      (open && st.total ? '<div class="mon-prints" data-mon-list="' + id + '"></div>' : "") + "</article>";
+  }
+  const monViewOf = id => { let v = monView.get(id); if (!v) monView.set(id, v = {show: "missing", q: "", limit: 30}); return v; };
+  function fillMonLists() {
+    for (const id of monOpen) fillMonList(id);
+  }
+  function fillMonList(id) {
+    const g = monGoalFor(id), box = document.querySelector('[data-mon-list="' + id + '"]');
+    if (!g || !box) return;
+    const v = monViewOf(id);
+    if (!box.querySelector("[data-mon-rows]")) {
+      box.innerHTML = '<div class="cs-set-tools"><input class="search" type="search" data-mon-find="' + id + '" placeholder="Find in these prints" aria-label="Find in these prints" autocomplete="off" value="' + esc(v.q) + '">' +
+        '<select class="select" data-mon-show="' + id + '" aria-label="Show">' + MON_SHOWS.map(([k, l]) => '<option value="' + k + '"' + (v.show === k ? " selected" : "") + ">" + l + "</option>").join("") + "</select></div>" +
+        '<div data-mon-rows="' + id + '"></div>';
+    }
+    renderMonRows(g);
+  }
+  function renderMonRows(g) {
+    const rows = document.querySelector('[data-mon-rows="' + g.id + '"]');
+    if (!rows) return;
+    const v = monViewOf(g.id), owned = csOwnedMap(), wanted = wantedNow(), st = monStat(g, owned, wanted);
+    const words = csNorm(v.q).split(/\s+/).filter(Boolean);
+    const pool = v.show === "have" ? st.haveList : v.show === "all" ? st.prints : st.missing;
+    const list = pool.filter(p => !words.length || words.every(w => csHay(p).includes(w)));
+    if (!list.length) {
+      rows.innerHTML = '<div class="notice">' + (words.length ? "No print matches." : v.show === "have" ? "You don't have any of these yet." : v.show === "missing" ? "You have every print." : "No prints.") + "</div>";
+      return;
+    }
+    const shown = list.slice(0, v.limit);
+    rows.innerHTML = '<p class="results-head">' + (list.length === pool.length ? plural(list.length, "print") : list.length + " of " + plural(pool.length, "print")) + ".</p><div class=\"results\">" + shown.map(p => {
+      const have = owned.get(p.id), b = monCheapest(p), editions = Object.keys(p.prices).length;
+      return '<div class="result static"><span class="sleeve">' + imgTag(productPics(p, "200w"), p.name) + "</span>" +
+        '<span class="result-name">' + esc(cleanName(p.name, p.rarity)) + "</span>" +
+        '<span class="result-meta">' + esc([p.group.name + (p.group.jp ? " (Japanese)" : ""), p.number, p.rarity].filter(Boolean).join(", ")) + "</span>" +
+        '<span class="result-price">' + (b ? esc(usd(b.price)) + (editions > 1 ? ' <span class="small">' + esc(b.edition) + "</span>" : "") : '<span class="small">No recent sales</span>') + "</span>" +
+        '<span class="result-actions">' + (have ? '<span class="on-list">You have ' + (have > 1 ? have : "it") + "</span>"
+          : (monIsWanted(p, wanted) ? '<span class="on-list">On want list</span>' : '<button class="btn" type="button" data-want="' + p.id + '">Want</button>') +
+            '<button class="btn" type="button" data-have="' + p.id + '">I have it</button>') + "</span></div>";
+    }).join("") + "</div>" + (list.length > shown.length ? '<p class="small"><button type="button" class="btn" data-mon-more="' + g.id + '">Show ' + Math.min(40, list.length - shown.length) + " more</button> Showing " + shown.length + " of " + list.length + ".</p>" : "");
+  }
+  // A card's Pokémon, roughly ("Mega Charizard X ex" is Charizard X, "Ash's Pikachu" is Pikachu): used to suggest names
+  const MON_TAIL = /(?:\s+|-)(?:ex|gx|v|vmax|vstar|v-union|break|star|lv\.?\s*x|prime|legend)$/i;
+  const MON_HEAD = /^(?:dark|light|shining|radiant|alolan|galarian|hisuian|paldean|mega|primal|detective|team (?:rocket|aqua|magma|plasma|flare|skull|yell)['’]s|[a-z.]+['’]s)\s+/i;
+  function monBase(p) {
+    let s = withoutNumber(p.name).replace(/\([^()]*\)/g, " ").replace(/\s+/g, " ").trim().split(/\s+&\s+/)[0];
+    for (let i = 0; i < 3; i++) { const t = s.replace(MON_TAIL, "").trim(); if (t === s) break; s = t; }
+    return s.replace(MON_HEAD, "").trim() || withoutNumber(p.name);
+  }
+  const monIsPokemon = p => !p.sealed && !(p.ctype && MON_NOT.test(p.ctype));
+  // Names to offer for what's typed (or, before anything is typed, the Pokémon you collect most)
+  function monCandidates(text) {
+    const t = String(text || "").trim(), by = new Map();
+    const add = (name, n) => { const k = csNorm(name); const e = by.get(k) || {name, n: 0}; e.n += n; by.set(k, e); };
+    if (t.length < 2) {
+      for (const r of collection) {
+        const p = r.productId && catalog ? catalog.byId.get(r.productId) : null;
+        if (p && monIsPokemon(p) && (p.stage || p.ctype)) add(monBase(p), 1);
+      }
+    } else {
+      const needle = csNorm(t);
+      for (const p of searchByName(t, 800).items) if (monIsPokemon(p)) { const b = monBase(p); if (csNorm(b).includes(needle)) add(b, 1); }
+      const lit = t === t.toLowerCase() ? t.replace(/(^|\s)[a-z]/g, c => c.toUpperCase()) : t;
+      if (!by.has(csNorm(lit)) && monPrints(lit, "").length) by.set(csNorm(lit), {name: lit, n: 1e9});
+    }
+    return Array.from(by.values()).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 8);
+  }
+  function openMonPicker() {
+    if (!catalog) { toast("Pokémon goals need TCGplayer's card list. " + GET_DATA, {kind: "error"}); return; }
+    drawerCtx = {mode: "mon-pick"};
+    openDrawer("Add a Pokémon goal",
+      '<label class="field"><span>Pokémon name</span><input class="input" id="monQ" type="search" autofocus autocomplete="off" placeholder="e.g. Pikachu"></label>' +
+      '<p class="hint">A Pokémon goal tracks every print of that Pokémon, in every set (ex, V and VMAX cards included). It doesn\'t add anything to your lists.</p>' +
+      '<div id="monOut"></div>');
+    let timer = null;
+    const run = () => {
+      const out = $("monOut");
+      if (!out) return;
+      const text = $("monQ").value, owned = csOwnedMap();
+      const list = monCandidates(text);
+      if (!list.length) { out.innerHTML = text.trim().length < 2 ? "" : '<div class="notice">No Pokémon card is named "' + esc(text.trim()) + '". Try the full name.</div>'; return; }
+      out.innerHTML = '<p class="results-head">' + (text.trim().length < 2 ? "Pokémon you collect" : "Names that match") + "</p>" + list.map(c => {
+        const prints = monPrints(c.name, ""), mine = prints.filter(p => owned.get(p.id)).length, on = !!monGoalFor("m" + monSlug(c.name));
+        return '<div class="goal-pick-row"><span style="min-width:0"><span class="set-name">' + esc(c.name) + '</span><span class="set-sub">' + plural(prints.length, "print") +
+          (mine ? " · you have " + mine : "") + "</span></span>" +
+          (on ? '<span class="on-list">Goal set</span>' : '<button type="button" class="btn" data-mon-add="' + esc(c.name) + '">Set as goal</button>') + "</div>";
+      }).join("");
+    };
+    $("monQ").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 200); });
+    run();
+  }
+  function addMonGoal(name) {
+    const g = upgradeGoal({mon: name});
+    if (!g || !catalog) return null;
+    const have = monGoalFor(g.id);
+    if (have) return have;
+    goals.push(g);
+    save();
+    return g;
+  }
+  function removeMonGoal(id) {
+    const g = monGoalFor(id);
+    if (!g) return;
+    const before = goals.slice();
+    goals = goals.filter(x => x !== g);
+    monOpen.delete(g.id); monMini.delete(g.id);
+    save();
+    goalsChanged();
+    toast("Removed the goal for " + g.name + ".", {action: "Undo", onAction: () => { goals = before; save(); goalsChanged(); }});
+  }
+  // The one button that adds prints to the want list: every missing print that isn't on it yet.
+  function monAddAll(id) {
+    const g = monGoalFor(id);
+    if (!g || !catalog) return;
+    const st = monStat(g, csOwnedMap(), wantedNow());
+    if (!st.toAdd.length) { toast("Everything missing from this goal is already on your want list."); return; }
+    const before = JSON.parse(JSON.stringify(wants));
+    for (const p of st.toAdd) addWant(Object.assign(wantFromProduct(p), {edition: "Any", notes: "Pokémon goal: " + g.name}), {keepNotes: true});
+    save();
+    goalsChanged();
+    toast("Added " + plural(st.toAdd.length, "print") + " of " + g.name + " to your want list.", {action: "Undo", onAction: () => {
+      wants = before.map(upgradeWant).filter(Boolean); save(); goalsChanged();
+    }});
+  }
+
 
   /* ======================= Want list tab ======================= */
   // A want's photo: the product's, or (a card known only by name) any printing's.
@@ -9457,6 +9739,9 @@
         const a = act.dataset.action;
         if (a === "import") $("importFile").click();
         else if (a === "add") openAdd();
+        else if (a === "scan") { drawerCtx = null; openScanner(); }
+        else if (a === "settings") openSettings();
+        else if (a === "welcome-hide" || a === "welcome-show") { settings.welcomeHide = a === "welcome-hide"; saveSettings(); renderCollection(); }
         else if (a === "clear-filters") { clearFilters(); render(); }
         return;
       }
@@ -9634,6 +9919,69 @@
       goalsChanged();
       const again = document.querySelector('[data-goal-mode="' + g.groupId + '"]');
       if (again) again.focus();
+    });
+
+    // ----- Pokémon goals
+    document.addEventListener("click", e => {
+      const t = e.target.closest("[data-mon-pick], [data-mon-add], [data-mon-remove], [data-mon-all], [data-mon-see], [data-mon-mini], [data-mon-more]");
+      if (!t) return;
+      if (t.hasAttribute("data-mon-pick")) { openMonPicker(); return; }
+      if (t.dataset.monAdd != null) {
+        const g = addMonGoal(t.dataset.monAdd);
+        if (!g) { toast("Couldn't set that goal.", {kind: "error"}); return; }
+        if (!$("drawer").hidden && drawerCtx && drawerCtx.mode === "mon-pick") closeDrawer();
+        goalsChanged();
+        toast("Pokémon goal: every print of " + g.name + ".", settings.tab === "sets" ? undefined : {action: "See goals", onAction: () => setTab("sets")});
+        return;
+      }
+      if (t.dataset.monRemove != null) { removeMonGoal(t.dataset.monRemove); return; }
+      if (t.dataset.monAll != null) { monAddAll(t.dataset.monAll); return; }
+      if (t.dataset.monMini != null) {
+        const id = t.dataset.monMini;
+        if (monMini.has(id)) monMini.delete(id); else monMini.add(id);
+        renderCollGoals();
+        const again = document.querySelector('#collGoals [data-mon-mini="' + id + '"]');
+        if (again) again.focus();
+        return;
+      }
+      if (t.dataset.monMore != null) { const v = monViewOf(t.dataset.monMore); v.limit += 40; const g = monGoalFor(t.dataset.monMore); if (g) renderMonRows(g); return; }
+      if (t.dataset.monSee != null) {
+        const id = t.dataset.monSee;
+        if (settings.tab === "sets") {
+          if (monOpen.has(id)) monOpen.delete(id); else monOpen.add(id);
+          renderSets();
+          const again = document.querySelector('[data-mon-see="' + id + '"]');
+          if (again) again.focus();
+        } else {   // from the Collection tab's strip: open it on the Sets tab
+          monOpen.add(id);
+          setTab("sets");
+          setTimeout(() => { const el = document.querySelector('[data-mon="' + id + '"]'); if (el && el.scrollIntoView) el.scrollIntoView({block: "start"}); }, 60);
+        }
+      }
+    });
+    document.addEventListener("change", e => {
+      const el = e.target.closest ? e.target.closest("[data-mon-lang], [data-mon-show]") : null;
+      if (!el) return;
+      if (el.dataset.monShow != null) {
+        const v = monViewOf(el.dataset.monShow), g = monGoalFor(el.dataset.monShow);
+        v.show = MON_SHOWS.some(x => x[0] === el.value) ? el.value : "missing"; v.limit = 30;
+        if (g) renderMonRows(g);
+        return;
+      }
+      const g = monGoalFor(el.dataset.monLang);
+      if (!g) return;
+      g.lang = el.value === "en" || el.value === "jp" ? el.value : "";
+      save();
+      goalsChanged();
+      const again = document.querySelector('[data-mon-lang="' + g.id + '"]');
+      if (again) again.focus();
+    });
+    document.addEventListener("input", e => {
+      const el = e.target.closest ? e.target.closest("[data-mon-find]") : null;
+      if (!el) return;
+      const v = monViewOf(el.dataset.monFind), g = monGoalFor(el.dataset.monFind);
+      v.q = el.value; v.limit = 30;
+      if (g) renderMonRows(g);
     });
 
     // ----- card search
@@ -9977,6 +10325,7 @@
     if (back && back.y > 0 && Date.now() - back.at < 2 * 60000) window.scrollTo(0, back.y);
     initBackup();
     snapshotToday();
+    loadFeeWatch();
     // Graded prices refresh in the background, about once a day, when online.
     setTimeout(() => { if (settings.gradedView) refreshGradedPrices(); }, 2500);
     window.addEventListener("online", () => { if (settings.gradedView) refreshGradedPrices(); });
