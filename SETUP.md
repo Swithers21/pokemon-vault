@@ -198,7 +198,8 @@ personal app: click **Continue**.
   fingerprint of the dollar amounts and turnaround times on the page) and publishes `fee-watch.json` with the website.
   If a page's prices change and stay changed on a later day, Settings, Worth grading and a card's grading section say
   "PSA's fees may have changed since Oct 8" with a link to their price list. Pokémon Vault never copies prices from those
-  pages: it just tells you when to look. Pages it can't read are skipped. When the built-in list is updated (a newer
+  pages: it just tells you when to look. Some companies draw their prices with script or turn away automated downloads, so the
+  update tries a headless browser for those; a page it still can't read is skipped. When the built-in list is updated (a newer
   checked date), the warning clears.
 - **Price over time** (in a card's details): a chart of its TCGplayer market price. The daily update keeps every
   evening's prices (120 days, then monthly) and publishes them with the website, so the charts fill in day by day.

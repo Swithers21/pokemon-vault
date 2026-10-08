@@ -15,7 +15,9 @@ the next run needs (the last fingerprints), and each run starts from the file it
 workflow's saved copy, or else from the file on the live website. It never fails the daily update: a page
 that is down or unreadable is just noted and tried again tomorrow.
 
-Needs only Python 3.8 or newer, with nothing to install.
+Needs only Python 3.8 or newer. Some companies draw their prices with script (so a plain download of the page
+has none) or turn away automated downloads; for those it falls back to a real headless browser when Playwright is
+installed (the workflow installs it), and otherwise skips that company.
 """
 import hashlib
 import json
@@ -68,10 +70,14 @@ class Text(HTMLParser):
 
 
 def fingerprint(html):
-    """(hash, number of dollar amounts) of a price page, or (None, n) when it has too few amounts to be the price list."""
     p = Text()
     p.feed(html)
-    text = re.sub(r"\s+", " ", " ".join(p.parts))
+    return fingerprint_text(" ".join(p.parts))
+
+
+def fingerprint_text(text):
+    """(hash, number of dollar amounts) of a price page's text, or (None, n) when it has too few amounts to be the price list."""
+    text = re.sub(r"\s+", " ", text)
     prices = [re.sub(r"\s", "", m).lower() for m in MONEY.findall(text)]
     days = [re.sub(r"\s", "", m).lower() for m in DAYS.findall(text)]
     if len(prices) < MIN_PRICES:
@@ -92,6 +98,48 @@ def fetch(url, tries=3):
             last = e
             time.sleep(2 + 3 * i)
     raise last
+
+
+BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+
+
+def browser_text(url):
+    """The visible text of a page after its script has run, from a real headless browser (None when there's no Playwright)."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception:
+        return None
+    with sync_playwright() as p:
+        b = p.chromium.launch()
+        try:
+            page = b.new_context(user_agent=BROWSER_UA, locale="en-US").new_page()
+            page.goto(url, wait_until="networkidle", timeout=60000)
+            page.wait_for_timeout(2500)
+            return page.inner_text("body")
+        finally:
+            b.close()
+
+
+def look(url):
+    """(status, hash, prices, via, detail) for one page: a plain download first, then a browser if that didn't show prices."""
+    detail = ""
+    try:
+        h, n = fingerprint(fetch(url))
+        if h:
+            return "ok", h, n, "plain", ""
+        detail = "its page has %d dollar amounts when downloaded plainly (prices may be drawn by script)" % n
+    except Exception as e:
+        detail = "a plain download failed (%s)" % str(e)[:80]
+    try:
+        text = browser_text(url)
+        if text is None:
+            return ("unreadable" if "dollar amounts" in detail else "unreachable"), None, None, None, detail + "; no browser available"
+        h, n = fingerprint_text(text)
+        if h:
+            return "ok", h, n, "browser", detail
+        return "unreadable", None, None, None, detail + "; a browser saw %d dollar amounts" % n
+    except Exception as e:
+        return ("unreadable" if "dollar amounts" in detail else "unreachable"), None, None, None, detail + "; the browser failed (%s)" % str(e)[:80]
 
 
 def load_prior():
@@ -119,28 +167,27 @@ def main():
     for co, url in pages.items():
         was = prior.get(co) if isinstance(prior.get(co), dict) else {}
         cur = {"status": "unreachable", "hash": was.get("hash"), "prices": was.get("prices"), "since": was.get("since"),
-               "seen": was.get("seen"), "pending": was.get("pending"), "changed": was.get("changed")}
-        try:
-            h, n = fingerprint(fetch(url))
-            if h is None:
-                cur["status"] = "unreadable"
+               "seen": was.get("seen"), "pending": was.get("pending"), "changed": was.get("changed"), "via": was.get("via")}
+        status, h, n, via, detail = look(url)
+        cur["status"], cur["detail"] = status, detail
+        if status == "ok":
+            cur.update(seen=today, prices=n, via=via)
+            if not was.get("hash") or (was.get("via") and was.get("via") != via):
+                # the first look (or looked at a different way than before, which reads slightly differently): this is what the list looks like now
+                cur.update(hash=h, since=today, pending=None)
+            elif h == was["hash"]:
+                cur["pending"] = None
             else:
-                cur.update(status="ok", seen=today, prices=n)
-                if not was.get("hash"):
-                    cur.update(hash=h, since=today, pending=None)   # the first look: this is what the list looks like now
-                elif h == was["hash"]:
-                    cur["pending"] = None
+                pend = was.get("pending") or {}
+                if pend.get("hash") == h and pend.get("first") and pend["first"] != today:
+                    # the same new page on a second day: a real change, noticed on the first day it was seen
+                    cur.update(hash=h, since=pend["first"], changed=pend["first"], pending=None)
+                elif pend.get("hash") == h:
+                    pass   # (a second look on the same day)
                 else:
-                    pend = was.get("pending") or {}
-                    if pend.get("hash") == h and pend.get("first") and pend["first"] != today:
-                        # the same new page on a second day: a real change, noticed on the first day it was seen
-                        cur.update(hash=h, since=pend["first"], changed=pend["first"], pending=None)
-                    elif pend.get("hash") == h:
-                        pass   # (a second look on the same day)
-                    else:
-                        cur["pending"] = {"hash": h, "first": today}
-        except Exception as e:
-            print("%s: couldn't read %s (%s)" % (co, url, e))
+                    cur["pending"] = {"hash": h, "first": today}
+        else:
+            print("%s: %s" % (co, detail))
         out[co] = cur
         print("%s: %s%s%s" % (co, cur["status"], ", %s dollar amounts" % cur["prices"] if cur["status"] == "ok" else "",
                               ", changed %s" % cur["changed"] if cur.get("changed") else ""))
