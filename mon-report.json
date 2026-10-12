@@ -1,0 +1,2539 @@
+{
+ "load_seconds": 0.4,
+ "products": 63559,
+ "groups": 675,
+ "names": {
+  "Pikachu": {
+   "odd": [
+    "Pikachu - 027/078 (Cosmos Holo) [Lighnting]",
+    "Pikachu - SWSH153 (Holiday Calendar) [Electric]"
+   ],
+   "noTypeEn": [
+    "Pikachu"
+   ],
+   "jpSuspicious": [],
+   "total": 702,
+   "en": 359,
+   "jp": 343,
+   "sets": 210,
+   "first_ms": 45,
+   "distinct": 343,
+   "names": [
+    [
+     "Pikachu",
+     227
+    ],
+    [
+     "Pikachu ex",
+     33
+    ],
+    [
+     "Pikachu V",
+     23
+    ],
+    [
+     "Pikachu & Zekrom GX",
+     12
+    ],
+    [
+     "Pikachu VMAX",
+     12
+    ],
+    [
+     "Ash's Pikachu",
+     7
+    ],
+    [
+     "Pikachu EX",
+     7
+    ],
+    [
+     "Pikachu (Mirror Holofoil)",
+     5
+    ],
+    [
+     "Detective Pikachu",
+     5
+    ],
+    [
+     "Surfing Pikachu",
+     5
+    ],
+    [
+     "Pikachu (Delta Species)",
+     4
+    ],
+    [
+     "Pikachu V-Union",
+     4
+    ],
+    [
+     "Flying Pikachu",
+     4
+    ],
+    [
+     "______'s Pikachu",
+     3
+    ],
+    [
+     "Pikachu (Secret)",
+     2
+    ],
+    [
+     "Pikachu VMAX (Secret)",
+     2
+    ],
+    [
+     "Pikachu (27)",
+     2
+    ],
+    [
+     "Pikachu V (Full Art)",
+     2
+    ],
+    [
+     "Surfing Pikachu V",
+     2
+    ],
+    [
+     "Surfing Pikachu VMAX",
+     2
+    ],
+    [
+     "Flying Pikachu V",
+     2
+    ],
+    [
+     "Flying Pikachu VMAX",
+     2
+    ],
+    [
+     "Pikachu - 227/S-P",
+     2
+    ],
+    [
+     "Pikachu GX",
+     2
+    ],
+    [
+     "Pretend Magikarp Pikachu - 150/XY-P",
+     2
+    ],
+    [
+     "Pretend Gyarados Pikachu - 151/XY-P",
+     2
+    ],
+    [
+     "Poncho-wearing Pikachu - 203/XY-P",
+     2
+    ],
+    [
+     "Mega Tokyo's Pikachu - 204/XY-P",
+     2
+    ],
+    [
+     "Poncho-wearing Pikachu - 207/XY-P",
+     2
+    ],
+    [
+     "Poncho-wearing Pikachu - 208/XY-P",
+     2
+    ],
+    [
+     "Poncho-wearing Pikachu - 230/XY-P",
+     2
+    ],
+    [
+     "Poncho-wearing Pikachu - 231/XY-P",
+     2
+    ],
+    [
+     "Poncho-wearing Pikachu - 274/XY-P",
+     2
+    ],
+    [
+     "Poncho-wearing Pikachu - 275/XY-P",
+     2
+    ],
+    [
+     "Pikachu Star",
+     2
+    ],
+    [
+     "Lt. Surge's Pikachu",
+     2
+    ],
+    [
+     "Pikachu (Ivy)",
+     1
+    ],
+    [
+     "Pikachu on the Ball - 001/005 (Pokemon Futsal)",
+     1
+    ],
+    [
+     "Pikachu (Japanese 11th Movie Commemoration Set)",
+     1
+    ],
+    [
+     "Pikachu (Movie)",
+     1
+    ],
+    [
+     "Pikachu (Snap)",
+     1
+    ],
+    [
+     "Pikachu (Pokemon Day Stamped)",
+     1
+    ],
+    [
+     "Pikachu - 012 (10th Anniversary)",
+     1
+    ],
+    [
+     "Pikachu - 012 (EX Series Collector's Tin)",
+     1
+    ],
+    [
+     "Pikachu (Pokemon Day 2009)",
+     1
+    ],
+    [
+     "Pikachu - 018/091 (Reverse Cosmos Holo)",
+     1
+    ],
+    [
+     "Pikachu - 20/108 (Build-A-Bear Workshop Exclusive)",
+     1
+    ],
+    [
+     "Pikachu (Flying)",
+     1
+    ],
+    [
+     "Pikachu - 025/165 (Holiday Calendar)",
+     1
+    ],
+    [
+     "Pikachu - 025/165 (Pokemon Together)",
+     1
+    ],
+    [
+     "Pikachu - 025/165 (Reverse Cosmos Holo) (Costco Exclusive)",
+     1
+    ],
+    [
+     "Pikachu - 26/83 (20th Anniversary)",
+     1
+    ],
+    [
+     "Pikachu - 26/83 (Toys R Us)",
+     1
+    ],
+    [
+     "Pikachu (Baby)",
+     1
+    ],
+    [
+     "Pikachu - 027/078 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Pikachu (Surfing)",
+     1
+    ],
+    [
+     "Pikachu - 28/73 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Pikachu - 28/73 (General Mills)",
+     1
+    ],
+    [
+     "Pikachu - 28/73 (Water Web Holo)",
+     1
+    ],
+    [
+     "Pikachu (Delta Species) - 035 (Value Pack)",
+     1
+    ],
+    [
+     "Pikachu - 42/146 (2014 Movie Promo)",
+     1
+    ],
+    [
+     "Pikachu - 049/195 (Holiday Calendar)",
+     1
+    ],
+    [
+     "Pikachu - 051/162 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Pikachu (Pokemon Day 2026)",
+     1
+    ],
+    [
+     "Pikachu (Base Set)",
+     1
+    ],
+    [
+     "Pikachu - 58/102 (Celebrations Metal Card)",
+     1
+    ],
+    [
+     "Pikachu - 58/102 (E3 Stamped with Red Cheeks)",
+     1
+    ],
+    [
+     "Pikachu - 58/102 (E3 Stamped)",
+     1
+    ],
+    [
+     "Pikachu - 58/102 (PokeTour 1999)",
+     1
+    ],
+    [
+     "Pikachu (Jungle)",
+     1
+    ]
+   ],
+   "types": {
+    "Lightning": 352,
+    "Metal": 4,
+    "Lighnting": 1,
+    "(none)": 344,
+    "Electric": 1
+   }
+  },
+  "Mew": {
+   "odd": [],
+   "noTypeEn": [
+    "Mew EX (Full Art)"
+   ],
+   "jpSuspicious": [],
+   "total": 175,
+   "en": 93,
+   "jp": 82,
+   "sets": 87,
+   "first_ms": 6,
+   "distinct": 70,
+   "names": [
+    [
+     "Mew",
+     43
+    ],
+    [
+     "Mew ex",
+     30
+    ],
+    [
+     "Mew V",
+     10
+    ],
+    [
+     "Mew VMAX",
+     9
+    ],
+    [
+     "Mewtwo & Mew GX",
+     8
+    ],
+    [
+     "Mew EX",
+     5
+    ],
+    [
+     "Mew - B/RGB",
+     2
+    ],
+    [
+     "Mew - G/RGB",
+     2
+    ],
+    [
+     "Mew - R/RGB",
+     2
+    ],
+    [
+     "Mew VMAX (Secret)",
+     2
+    ],
+    [
+     "Shining Mew",
+     2
+    ],
+    [
+     "Mew Star (Delta Species)",
+     2
+    ],
+    [
+     "Ancient Mew",
+     1
+    ],
+    [
+     "Ancient Mew (Japanese Exclusive Print)",
+     1
+    ],
+    [
+     "Mew (Delta Species)",
+     1
+    ],
+    [
+     "Mew - 040 (Trainer's Challenge Set)",
+     1
+    ],
+    [
+     "Mew - 111/110 (Non-Holo DVD Promo)",
+     1
+    ],
+    [
+     "Mew - 105 (30th Celebration)",
+     1
+    ],
+    [
+     "Mew ex - 205/165 (151 Metal Card)",
+     1
+    ],
+    [
+     "Mew (Mirror Holo)",
+     1
+    ],
+    [
+     "Mew V (Full Art)",
+     1
+    ],
+    [
+     "Mew V (Alternate Full Art)",
+     1
+    ],
+    [
+     "Mew VMAX (Alternate Art Secret)",
+     1
+    ],
+    [
+     "Mew - 002/028 (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Mew (Secret)",
+     1
+    ],
+    [
+     "Mew - 32/68 (Mewtwo Stamped)",
+     1
+    ],
+    [
+     "Mew - 343/S-P",
+     1
+    ],
+    [
+     "Mew - S-P (Oversize Card)",
+     1
+    ],
+    [
+     "Mewtwo & Mew GX (Full Art)",
+     1
+    ],
+    [
+     "Mewtwo & Mew GX (Secret)",
+     1
+    ],
+    [
+     "Mew - 2023 (Tord Reklev)",
+     1
+    ],
+    [
+     "Mew EX - 2013 (Ian Whiton)",
+     1
+    ],
+    [
+     "Mew EX - 2014 (Trent Orndorff)",
+     1
+    ],
+    [
+     "Mewtwo & Mew GX - 2019 (Henry Brand)",
+     1
+    ],
+    [
+     "Mew - 2019 (Haruki Miyamoto)",
+     1
+    ],
+    [
+     "Mew - 2019 (Shintaro Ito)",
+     1
+    ],
+    [
+     "Mew ex - 2006 (Jason Klaczynski)",
+     1
+    ],
+    [
+     "Mew ex - 2007 (Tom Roos)",
+     1
+    ],
+    [
+     "Mew Star (Delta Species) - 2008 (Dylan Lefavour)",
+     1
+    ],
+    [
+     "Mew V - 2022 (Andre Chiasson)",
+     1
+    ],
+    [
+     "Mew V - 2023 (Vance Kelley)",
+     1
+    ],
+    [
+     "Mew VMAX - 2022 (Andre Chiasson)",
+     1
+    ],
+    [
+     "Mew VMAX - 2023 (Vance Kelley)",
+     1
+    ],
+    [
+     "Mew ex - 151/165 - 2024 (Evan Pavelski)",
+     1
+    ],
+    [
+     "Mew ex - 151/165 - 2024 (Jesse Parker)",
+     1
+    ],
+    [
+     "Mew (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Mew - 342/SM-P",
+     1
+    ],
+    [
+     "Mew - 53/108 (XY Evolutions)",
+     1
+    ],
+    [
+     "Mew - 53/108 (League Challenge) [1st Place]",
+     1
+    ],
+    [
+     "Mew - 53/108 (League Challenge) [2nd Place]",
+     1
+    ],
+    [
+     "Mew - 53/108 (League Challenge) [3rd Place]",
+     1
+    ],
+    [
+     "Mew - 53/108 (League Challenge) [4th Place]",
+     1
+    ],
+    [
+     "Mew EX (Full Art)",
+     1
+    ],
+    [
+     "Mew EX (120 Full Art)",
+     1
+    ],
+    [
+     "Mew - 220/BW-P",
+     1
+    ],
+    [
+     "Mew (Prime)",
+     1
+    ],
+    [
+     "Rota's Mew",
+     1
+    ],
+    [
+     "Mew - 069/PCG-P",
+     1
+    ],
+    [
+     "Mew - 080/PCG-P",
+     1
+    ],
+    [
+     "Mew - 085/PCG-P",
+     1
+    ],
+    [
+     "Mew - 091/PCG-P",
+     1
+    ],
+    [
+     "Mew (Delta Species) - 148/PCG-P",
+     1
+    ],
+    [
+     "_____'s Mew",
+     1
+    ],
+    [
+     "Mew (19)",
+     1
+    ],
+    [
+     "Mew (55)",
+     1
+    ],
+    [
+     "Mew - 033/P",
+     1
+    ],
+    [
+     "Mew - 8 (Glossy Finish)",
+     1
+    ],
+    [
+     "Mew (8)",
+     1
+    ],
+    [
+     "Mew (9)",
+     1
+    ],
+    [
+     "Mew (47)",
+     1
+    ]
+   ],
+   "types": {
+    "Psychic": 89,
+    "Fire": 1,
+    "(none)": 83,
+    "Water": 2
+   }
+  },
+  "Mewtwo": {
+   "odd": [],
+   "noTypeEn": [],
+   "jpSuspicious": [],
+   "total": 229,
+   "en": 128,
+   "jp": 101,
+   "sets": 101,
+   "first_ms": 11,
+   "distinct": 87,
+   "names": [
+    [
+     "Mewtwo",
+     43
+    ],
+    [
+     "Mewtwo EX",
+     27
+    ],
+    [
+     "Team Rocket's Mewtwo ex",
+     18
+    ],
+    [
+     "Mewtwo GX",
+     14
+    ],
+    [
+     "Mewtwo ex",
+     11
+    ],
+    [
+     "Mewtwo VSTAR",
+     8
+    ],
+    [
+     "Mewtwo V",
+     8
+    ],
+    [
+     "Mewtwo & Mew GX",
+     8
+    ],
+    [
+     "Mewtwo V-UNION",
+     4
+    ],
+    [
+     "M Mewtwo EX",
+     3
+    ],
+    [
+     "Mewtwo LV.X",
+     3
+    ],
+    [
+     "Mewtwo (Delta Species)",
+     3
+    ],
+    [
+     "Mega Mewtwo EX",
+     2
+    ],
+    [
+     "Rocket's Mewtwo",
+     2
+    ],
+    [
+     "Mewtwo Star",
+     2
+    ],
+    [
+     "Rocket's Mewtwo ex",
+     2
+    ],
+    [
+     "Mewtwo - 056/172 (Brilliant Stars Stamped)",
+     1
+    ],
+    [
+     "Mewtwo - 056/172 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Mewtwo - 063/128 (What's Your Favorite Stamp)",
+     1
+    ],
+    [
+     "Mewtwo - 75/214 (Cosmos Holo) (Costco Exclusive)",
+     1
+    ],
+    [
+     "Mewtwo - 104 (30th Celebration)",
+     1
+    ],
+    [
+     "Team Rocket's Mewtwo ex - 043/M-P",
+     1
+    ],
+    [
+     "Mewtwo (Master Ball Pattern)",
+     1
+    ],
+    [
+     "Mewtwo (Poke Ball Pattern)",
+     1
+    ],
+    [
+     "Mewtwo V (Alternate Full Art)",
+     1
+    ],
+    [
+     "Mewtwo VSTAR (79) (Secret)",
+     1
+    ],
+    [
+     "Mewtwo VSTAR (86) (Secret)",
+     1
+    ],
+    [
+     "Mewtwo (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Mewtwo V-UNION (Top Left)",
+     1
+    ],
+    [
+     "Mewtwo V-UNION (Top Right)",
+     1
+    ],
+    [
+     "Mewtwo V-UNION (Bottom Left)",
+     1
+    ],
+    [
+     "Mewtwo V-UNION (Bottom Right)",
+     1
+    ],
+    [
+     "Mewtwo GX - 31/68 (Mewtwo Stamped)",
+     1
+    ],
+    [
+     "Mewtwo V - 273/S-P",
+     1
+    ],
+    [
+     "Mewtwo & Mew GX (Full Art)",
+     1
+    ],
+    [
+     "Mewtwo & Mew GX (Secret)",
+     1
+    ],
+    [
+     "Mewtwo - 2009 (David Cohen)",
+     1
+    ],
+    [
+     "Mewtwo EX - 2012 (Chase Moloney)",
+     1
+    ],
+    [
+     "Mewtwo EX - 2012 (Igor Costa)",
+     1
+    ],
+    [
+     "Mewtwo EX - 2012 (Shuto Itagaki)",
+     1
+    ],
+    [
+     "Mewtwo EX - 2012 (Zachary Bokhari)",
+     1
+    ],
+    [
+     "Mewtwo EX - 2014 (Michikazu Tsuda)",
+     1
+    ],
+    [
+     "Mewtwo EX - 2015 (Jacob Van Wagner)",
+     1
+    ],
+    [
+     "Mewtwo & Mew GX - 2019 (Henry Brand)",
+     1
+    ],
+    [
+     "Mewtwo LV.X - 2009 (David Cohen)",
+     1
+    ],
+    [
+     "Mewtwo GX (Full Art)",
+     1
+    ],
+    [
+     "Mewtwo GX (Secret)",
+     1
+    ],
+    [
+     "Mewtwo GX (Secret Shining)",
+     1
+    ],
+    [
+     "Armored Mewtwo",
+     1
+    ],
+    [
+     "Mewtwo EX (Full Art)",
+     1
+    ],
+    [
+     "Mewtwo GX - 363/SM-P",
+     1
+    ],
+    [
+     "Mewtwo GX - 364/SM-P",
+     1
+    ],
+    [
+     "Armored Mewtwo - 365/SM-P",
+     1
+    ],
+    [
+     "Mewtwo - 405/SM-P",
+     1
+    ],
+    [
+     "Mewtwo - 51/108 (Cracked Ice Holo)",
+     1
+    ],
+    [
+     "Mewtwo - 75/214 (SM Unbroken Bonds) (Cracked Ice Holo)",
+     1
+    ],
+    [
+     "Mewtwo EX (61)",
+     1
+    ],
+    [
+     "Mewtwo EX (62)",
+     1
+    ],
+    [
+     "M Mewtwo EX (63)",
+     1
+    ],
+    [
+     "M Mewtwo EX (64)",
+     1
+    ],
+    [
+     "Mewtwo EX (157 Full Art)",
+     1
+    ],
+    [
+     "Mewtwo EX (158 Full Art)",
+     1
+    ],
+    [
+     "M Mewtwo EX (159 Full Art)",
+     1
+    ],
+    [
+     "M Mewtwo EX (160 Full Art)",
+     1
+    ],
+    [
+     "Mewtwo EX (163 Secret Full Art)",
+     1
+    ],
+    [
+     "Mewtwo EX (164 Secret Full Art)",
+     1
+    ],
+    [
+     "M Mewtwo ex",
+     1
+    ],
+    [
+     "Mewtwo - S4/S4 (Box Topper)",
+     1
+    ],
+    [
+     "Mewtwo - 51/108 (Prerelease) [Staff]",
+     1
+    ],
+    [
+     "Mewtwo (XY Evolutions Prerelease)",
+     1
+    ]
+   ],
+   "types": {
+    "Psychic": 123,
+    "(none)": 101,
+    "Lightning": 3,
+    "Metal Fire": 1,
+    "Darkness": 1
+   }
+  },
+  "Charizard": {
+   "odd": [],
+   "noTypeEn": [
+    "Charizard"
+   ],
+   "jpSuspicious": [],
+   "total": 279,
+   "en": 164,
+   "jp": 115,
+   "sets": 123,
+   "first_ms": 5,
+   "distinct": 98,
+   "names": [
+    [
+     "Charizard",
+     50
+    ],
+    [
+     "Charizard ex",
+     29
+    ],
+    [
+     "Charizard V",
+     16
+    ],
+    [
+     "Charizard GX",
+     13
+    ],
+    [
+     "Charizard EX",
+     13
+    ],
+    [
+     "Mega Charizard X ex",
+     12
+    ],
+    [
+     "Reshiram & Charizard GX",
+     11
+    ],
+    [
+     "Charizard VSTAR",
+     10
+    ],
+    [
+     "Radiant Charizard",
+     8
+    ],
+    [
+     "M Charizard EX",
+     8
+    ],
+    [
+     "Charizard VMAX",
+     7
+    ],
+    [
+     "Charizard & Braixen GX",
+     6
+    ],
+    [
+     "Mega Charizard Y ex",
+     5
+    ],
+    [
+     "Charizard ex -196",
+     2
+    ],
+    [
+     "Lance's Charizard V",
+     2
+    ],
+    [
+     "Charizard G",
+     2
+    ],
+    [
+     "Charizard G LV.X",
+     2
+    ],
+    [
+     "Charizard Star (Delta Species)",
+     2
+    ],
+    [
+     "Charizard (Delta Species)",
+     2
+    ],
+    [
+     "Charizard - 1/99 (Cracked Ice Holo)",
+     1
+    ],
+    [
+     "Charizard (Celebrations Metal Card)",
+     1
+    ],
+    [
+     "Charizard - 14/181 (Costco Exclusive)",
+     1
+    ],
+    [
+     "Charizard (Library Exclusive)",
+     1
+    ],
+    [
+     "Charizard - 19/113 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Charizard - 20/149 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Charizard (Japanese Meiji Chocolate Exclusive Promo)",
+     1
+    ],
+    [
+     "Charizard - 143/S-P (Grand Prix)",
+     1
+    ],
+    [
+     "Mega Charizard Y ex (Mirror Holo)",
+     1
+    ],
+    [
+     "Mega Charizard Y ex -766/742",
+     1
+    ],
+    [
+     "Charizard V (Full Art)",
+     1
+    ],
+    [
+     "Charizard V (Alternate Full Art)",
+     1
+    ],
+    [
+     "Charizard VSTAR (Secret)",
+     1
+    ],
+    [
+     "Charizard VMAX (Secret)",
+     1
+    ],
+    [
+     "Charizard V (Secret)",
+     1
+    ],
+    [
+     "Charizard - 3/70 (#39 Charizard Stamped)",
+     1
+    ],
+    [
+     "Charizard GX - 9/68 (#60 Charizard Stamped)",
+     1
+    ],
+    [
+     "Charizard - SWSH066 (Prerelease)",
+     1
+    ],
+    [
+     "Charizard - SWSH066 (Prerelease) [Staff]",
+     1
+    ],
+    [
+     "Special Delivery Charizard",
+     1
+    ],
+    [
+     "Charizard V - 103/S-P",
+     1
+    ],
+    [
+     "Charizard VMAX - 104/S-P",
+     1
+    ],
+    [
+     "Charizard - 143/S-P",
+     1
+    ],
+    [
+     "Charizard & Braixen GX (Full Art)",
+     1
+    ],
+    [
+     "Charizard & Braixen GX (Secret)",
+     1
+    ],
+    [
+     "Reshiram & Charizard GX (Full Art)",
+     1
+    ],
+    [
+     "Reshiram & Charizard GX (Secret)",
+     1
+    ],
+    [
+     "Reshiram & Charizard GX - 2019 (Henry Brand)",
+     1
+    ],
+    [
+     "Reshiram & Charizard GX - 2019 (Kaya Lichtleitner)",
+     1
+    ],
+    [
+     "Charizard GX (Secret)",
+     1
+    ],
+    [
+     "Charizard - SM158 [Staff]",
+     1
+    ],
+    [
+     "M Charizard EX (Full Art)",
+     1
+    ],
+    [
+     "Charizard - 366/SM-P",
+     1
+    ],
+    [
+     "Charizard - 3/70 (Let's Play, Eevee!)",
+     1
+    ],
+    [
+     "Charizard - 3/110 (WotC Legendary Collection)",
+     1
+    ],
+    [
+     "Charizard - 14/181 (SM Team Up)",
+     1
+    ],
+    [
+     "Charizard - 25/185 (Cracked Ice Holo)",
+     1
+    ],
+    [
+     "Charizard - 100/97 (National Championships)",
+     1
+    ],
+    [
+     "Mega Charizard EX",
+     1
+    ],
+    [
+     "Charizard - 4/102 (CoroCoro Promo)",
+     1
+    ],
+    [
+     "Charizard - 9/12 (Box Topper)",
+     1
+    ],
+    [
+     "M Charizard EX - 13/106 (Form Y)",
+     1
+    ],
+    [
+     "M Charizard EX - 69/106 (Form X)",
+     1
+    ],
+    [
+     "Charizard - S1/S4 (Box Topper)",
+     1
+    ],
+    [
+     "Charizard GX - SM60 (SM Black Star Promos)",
+     1
+    ],
+    [
+     "Charizard GX - SM195 (SM Black Star Promo)",
+     1
+    ],
+    [
+     "Charizard GX - SM211 (SM Black Star Promo)",
+     1
+    ],
+    [
+     "Charizard & Braixen GX - SM230 (SM Black Star Promo)",
+     1
+    ],
+    [
+     "Charizard EX - XY17 (XY Black Star Promos)",
+     1
+    ],
+    [
+     "Charizard EX - XY121 (XY Black Star Promos)",
+     1
+    ],
+    [
+     "Charizard EX (11)",
+     1
+    ]
+   ],
+   "types": {
+    "Fire": 144,
+    "(none)": 116,
+    "Darkness": 14,
+    "Colorless": 2,
+    "Dragon": 2,
+    "Lightning Metal": 1
+   }
+  },
+  "Mr. Mime": {
+   "odd": [],
+   "noTypeEn": [
+    "Mr. Mime - 2013 (Jason Klaczynski)",
+    "Mr. Mime - 2014 (Andrew Estrada)",
+    "Mr. Mime"
+   ],
+   "jpSuspicious": [],
+   "total": 78,
+   "en": 39,
+   "jp": 39,
+   "sets": 59,
+   "first_ms": 4,
+   "distinct": 21,
+   "names": [
+    [
+     "Mr. Mime",
+     38
+    ],
+    [
+     "Galarian Mr. Mime",
+     11
+    ],
+    [
+     "Mr. Mime GX",
+     5
+    ],
+    [
+     "Mr. Mime ex",
+     4
+    ],
+    [
+     "Mr. Mime (Mirror Holofoil)",
+     2
+    ],
+    [
+     "Mr. Mime E4",
+     2
+    ],
+    [
+     "Sabrina's Mr. Mime",
+     2
+    ],
+    [
+     "Mr. Mime - 122/165 (Master Ball Pattern)",
+     1
+    ],
+    [
+     "Mr. Mime - 122/165 (Poke Ball Pattern)",
+     1
+    ],
+    [
+     "Galarian Mr. Mime (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Galarian Mr. Mime - 029/190 (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Galarian Mr. Mime - 160/S-P",
+     1
+    ],
+    [
+     "Mr. Mime GX (Full Art)",
+     1
+    ],
+    [
+     "Mr. Mime GX (Secret)",
+     1
+    ],
+    [
+     "Mr. Mime - 2013 (Jason Klaczynski)",
+     1
+    ],
+    [
+     "Mr. Mime - 2014 (Andrew Estrada)",
+     1
+    ],
+    [
+     "Mr. Mime GX - 231/SM-P",
+     1
+    ],
+    [
+     "Mr. Mime (95a)",
+     1
+    ],
+    [
+     "Mr. Mime (95b)",
+     1
+    ],
+    [
+     "Mr. Mime (6)",
+     1
+    ],
+    [
+     "Mr. Mime (22)",
+     1
+    ]
+   ],
+   "types": {
+    "Psychic": 25,
+    "(none)": 42,
+    "Water": 5,
+    "Fairy": 6
+   }
+  },
+  "Eevee": {
+   "odd": [],
+   "noTypeEn": [
+    "Eevee",
+    "Eevee (89)",
+    "Eevee (90)"
+   ],
+   "jpSuspicious": [],
+   "total": 260,
+   "en": 124,
+   "jp": 136,
+   "sets": 133,
+   "first_ms": 4,
+   "distinct": 108,
+   "names": [
+    [
+     "Eevee",
+     119
+    ],
+    [
+     "Eevee GX",
+     14
+    ],
+    [
+     "Eevee ex",
+     9
+    ],
+    [
+     "Eevee & Snorlax GX",
+     5
+    ],
+    [
+     "Eevee V",
+     4
+    ],
+    [
+     "Eevee (Master Ball Pattern)",
+     3
+    ],
+    [
+     "Eevee (Poke Ball Pattern)",
+     2
+    ],
+    [
+     "Radiant Eevee",
+     2
+    ],
+    [
+     "Eevee (Mirror Holofoil)",
+     2
+    ],
+    [
+     "Eevee (48)",
+     2
+    ],
+    [
+     "Eevee on the Ball - 002/005 (Pokemon Futsal)",
+     1
+    ],
+    [
+     "Eevee - 62/100 [Platinum]",
+     1
+    ],
+    [
+     "Eevee - 63/98 (Build-A-Bear Workshop Exclusive)",
+     1
+    ],
+    [
+     "Eevee - 074/131 (Pokemon Day 2025) (Reverse Cosmos Holo)",
+     1
+    ],
+    [
+     "Eevee ex - 075/131 (Prismatic Evolutions Stamp)",
+     1
+    ],
+    [
+     "Eevee - 101/149 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Eevee - 101/149 (General Mills Promo)",
+     1
+    ],
+    [
+     "Eevee - 116/128 (30th Celebration)",
+     1
+    ],
+    [
+     "Eevee - 130/185 (Reverse Cosmos Holo)",
+     1
+    ],
+    [
+     "Eevee - 133/165 (Pokemon Together)",
+     1
+    ],
+    [
+     "Eevee (Holiday Calendar)",
+     1
+    ],
+    [
+     "Eevee - 564/742 (Mirror Holo)",
+     1
+    ],
+    [
+     "Eevee -755/742",
+     1
+    ],
+    [
+     "Eevee - 134/M-P",
+     1
+    ],
+    [
+     "Eevee (Mirror Foil)",
+     1
+    ],
+    [
+     "Eevee - 031/SV-P",
+     1
+    ],
+    [
+     "Eevee - 032/SV-P",
+     1
+    ],
+    [
+     "Eevee - 033/SV-P",
+     1
+    ],
+    [
+     "Eevee - 062/SV-P",
+     1
+    ],
+    [
+     "Eevee - 196/SV-P",
+     1
+    ],
+    [
+     "Eevee - 198/SV-P",
+     1
+    ],
+    [
+     "Eevee - 143/191 (GYM)",
+     1
+    ],
+    [
+     "Eevee - 173 (Pokemon Center Exclusive)",
+     1
+    ],
+    [
+     "Eevee - 200 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Eevee - 143/191 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Eevee V - SWSH065 (Eevee Stamped)",
+     1
+    ],
+    [
+     "Eevee - 125/184 (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Eevee (Cinderace Stamped)",
+     1
+    ],
+    [
+     "Eevee - 49/68 (#26 Charizard Stamped)",
+     1
+    ],
+    [
+     "Eevee - 49/68 (#36 Charizard Stamped)",
+     1
+    ],
+    [
+     "Eevee - 49/68 (Mewtwo Stamped)",
+     1
+    ],
+    [
+     "Eevee VMAX",
+     1
+    ],
+    [
+     "Eevee - 044/S-P",
+     1
+    ],
+    [
+     "Eevee - 075/S-P",
+     1
+    ],
+    [
+     "Eevee - 100/S-P",
+     1
+    ],
+    [
+     "Eevee VMAX - 101/S-P",
+     1
+    ],
+    [
+     "Eevee - 117/S-P",
+     1
+    ],
+    [
+     "Eevee - 163/S-P",
+     1
+    ],
+    [
+     "Eevee - 181/S-P",
+     1
+    ],
+    [
+     "Eevee - 220/S-P",
+     1
+    ],
+    [
+     "Eevee - 239/S-P",
+     1
+    ],
+    [
+     "Eevee (49)",
+     1
+    ],
+    [
+     "Eevee & Snorlax GX (Full Art)",
+     1
+    ],
+    [
+     "Eevee & Snorlax GX (Secret)",
+     1
+    ],
+    [
+     "Eevee - 105/150 (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Eevee (Delta Species) - 2007 (Jun Hasebe)",
+     1
+    ],
+    [
+     "Eevee - 2006 (Jimmy Ballard)",
+     1
+    ],
+    [
+     "Eevee - 2007 (Tom Roos)",
+     1
+    ],
+    [
+     "Eevee (26)",
+     1
+    ],
+    [
+     "Eevee (104)",
+     1
+    ],
+    [
+     "Eevee (105)",
+     1
+    ],
+    [
+     "Eevee - SM184 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 137/SM-P",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 138/SM-P",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 139/SM-P",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 140/SM-P",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 141/SM-P",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 142/SM-P",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 143/SM-P",
+     1
+    ],
+    [
+     "Poncho-wearing Eevee - 144/SM-P",
+     1
+    ]
+   ],
+   "types": {
+    "Colorless": 117,
+    "Psychic": 2,
+    "(none)": 139,
+    "Metal": 2
+   }
+  },
+  "Ho-Oh": {
+   "odd": [],
+   "noTypeEn": [],
+   "jpSuspicious": [],
+   "total": 91,
+   "en": 51,
+   "jp": 40,
+   "sets": 55,
+   "first_ms": 4,
+   "distinct": 40,
+   "names": [
+    [
+     "Ho-Oh",
+     19
+    ],
+    [
+     "Ethan's Ho-Oh ex",
+     11
+    ],
+    [
+     "Ho-Oh GX",
+     9
+    ],
+    [
+     "Ho-Oh EX",
+     7
+    ],
+    [
+     "Ho-Oh V",
+     4
+    ],
+    [
+     "Ho-Oh ex",
+     3
+    ],
+    [
+     "Ho-oh ex",
+     2
+    ],
+    [
+     "Ho-Oh Legend",
+     2
+    ],
+    [
+     "Ho-Oh Legend (Mirror Holofoil)",
+     2
+    ],
+    [
+     "Ho-oh",
+     2
+    ],
+    [
+     "Ho-Oh - 010/086 (EB Games Exclusive)",
+     1
+    ],
+    [
+     "Ho-Oh - 010/086 (Gamestop Exclusive)",
+     1
+    ],
+    [
+     "Ho-Oh ex (Holo)",
+     1
+    ],
+    [
+     "Ho-Oh ex (Non-Holo)",
+     1
+    ],
+    [
+     "Ethan's Ho-Oh ex - 039/182 (GYM)",
+     1
+    ],
+    [
+     "Ho-Oh V (Full Art)",
+     1
+    ],
+    [
+     "Ho-Oh (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Ho-Oh GX (Full Art)",
+     1
+    ],
+    [
+     "Shining Ho-Oh",
+     1
+    ],
+    [
+     "Shining Ho-Oh - 083/SM-P",
+     1
+    ],
+    [
+     "Ho-Oh - 27/115 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Ho-Oh EX (Full Art)",
+     1
+    ],
+    [
+     "Ho-oh - 11/12 (Box Topper)",
+     1
+    ],
+    [
+     "Ho-Oh GX - SM80 (SM Black Star Promo)",
+     1
+    ],
+    [
+     "Ho-Oh BREAK - XY154 (XY Black Star Promo)",
+     1
+    ],
+    [
+     "Ho-Oh BREAK",
+     1
+    ],
+    [
+     "Ho-Oh - 224/XY-P",
+     1
+    ],
+    [
+     "Ho-Oh BREAK - 225/XY-P",
+     1
+    ],
+    [
+     "Ho-Oh Ex (119 Full Art)",
+     1
+    ],
+    [
+     "Ho-Oh (Shiny)",
+     1
+    ],
+    [
+     "Ho-Oh Legend (Top)",
+     1
+    ],
+    [
+     "Ho-Oh Legend (Bottom)",
+     1
+    ],
+    [
+     "Ho-Oh - 048/L-P",
+     1
+    ],
+    [
+     "Ho-Oh - 065/L-P",
+     1
+    ],
+    [
+     "Ho-Oh ex - 076/PCG-P",
+     1
+    ],
+    [
+     "Ho-Oh - 135/PCG-P",
+     1
+    ],
+    [
+     "Ho-oh (7)",
+     1
+    ],
+    [
+     "Ho-oh (18)",
+     1
+    ],
+    [
+     "Ho-Oh - 010/P",
+     1
+    ],
+    [
+     "Ho-oh [Pokemon Center NY]",
+     1
+    ]
+   ],
+   "types": {
+    "Fire": 42,
+    "(none)": 40,
+    "Colorless": 9
+   }
+  },
+  "Farfetch'd": {
+   "odd": [],
+   "noTypeEn": [],
+   "jpSuspicious": [],
+   "total": 44,
+   "en": 21,
+   "jp": 23,
+   "sets": 39,
+   "first_ms": 5,
+   "distinct": 8,
+   "names": [
+    [
+     "Farfetch'd",
+     30
+    ],
+    [
+     "Galarian Farfetch'd",
+     8
+    ],
+    [
+     "Farfetch'd (Master Ball Pattern)",
+     1
+    ],
+    [
+     "Farfetch'd (Poke Ball Pattern)",
+     1
+    ],
+    [
+     "Galarian Farfetch'd - 090/190 (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Farfetch'd (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Farfetch'd (Secret Rare)",
+     1
+    ],
+    [
+     "Falkner's Farfetch'd",
+     1
+    ]
+   ],
+   "types": {
+    "Colorless": 18,
+    "(none)": 23,
+    "Fighting": 3
+   }
+  },
+  "Nidoran": {
+   "odd": [],
+   "noTypeEn": [
+    "Nidoran F",
+    "Nidoran M"
+   ],
+   "jpSuspicious": [],
+   "total": 70,
+   "en": 37,
+   "jp": 33,
+   "sets": 41,
+   "first_ms": 4,
+   "distinct": 24,
+   "names": [
+    [
+     "Nidoran M",
+     17
+    ],
+    [
+     "Nidoran F",
+     16
+    ],
+    [
+     "NidoranM",
+     5
+    ],
+    [
+     "Nidoran",
+     4
+    ],
+    [
+     "NidoranF",
+     4
+    ],
+    [
+     "Team Rocket's Nidoran F",
+     3
+    ],
+    [
+     "Team Rocket's Nidoran M",
+     3
+    ],
+    [
+     "Nidoran (Delta Species)",
+     2
+    ],
+    [
+     "Nidoran F (Master Ball Pattern)",
+     1
+    ],
+    [
+     "Nidoran F (Poke Ball Pattern)",
+     1
+    ],
+    [
+     "Nidoran M (Master Ball Pattern)",
+     1
+    ],
+    [
+     "Nidoran M (Poke Ball Pattern)",
+     1
+    ],
+    [
+     "Nidoran F - 2005 (Jeremy Maron)",
+     1
+    ],
+    [
+     "Nidoran F - 2009 (David Cohen)",
+     1
+    ],
+    [
+     "Nidoran F - 2009 (Jason Martinez)",
+     1
+    ],
+    [
+     "Nidoran (F)",
+     1
+    ],
+    [
+     "Nidoran F (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Nidoran M (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Nidoran F (Delta Species)",
+     1
+    ],
+    [
+     "Nidoran M (Delta Species)",
+     1
+    ],
+    [
+     "Nidoran F (81)",
+     1
+    ],
+    [
+     "Nidoran F (82)",
+     1
+    ],
+    [
+     "Giovanni's Nidoran F",
+     1
+    ],
+    [
+     "Giovanni's Nidoran M",
+     1
+    ]
+   ],
+   "types": {
+    "(none)": 35,
+    "Darkness": 6,
+    "Psychic": 13,
+    "Grass": 15,
+    "Metal": 1
+   }
+  },
+  "Flabébé": {
+   "odd": [],
+   "noTypeEn": [],
+   "jpSuspicious": [],
+   "total": 25,
+   "en": 12,
+   "jp": 13,
+   "sets": 20,
+   "first_ms": 4,
+   "distinct": 6,
+   "names": [
+    [
+     "Flabebe",
+     20
+    ],
+    [
+     "Flabebe (83)",
+     1
+    ],
+    [
+     "Flabebe (84)",
+     1
+    ],
+    [
+     "Flabebe - 101/162 (Pokemon League)",
+     1
+    ],
+    [
+     "Flabebe (62)",
+     1
+    ],
+    [
+     "Flabebe (63)",
+     1
+    ]
+   ],
+   "types": {
+    "(none)": 13,
+    "Psychic": 3,
+    "Fairy": 9
+   }
+  },
+  "Gardevoir": {
+   "odd": [],
+   "noTypeEn": [
+    "Gardevoir"
+   ],
+   "jpSuspicious": [],
+   "total": 143,
+   "en": 78,
+   "jp": 65,
+   "sets": 74,
+   "first_ms": 4,
+   "distinct": 44,
+   "names": [
+    [
+     "Gardevoir",
+     32
+    ],
+    [
+     "Gardevoir ex",
+     15
+    ],
+    [
+     "Mega Gardevoir ex",
+     13
+    ],
+    [
+     "M Gardevoir EX",
+     10
+    ],
+    [
+     "Gardevoir EX",
+     10
+    ],
+    [
+     "Gardevoir GX",
+     7
+    ],
+    [
+     "Gardevoir & Sylveon GX",
+     5
+    ],
+    [
+     "Radiant Gardevoir",
+     4
+    ],
+    [
+     "Gardevoir ex (Delta Species)",
+     4
+    ],
+    [
+     "Gardevoir V",
+     4
+    ],
+    [
+     "Gardevoir VMAX",
+     3
+    ],
+    [
+     "Gardevoir EX (Full Art)",
+     2
+    ],
+    [
+     "M Gardevoir EX (Full Art)",
+     2
+    ],
+    [
+     "Gardevoir (Delta Species)",
+     2
+    ],
+    [
+     "Gardevoir - 54/98 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Gardevoir ex (Japanese Exclusive)",
+     1
+    ],
+    [
+     "Gardevoir - 141/214 (Cosmos Holo)",
+     1
+    ],
+    [
+     "Gardevoir - 038/068 (Poke Ball Pattern)",
+     1
+    ],
+    [
+     "Gardevoir V (Full Art)",
+     1
+    ],
+    [
+     "Gardevoir VMAX (Secret)",
+     1
+    ],
+    [
+     "Mega Gardevoir EX",
+     1
+    ],
+    [
+     "Gardevoir & Sylveon GX (204) (Full Art)",
+     1
+    ],
+    [
+     "Gardevoir & Sylveon GX (205) (Alternate Full Art)",
+     1
+    ],
+    [
+     "Gardevoir & Sylveon GX (Secret)",
+     1
+    ],
+    [
+     "Gardevoir - 2004 (Kevin Nguyen)",
+     1
+    ],
+    [
+     "Gardevoir - 2008 (Jason Klaczynski)",
+     1
+    ],
+    [
+     "Gardevoir - 2010 (Michael Pramawat)",
+     1
+    ],
+    [
+     "Gardevoir - 2023 (Tord Reklev)",
+     1
+    ],
+    [
+     "Gardevoir ex - 2023 (Tord Reklev)",
+     1
+    ],
+    [
+     "Gardevoir GX - 2017 (Diego Cassiraga)",
+     1
+    ],
+    [
+     "Gardevoir ex - 2004 (Kevin Nguyen)",
+     1
+    ],
+    [
+     "Gardevoir LV.X - 2008 (Jason Klaczynski)",
+     1
+    ],
+    [
+     "Gardevoir LV.X - 2010 (Michael Pramawat)",
+     1
+    ],
+    [
+     "Gardevoir GX (Full Art)",
+     1
+    ],
+    [
+     "Gardevoir GX (Secret)",
+     1
+    ],
+    [
+     "Gardevoir - 408/SM-P (JP Illustration Grand Prix Winner 2019)",
+     1
+    ],
+    [
+     "Gardevoir - 8/127 (DPPt Platinum)",
+     1
+    ],
+    [
+     "Gardevoir - 9/108 (EX Power Keepers)",
+     1
+    ],
+    [
+     "Gardevoir EX (Secret)",
+     1
+    ],
+    [
+     "Gardevoir EX (155 Full Art)",
+     1
+    ],
+    [
+     "M Gardevoir EX (156 Full Art)",
+     1
+    ],
+    [
+     "Gardevoir LV.X",
+     1
+    ],
+    [
+     "Gardevoir (Holo)",
+     1
+    ],
+    [
+     "Gardevoir - 070/PCG-P",
+     1
+    ]
+   ],
+   "types": {
+    "Fairy": 23,
+    "Psychic": 50,
+    "(none)": 66,
+    "Fairy Psychic": 2,
+    "Fire": 1,
+    "Metal Psychic": 1
+   }
+  },
+  "Lugia": {
+   "odd": [],
+   "noTypeEn": [
+    "Lugia EX (Team Plasma)",
+    "Lugia EX (Team Plasma) (134 Full Art)"
+   ],
+   "jpSuspicious": [],
+   "total": 103,
+   "en": 55,
+   "jp": 48,
+   "sets": 57,
+   "first_ms": 4,
+   "distinct": 45,
+   "names": [
+    [
+     "Lugia",
+     25
+    ],
+    [
+     "Lugia ex",
+     8
+    ],
+    [
+     "Lugia V",
+     7
+    ],
+    [
+     "Lugia VSTAR",
+     6
+    ],
+    [
+     "Lugia EX (Team Plasma)",
+     6
+    ],
+    [
+     "Lugia GX",
+     4
+    ],
+    [
+     "Lugia EX",
+     4
+    ],
+    [
+     "Lugia ex (Prismatic Evolutions Stamped)",
+     2
+    ],
+    [
+     "Lugia (Mirror Holofoil)",
+     2
+    ],
+    [
+     "Shining Lugia",
+     2
+    ],
+    [
+     "Lugia BREAK",
+     2
+    ],
+    [
+     "Lugia Legend",
+     2
+    ],
+    [
+     "Lugia - 29/115 (Pokemon Rocks America)",
+     1
+    ],
+    [
+     "Lugia V (Full Art)",
+     1
+    ],
+    [
+     "Lugia V (Alternate Full Art)",
+     1
+    ],
+    [
+     "Lugia VSTAR (Secret) (202)",
+     1
+    ],
+    [
+     "Lugia VSTAR (Secret) (211)",
+     1
+    ],
+    [
+     "Lugia - SWSH069 (Prerelease)",
+     1
+    ],
+    [
+     "Lugia - SWSH069 (Prerelease) [Staff]",
+     1
+    ],
+    [
+     "Lugia - 151/S-P",
+     1
+    ],
+    [
+     "Lugia V - 322/S-P",
+     1
+    ],
+    [
+     "Lugia V - 324/S-P",
+     1
+    ],
+    [
+     "Lugia VSTAR - 325/S-P",
+     1
+    ],
+    [
+     "Lugia GX (Full Art)",
+     1
+    ],
+    [
+     "Lugia GX (Secret)",
+     1
+    ],
+    [
+     "Lugia ex - 2006 (Hiroki Yano)",
+     1
+    ],
+    [
+     "Lugia V - 2023 (Gabriel Fernandez)",
+     1
+    ],
+    [
+     "Lugia VSTAR - 2023 (Gabriel Fernandez)",
+     1
+    ],
+    [
+     "Lugia - 237/SM-P",
+     1
+    ],
+    [
+     "Lugia - 29/115 (EX Unseen Forces)",
+     1
+    ],
+    [
+     "Lugia - 78/124 (XY Fates Collide)",
+     1
+    ],
+    [
+     "Lugia EX (94 Full Art)",
+     1
+    ],
+    [
+     "Lugia - 228/XY-P",
+     1
+    ],
+    [
+     "Lugia EX (Team Plasma) (Mirror Holo)",
+     1
+    ],
+    [
+     "Lugia EX (Team Plasma) (134 Full Art)",
+     1
+    ],
+    [
+     "Lugia (Shiny)",
+     1
+    ],
+    [
+     "Lugia Legend (Top)",
+     1
+    ],
+    [
+     "Lugia Legend (Bottom)",
+     1
+    ],
+    [
+     "Lugia Legend - 029/070 (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Lugia Legend - 030/070 (Mirror Holofoil)",
+     1
+    ],
+    [
+     "Lugia - 047/L-P",
+     1
+    ],
+    [
+     "Lugia - 066/L-P",
+     1
+    ],
+    [
+     "Lugia - 038/PCG-P",
+     1
+    ],
+    [
+     "Lugia - 141/PCG-P",
+     1
+    ],
+    [
+     "Lugia - 047/P",
+     1
+    ]
+   ],
+   "types": {
+    "Psychic": 5,
+    "Colorless": 43,
+    "(none)": 50,
+    "Water": 5
+   }
+  }
+ },
+ "typed": {
+  "pika": {
+   "ms": 16,
+   "c": [
+    "Pikachu (629)"
+   ]
+  },
+  "mew": {
+   "ms": 4,
+   "c": [
+    "Mew (164)",
+    "Mewtwo (229)"
+   ]
+  },
+  "char": {
+   "ms": 4,
+   "c": [
+    "Charizard (255)",
+    "Charmander (124)",
+    "Charmeleon (93)",
+    "Charcadet (46)",
+    "Charjabug (27)",
+    "Charisma (7)",
+    "Chimchar (27)",
+    "Pecharunt (23)"
+   ]
+  },
+  "mime": {
+   "ms": 2,
+   "c": [
+    "Mime Jr. (15)",
+    "Mr. Mime (78)"
+   ]
+  },
+  "eevee": {
+   "ms": 4,
+   "c": [
+    "Eevee (260)"
+   ]
+  },
+  "mega": {
+   "ms": 3,
+   "c": [
+    "Meganium (48)",
+    "Megaton Blower (1)",
+    "Yanmega (55)",
+    "Startling Megaphone (2)"
+   ]
+  },
+  "nidor": {
+   "ms": 2,
+   "c": [
+    "Nidorina (37)",
+    "Nidoran F (33)",
+    "Nidorino (33)",
+    "Nidoran M (30)",
+    "Nidoran (7)"
+   ]
+  },
+  "porygon": {
+   "ms": 2,
+   "c": [
+    "Porygon (49)",
+    "Porygon-Z (43)",
+    "Porygon2 (37)"
+   ]
+  },
+  "ash": {
+   "ms": 3,
+   "c": [
+    "Ash-Greninja (4)",
+    "Rapidash (81)",
+    "Aegislash (56)",
+    "Sandslash (54)",
+    "Wishiwashi (32)",
+    "Whiscash (22)",
+    "Wash Rotom (11)",
+    "Burmy Trash Cloak (2)"
+   ]
+  },
+  "farfetch": {
+   "ms": 2,
+   "c": [
+    "Farfetch'd (44)"
+   ]
+  },
+  "gardev": {
+   "ms": 2,
+   "c": [
+    "Gardevoir (143)"
+   ]
+  },
+  "lugia": {
+   "ms": 2,
+   "c": [
+    "Lugia (103)"
+   ]
+  },
+  "flab": {
+   "ms": 1,
+   "c": [
+    "Flabebe (25)"
+   ]
+  },
+  "ho-": {
+   "ms": 2,
+   "c": [
+    "Ho-Oh (91)",
+    "Poncho-wearing Pikachu (18)",
+    "Poncho-wearing Eevee (8)"
+   ]
+  },
+  "mr": {
+   "ms": 2,
+   "c": [
+    "Mr. Mime (78)",
+    "Mr. Rime (18)",
+    "Mr. Stone's Project (9)",
+    "Mr. Briney's Compassion (1)"
+   ]
+  }
+ },
+ "errors": []
+}
