@@ -25,6 +25,7 @@ import os
 import re
 import sys
 import time
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -94,6 +95,11 @@ def fetch(url, tries=3):
                 raw = r.read(5_000_000)
                 charset = r.headers.get_content_charset() or "utf-8"
                 return raw.decode(charset, errors="replace")
+        except urllib.error.HTTPError as e:
+            if e.code in (401, 403, 404, 410):
+                raise   # (turned away or gone: asking again won't change that)
+            last = e
+            time.sleep(2 + 3 * i)
         except Exception as e:  # a page that's down is not our problem; try again tomorrow
             last = e
             time.sleep(2 + 3 * i)
@@ -113,8 +119,16 @@ def browser_text(url):
         b = p.chromium.launch()
         try:
             page = b.new_context(user_agent=BROWSER_UA, locale="en-US").new_page()
-            page.goto(url, wait_until="networkidle", timeout=60000)
-            page.wait_for_timeout(2500)
+            # (not "until the network is quiet": sites with trackers and chat widgets never get there. Wait for prices to show instead.)
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            except Exception:
+                pass   # a slow page may still have drawn its prices; read what's there
+            try:
+                page.wait_for_function("() => /\\$\\s?\\d/.test(document.body ? document.body.innerText : '')", timeout=30000)
+            except Exception:
+                pass
+            page.wait_for_timeout(2500)   # (the rest of the table drawing in)
             return page.inner_text("body")
         finally:
             b.close()
