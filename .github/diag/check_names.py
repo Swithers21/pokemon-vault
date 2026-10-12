@@ -10,7 +10,7 @@ srv = socketserver.ThreadingTCPServer(("127.0.0.1", 8811), handler)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 
 NAMES = ["Pikachu", "Mew", "Mewtwo", "Charizard", "Mr. Mime", "Eevee", "Ho-Oh", "Farfetch'd", "Nidoran", "Flabébé", "Gardevoir", "Lugia"]
-TYPED = ["pika", "mew", "char", "mime", "eevee", "mega", "nidor", "porygon", "ash", "farfetch"]
+TYPED = ["pika", "mew", "char", "mime", "eevee", "mega", "nidor", "porygon", "ash", "farfetch", "gardev", "lugia", "flab", "ho-", "mr"]
 report = {}
 with sync_playwright() as p:
     b = p.chromium.launch()
@@ -30,7 +30,11 @@ with sync_playwright() as p:
           const en = C.monPrints(n, 'en').length, jp = C.monPrints(n, 'jp').length;
           const names = {}; for (const p of all) { const k = p.name.replace(/\\s+-\\s+[A-Za-z]{0,6}\\s?\\d{1,4}[A-Za-z]{0,2}(?:\\s?\\/\\s?[A-Za-z]{0,6}\\d{1,4}[A-Za-z]{0,2})?\\s*$/, ''); names[k] = (names[k] || 0) + 1; }
           const types = {}; for (const p of all) types[p.ctype || '(none)'] = (types[p.ctype || '(none)'] || 0) + 1;
-          return {total: all.length, en, jp, sets: new Set(all.map(p => p.group.id)).size, first_ms: Math.round(ms), distinct: Object.keys(names).length,
+          const POKE = /^(colorless|darkness|dark|dragon|fairy|fighting|fire|grass|lightning|metal|psychic|water)(\s|$)/i;
+          const odd = {}; for (const p of all) { const t = p.ctype || ''; if (t && !POKE.test(t)) odd[p.name + ' [' + t + ']'] = 1; }
+          const noType = all.filter(p => !p.ctype && !p.group.jp).map(p => p.name).slice(0, 12);
+          const jpWords = all.filter(p => !p.ctype && p.group.jp && /\b(link|energy|stadium|supporter|tool|item|cape|badge|charm|pass|ticket|doll|plush|case|sleeve|deck|box|pack)\b/i.test(p.name)).map(p => p.name).slice(0, 15);
+          return {odd: Object.keys(odd).slice(0, 30), noTypeEn: noType, jpSuspicious: jpWords, total: all.length, en, jp, sets: new Set(all.map(p => p.group.id)).size, first_ms: Math.round(ms), distinct: Object.keys(names).length,
                   names: Object.entries(names).sort((a, b) => b[1] - a[1]).slice(0, 70), types}; }""", n)
         report["names"][n] = r
     report["typed"] = {}

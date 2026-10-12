@@ -110,6 +110,13 @@
   .banner ol{margin:8px 0 0;padding-left:20px}
   .banner li{margin:3px 0}
   .banner-actions{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:10px}
+  .look-total{margin-top:6px;font-size:15px}
+  .look-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;margin-top:10px}
+  .look-col h4{margin:0 0 3px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-dim);font-weight:600}
+  .look-col ul{list-style:none;margin:0;padding:0}
+  .look-col li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13px;margin:3px 0}
+  .look-col .n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .look-col .chg{white-space:nowrap}
 
   /* ---------- summary ---------- */
   /* The hero: the collection's value on a stitched leather panel, with your most valuable cards fanned like a hand. */
@@ -547,6 +554,14 @@
   .goal-pick-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
   .goal-pick-row:first-child{border-top:0}
   .chk-own{font-size:12px;font-weight:700;color:var(--gold-hi);align-self:center}
+  .chk-goals{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+  .chk-goals-form{margin:0 0 14px}
+  .chk-goal{font-size:11.5px;line-height:1.35;color:var(--text-dim);padding-left:8px;border-left:2px solid var(--line-2)}
+  .chk-goal b{color:var(--text);font-weight:600}
+  .chk-goal.need{border-left-color:var(--gold);color:var(--text)}
+  .chk-goal.finish{border-left-color:var(--gold-hi);color:var(--gold-hi);font-weight:600}
+  .chk-goal.finish b{color:inherit}
+  .chk-goals-form .chk-goal{font-size:13px}
   /* set goals on the Collection tab: one slim row each (name and progress bar), opening for the details */
   .coll-goals{margin:0 0 14px}
   .coll-goals-head{display:flex;justify-content:space-between;align-items:center;gap:6px 14px;flex-wrap:wrap;margin:0 0 8px}
@@ -939,6 +954,7 @@
 
   @media (max-width:900px){
     .movers{grid-template-columns:1fr}
+    .look-cols{grid-template-columns:1fr}
     .deck-grid{grid-template-columns:1fr}
     .set-toggle{grid-template-columns:minmax(0,1fr) auto 16px}
     .set-toggle .set-prog{grid-column:1 / 3;grid-row:2}
@@ -1237,6 +1253,7 @@
     <div class="banner" id="updateBanner" hidden></div>
     <div class="banner" id="backupBanner" hidden></div>
     <div class="banner" id="wantBanner" hidden></div>
+    <div class="banner" id="lookBanner" hidden></div>
   </div>
 
   <section class="summary" id="summary" aria-label="Collection summary">
@@ -1477,7 +1494,7 @@
   let settings = {view: "binder", sortField: "price", sortDir: "desc", basis: "market", tab: "collection",
     condAdjust: true, condPct: Object.assign({}, DEFAULT_COND_PCT), histPeriod: "m7", chartTable: false,
     setsMode: "number", setsSort: "complete", lastBackupAt: null, lastChangeAt: null, backupSnoozeUntil: 0,
-    backupRemindDays: 7, wantAlertSeen: "", salesYear: "", deckId: null,
+    backupRemindDays: 7, wantAlertSeen: "", lookSeen: "", lookShown: "", salesYear: "", deckId: null,
     deckView: "check", mkView: "sets", goalsFold: false, mvPeriod: "m7", mvKind: "", mvFloor: 5, mvMine: "", mvSort: "pct", mkLine: "", mkKind: "", mkSortSets: "newest", mkSortSealed: "deal", mkLang: "", wantsView: "", csSort: "best", csMode: "cards", csSetSort: "number",
     gradedView: false, psa10Mult: 4, psa10Floor: 25, gradePct: Object.assign({}, DEFAULT_GRADE_PCT), pcToken: "",
     insightView: "history", salesView: "trade", gradingCost: 30, gradingMin: 50, gradingFees: {}, gradingCo: "PSA", autoSignIn: true};
@@ -2464,6 +2481,7 @@
     renderDataStatus();
     renderBackupBanner();
     renderWantBanner();
+    renderLookBanner();
     renderSummary();
     renderTabs();
     renderFilterOptions();
@@ -2496,6 +2514,7 @@
     saveSettings();
     renderTabs();
     renderWantBanner();
+    renderLookBanner();
     renderSummary();
     renderPanel();
     renderBulkBar();
@@ -3159,6 +3178,7 @@
     openDrawer(replacing ? "Change printing" : "Add a card",
       pickedHeadHTML(p, want ? "" : "Pick a different printing") +
       (want ? '<div class="notice" style="margin:0 0 14px">From your want list. Adding it to your collection takes it off the want list.</div>' : "") +
+      (replacing ? "" : goalsNoteHTML(p, csOwnedMap(), "chk-goals-form")) +
       '<form id="pickedForm" class="stack">' +
       '<div class="grid-2"><label class="field"><span>Printing</span><select class="input" id="fEd">' + options(available.concat(PRINTINGS), defaultEd) + "</select></label>" +
       '<label class="field"><span>Condition</span><select class="input" id="fCond">' + options(CONDITIONS, v.condition) + "</select></label></div>" +
@@ -5928,6 +5948,45 @@
     syncBanners();
   }
 
+  // "Since you last looked": once new prices are in after the last time you looked, your collection's change and its biggest risers and drops.
+  // Each device remembers the price day it last showed (settings.lookShown); the next time it opens, that day counts as seen.
+  function lookRef() {
+    const seen = settings.lookSeen;
+    if (!catalog || !catalog.priceDay || !collection.length || !seen || seen >= catalog.priceDay) return null;
+    let best = null;
+    for (const [k] of PERIODS) {   // the saved comparison day nearest the one you last saw
+      const day = catalog.refDays[k];
+      if (!day || day >= catalog.priceDay) continue;
+      const gap = Math.abs(parseDay(day) - parseDay(seen));
+      if (!best || gap < best.gap) best = {key: k, day, gap};
+    }
+    return best;
+  }
+  function renderLookBanner() {
+    const b = $("lookBanner");
+    if (!b) return;
+    if (catalog && catalog.priceDay && !settings.lookSeen) { settings.lookSeen = catalog.priceDay; saveSettings(); }   // (first time: nothing to compare with yet)
+    const ref = settings.tab === "collection" ? lookRef() : null, ch = ref ? periodChange(ref.key) : null;
+    const gains = ch ? ch.movers.filter(m => m.total >= 0.5).sort((a, c) => c.total - a.total).slice(0, 3) : [];
+    const drops = ch ? ch.movers.filter(m => m.total <= -0.5).sort((a, c) => a.total - c.total).slice(0, 3) : [];
+    if (!ch || !ch.covered || (Math.abs(ch.diff) < 0.005 && !gains.length && !drops.length)) {
+      b.hidden = true;
+      b.innerHTML = "";
+    } else {
+      const item = m => '<li><span class="n">' + esc(m.r.name) + (m.r.qty > 1 ? " ×" + m.r.qty : "") + "</span>" + changeHTML(m.total, m.ch.pct, true) + "</li>";
+      const col = (title, list) => list.length ? '<div class="look-col"><h4>' + title + "</h4><ul>" + list.map(item).join("") + "</ul></div>" : "";
+      b.hidden = false;
+      b.innerHTML = "<strong>Since you last looked</strong> <span class=\"small\">TCGplayer prices on " + esc(fmtShortDate(parseDay(catalog.priceDay))) + " compared with " +
+        esc(fmtShortDate(parseDay(ref.day))) + "</span>" +
+        '<div class="look-total">Your collection: ' + changeHTML(ch.diff, ch.pct, true) + (ch.covered < collection.reduce((n, r) => n + r.qty, 0) ? ' <span class="small">(' + plural(ch.covered, "card") + " with prices from both days)</span>" : "") + "</div>" +
+        (gains.length || drops.length ? '<div class="look-cols">' + col("Biggest risers", gains) + col("Biggest drops", drops) + "</div>" : "") +
+        '<div class="banner-actions"><button class="btn btn-small btn-primary" type="button" data-banner="look-more" data-period="' + ref.key + '">See all your movers</button>' +
+        '<button class="btn btn-small" type="button" data-banner="look-dismiss">Got it</button></div>';
+      if (settings.lookShown !== catalog.priceDay) { settings.lookShown = catalog.priceDay; saveSettings(); }
+    }
+    syncBanners();
+  }
+
   /* ======================= Settings ======================= */
   function backupSectionHTML() {
     const last = parseDate(settings.lastBackupAt);
@@ -6786,7 +6845,7 @@
         {name: "Super Express", fee: 349, max: 5000, days: "10–15"},
         {name: "Premier", fee: 599, max: 10000, days: "7–10"}]},
     BGS: {checked: "2026-10-08", source: "https://www.beckett.com/grading",
-      note: "Beckett.com is offline for maintenance and submissions go through a temporary form, where only Express is open. Subgrades are included; a card that grades a 10 costs $3 more, an autograph $5 more. Return insurance is $1.50 per $100 of declared value (count it as shipping).",
+      note: "Beckett.com is offline for maintenance (still so on Oct 12) and submissions go through a temporary form, where only Express is open and Base and Standard are paused. Subgrades are included; a card that grades a 10 costs $3 more, an autograph $5 more. Return insurance is $1.50 per $100 of declared value (count it as shipping).",
       levels: [
         {name: "Base", fee: 17.95, max: null, days: "75", paused: true},
         {name: "Standard", fee: 34.95, max: null, days: "45", paused: true},
@@ -6813,7 +6872,7 @@
         {name: "Expedited (to $100,000)", fee: 2000, max: 100000, days: "2–3"},
         {name: "Expedited (over $100,000)", fee: 3750, max: null, days: "2–3", note: "plus $375 for each $10,000 over $100,000"}]},
     TAG: {checked: "2026-10-08", source: "https://taggrading.com/pages/pricing",
-      note: "Basic, Standard and Express are at capacity, and TAG isn't showing their prices while they are. Priority and Walkthrough have limited slots.",
+      note: "TAG's price page shows no prices right now. A banner on it says \"Limited reopening is here\": TAG is taking submissions in limited batches, not all the time. Basic, Standard and Express were paused on Oct 8 and we couldn't confirm they have opened since (TAG gives no details on the page), so check TAG's submit page before you plan around them. Priority and Walkthrough have limited slots; their prices are from Oct 8.",
       levels: [
         {name: "Basic", fee: null, max: 300, days: "75+", paused: true},
         {name: "Standard", fee: null, max: 500, days: "45", paused: true},
@@ -7562,7 +7621,9 @@
   }
 
   /* ----- Pokémon goals: collect every print of one Pokémon, across sets. Like set goals, nothing goes on the want list unless you press "Add all" ----- */
-  const MON_NOT = /^(trainer|energy)$/i;   // (TCGplayer's card types that are never a Pokémon)
+  const MON_NOT = /trainer|energy|supporter|item|tool|stadium/i;   // (TCGplayer's card types that are never a Pokémon: "Trainer - Item", "Basic Lightning Energy", "Tool"...)
+  const MON_NOT_NAME = /\b(?:spirit link|energy)\b/i;   // (for Japanese cards, which come without a card type)
+  const monNotMon = p => p.sealed || (p.ctype ? MON_NOT.test(p.ctype) : MON_NOT_NAME.test(p.name));
   const monOpen = new Set(), monMini = new Set(), monView = new Map();
   const MON_SHOWS = [["missing", "Missing"], ["have", "The ones I have"], ["all", "All prints"]];
   const MON_LANGS = [["", "English and Japanese"], ["en", "English only"], ["jp", "Japanese only"]];
@@ -7570,10 +7631,12 @@
   const monRegex = name => {
     const n = csNorm(name).replace(/\s+/g, " ").trim();
     if (n.length < 2) return null;
-    return new RegExp("(?:^|[^a-z0-9])" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+") + "(?![a-z0-9])");
+    const body = n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+");
+    // (TCGplayer writes the Nidorans both ways: "Nidoran F" and "NidoranF")
+    return new RegExp("(?:^|[^a-z0-9])" + (n === "nidoran" ? "nidoran[mf]?" : body.replace(/^nidoran\\s\+(?=[mf]$)/, "nidoran\\s*")) + "(?![a-z0-9])");
   };
   // A card's own name for matching: no number, no "(Full Art)" tag
-  const monHay = p => p.monHay != null ? p.monHay : (p.monHay = csNorm(withoutNumber(p.name).replace(/\([^()]*\)/g, " ")));
+  const monHay = p => p.monHay != null ? p.monHay : (p.monHay = csNorm(withoutNumber(p.name).replace(/\([^()]*\)|\[[^\]]*\]/g, " ")));
   // Every print of a Pokémon (the name as a whole word: "Mew" finds Mew ex but not Mewtwo; "Pikachu" finds Pikachu V and Detective Pikachu),
   // newest set first. Sealed products, Trainers and Energy are never included.
   function monPrints(name, lang) {
@@ -7586,7 +7649,7 @@
     out = [];
     if (re) {
       for (const p of catalog.products) {
-        if (p.sealed || (p.ctype && MON_NOT.test(p.ctype))) continue;
+        if (monNotMon(p)) continue;
         if (lang === "en" ? p.group.jp : lang === "jp" ? !p.group.jp : false) continue;
         if (re.test(monHay(p))) out.push(p);
       }
@@ -7680,16 +7743,18 @@
   }
   // A card's Pokémon, roughly ("Mega Charizard X ex" is Charizard X, "Ash's Pikachu" is Pikachu): used to suggest names
   const MON_TAIL = /(?:\s+|-)(?:ex|gx|v|vmax|vstar|v-union|break|star|lv\.?\s*x|prime|legend)$/i;
-  const MON_HEAD = /^(?:dark|light|shining|radiant|alolan|galarian|hisuian|paldean|mega|primal|detective|team (?:rocket|aqua|magma|plasma|flare|skull|yell)['’]s|[a-z.]+['’]s)\s+/i;
+  const MON_HEAD = /^(?:m|dark|light|shining|radiant|alolan|galarian|hisuian|paldean|mega|primal|detective|team (?:rocket|aqua|magma|plasma|flare|skull|yell)['’]s|[a-z._]+['’]s)\s+/i;
   function monBase(p) {
-    let s = withoutNumber(p.name).replace(/\([^()]*\)/g, " ").replace(/\s+/g, " ").trim().split(/\s+&\s+/)[0];
+    // (brackets and the card number or year after a " - " come off first: "Mew ex - 151/165 - 2024 (Evan Pavelski)" is Mew)
+    let s = String(p.name || "").replace(/\([^()]*\)|\[[^\]]*\]/g, " ").replace(/\s+/g, " ").trim().replace(/\s+-.*$/, "").split(/\s+&\s+/)[0].trim();
     for (let i = 0; i < 3; i++) { const t = s.replace(MON_TAIL, "").trim(); if (t === s) break; s = t; }
-    return s.replace(MON_HEAD, "").trim() || withoutNumber(p.name);
+    s = s.replace(MON_HEAD, "").trim().replace(/^(Nidoran)([MF])$/, "$1 $2");
+    return s || withoutNumber(p.name);
   }
-  const monIsPokemon = p => !p.sealed && !(p.ctype && MON_NOT.test(p.ctype));
+  const monIsPokemon = p => !monNotMon(p);
   // Names to offer for what's typed (or, before anything is typed, the Pokémon you collect most)
   function monCandidates(text) {
-    const t = String(text || "").trim(), by = new Map();
+    const t = String(text || "").trim(), by = new Map(), needle0 = t.length >= 2 ? csNorm(t) : "";
     const add = (name, n) => { const k = csNorm(name); const e = by.get(k) || {name, n: 0}; e.n += n; by.set(k, e); };
     if (t.length < 2) {
       for (const r of collection) {
@@ -7699,10 +7764,19 @@
     } else {
       const needle = csNorm(t);
       for (const p of searchByName(t, 800).items) if (monIsPokemon(p)) { const b = monBase(p); if (csNorm(b).includes(needle)) add(b, 1); }
+      // "Flying Pikachu" and "Armored Mewtwo" are Pikachu and Mewtwo cards: fold them into the plain name when that is on the list too
+      for (const [k, e] of Array.from(by)) {
+        const base = Array.from(by.keys()).find(o => o !== k && k.endsWith(" " + o));
+        if (base) { by.get(base).n += e.n; by.delete(k); }
+      }
+      // (the plain "Nidoran" covers both the male and the female)
+      const nm = by.get("nidoran m"), nf = by.get("nidoran f");
+      if ((nm || nf) && !by.has("nidoran") && csNorm("nidoran").includes(needle)) by.set("nidoran", {name: "Nidoran", n: (nm ? nm.n : 0) + (nf ? nf.n : 0)});
       const lit = t === t.toLowerCase() ? t.replace(/(^|\s)[a-z]/g, c => c.toUpperCase()) : t;
-      if (!by.has(csNorm(lit)) && monPrints(lit, "").length) by.set(csNorm(lit), {name: lit, n: 1e9});
+      if (!by.size && monPrints(lit, "").length) by.set(csNorm(lit), {name: lit, n: 1});
     }
-    return Array.from(by.values()).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 8);
+    const rank = e => { const k = csNorm(e.name); return needle0 && k === needle0 ? 0 : needle0 && k.startsWith(needle0) ? 1 : 2; };
+    return Array.from(by.values()).sort((a, b) => rank(a) - rank(b) || b.n - a.n || a.name.localeCompare(b.name)).slice(0, 8);
   }
   function openMonPicker() {
     if (!catalog) { toast("Pokémon goals need TCGplayer's card list. " + GET_DATA, {kind: "error"}); return; }
@@ -7762,6 +7836,37 @@
     }});
   }
 
+
+  /* ----- which of your goals a card counts toward (shown when you scan a card or pick one to add) ----- */
+  function goalCtx(p, owned) {
+    const out = [];
+    if (!catalog || !goals.length || !p || p.sealed) return out;
+    const wanted = wantedNow();
+    for (const g of goals) {
+      if (g.mon) {
+        if (monNotMon(p) || !monPrints(g.mon, g.lang).some(x => x.id === p.id)) continue;
+        const st = monStat(g, owned, wanted), need = !owned.get(p.id);
+        out.push({name: g.name, every: true, need, last: need && st.missing.length === 1, have: st.have, total: st.total});
+      } else if (g.groupId === p.group.id) {
+        const st = goalStat(g, owned, wanted);
+        if (!st) continue;
+        const n = normNumber(p.number), key = g.mode === "master" || !n ? "p" + p.id : "n" + n;
+        const need = st.missing.some(it => it.key === key);
+        out.push({name: st.set.group.name, need, last: need && st.missing.length === 1, have: st.have, total: st.total});
+      }
+    }
+    // the ones this card would move first
+    return out.sort((a, b) => (b.last - a.last) || (b.need - a.need));
+  }
+  function goalsNoteHTML(p, owned, cls) {
+    const list = goalCtx(p, owned);
+    if (!list.length) return "";
+    return '<span class="chk-goals' + (cls ? " " + cls : "") + '">' + list.slice(0, 3).map(c => {
+      const prog = ' <span class="small">(' + c.have + " of " + c.total + ")</span>", nm = "<b>" + esc(c.name) + "</b>" + (c.every ? " (every print)" : "");
+      return '<span class="chk-goal' + (c.last ? " finish" : c.need ? " need" : "") + '">' +
+        (c.last ? "Would finish your " + nm + " goal" : c.need ? "Counts toward your " + nm + " goal" : "Already covered in your " + nm + " goal") + prog + "</span>";
+    }).join("") + (list.length > 3 ? '<span class="small">and ' + (list.length - 3) + " more goal" + (list.length > 4 ? "s" : "") + "</span>" : "") + "</span>";
+  }
 
   /* ======================= Want list tab ======================= */
   // A want's photo: the product's, or (a card known only by name) any printing's.
@@ -9294,7 +9399,7 @@
     return '<div class="result static check-card"><span class="sleeve"' + foilAttr(p.rarity) + ">" + imgTag(productPics(p, "200w"), name) + "</span>" +
       '<span class="result-name">' + esc(name) + "</span>" +
       '<span class="result-meta">' + esc(p.group.name + (p.group.jp ? " (Japanese)" : "")) + "</span>" +
-      '<span class="result-meta">' + esc(p.number) + ", " + esc(p.rarity || "rarity unknown") + "</span>" + prices + chg +
+      '<span class="result-meta">' + esc(p.number) + ", " + esc(p.rarity || "rarity unknown") + "</span>" + prices + chg + goalsNoteHTML(p, owned) +
       '<span class="result-actions">' + (have ? '<span class="chk-own">You have ' + have + "</span>" : '<span class="on-list">Not in your collection</span>') +
       (wanted.has(p.id) ? '<span class="on-list">On want list</span>' : '<button class="btn" type="button" data-chk-want="' + p.id + '">Want</button>') +
       '<button class="btn" type="button" data-chk-add="' + p.id + '">' + (have ? "Add more" : "Add") + "</button>" +
@@ -9724,7 +9829,15 @@
         saveSettings();
         renderBackupBanner();
       } else if (a === "wants") setTab("wants");
-      else if (a === "want-dismiss") {
+      else if (a === "look-dismiss") {
+        settings.lookSeen = catalog && catalog.priceDay ? catalog.priceDay : settings.lookSeen;
+        settings.lookShown = "";
+        saveSettings();
+        renderLookBanner();
+      } else if (a === "look-more") {
+        if (PERIODS.some(x => x[0] === b.dataset.period)) { settings.histPeriod = b.dataset.period; saveSettings(); }
+        setTab("history");
+      } else if (a === "want-dismiss") {
         settings.wantAlertSeen = $("wantBanner").dataset.key || "";
         saveSettings();
         renderWantBanner();
@@ -10314,6 +10427,7 @@
     try { catalog = buildCatalog(window.TCG_DATA); } catch (e) { catalog = null; }
     window.TCG_DATA = null; // free the raw copy; the catalog keeps what it needs
     loadState();
+    if (settings.lookShown) { settings.lookSeen = settings.lookShown; settings.lookShown = ""; saveSettings(); }   // ("Since you last looked": last time's prices were seen)
     const linked = autoLink();
     if (linked) save();
     else if (recordValueHistory()) save({quiet: true});  // today's value-history point
@@ -10337,7 +10451,7 @@
   // Exposed for automated tests only.
   window.CardVault = {state: () => ({collection, settings, selected, catalog, wants, valueHistory, backup, decks, sales, goals, phone, deleted, batch, sync}), mergeBackup,
     GRADING_FEE_TABLE, GRADING_COS, gradingFee, gradingLevels, gradingUsual, gradingCostFor,
-    monPrints, monCandidates, monBase,
+    monPrints, monCandidates, monBase, goalCtx, lookRef, renderLookBanner,
     checkBackupFile, openBatch, parseBatchLine, batchRowFor, addBatch, save, analyzeCSV, commitImport, openImport, findByNumber, searchByName,
     priceInfo, marketValue, unitValue, changeFor, periodChange, historySeries, totals, deleteRecords, exportCSV, openDetails, openAdd, openSettings,
     render, setTab, setsData, extrasMap, wantStatus, addWant, restoreBackup, backupPayload, recordValueHistory, niceTicks, dateTicks,

@@ -127,7 +127,9 @@ personal app: click **Continue**.
 - **Scan to check**: Card search > **Scan to check** (or "Just checking a price?" in the normal scanner). Hold a card up
   and it shows what that card is worth, every printing's price, how it moved lately, and whether you already have it.
   Nothing is added unless you tap **Add**; **Want** puts it on your want list, and **Details** opens its price page.
-  If the camera can't read the number, type it in or use a photo.
+  If the camera can't read the number, type it in or use a photo. If the card counts toward one of your goals, a note says
+  so ("Counts toward your Pikachu goal", "Would finish your Mewtwo goal", or "Already covered" when you have it); the same
+  note shows when you add the card.
 - **Add several cards**: Add card > Add several cards at once. One card per line: `086/198 x2`, `3 025/198`, or a name
   and number such as `Charizard 4/102`.
 - **Sealed products**: Add card > **Add a sealed product** (booster boxes and packs, Elite Trainer Boxes, tins,
@@ -166,6 +168,10 @@ personal app: click **Continue**.
   - **Add all missing cards to my want list** is a button you press: nothing goes on the want list by itself, it skips
     cards already on it, and Undo takes them back off. Goals sync between your devices like the want list. On the
     Collection tab, tap a slim row to open its details and the Add all button, and tap "Goals" to fold the strip away.
+- **Since you last looked** (top of the Collection tab): once new TCGplayer prices are in after the last time you
+  looked, a card shows how your collection's value changed since the prices you last saw, with your three biggest
+  risers and drops. **See all your movers** opens Insights; **Got it** hides it. Each device remembers on its own what it
+  last showed, so it won't repeat itself. A want-list card that reaches your target price still gets its own banner.
 - **Getting-started guide**: an empty collection shows a short guide (import a CSV, add by number, scan a card, sync to
   Google Drive, add it to your phone's home screen). It goes away on its own once you add a card, or tap **Hide this
   guide** (it can be shown again from the empty collection).
