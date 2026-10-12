@@ -30,10 +30,10 @@ with sync_playwright() as p:
           const en = C.monPrints(n, 'en').length, jp = C.monPrints(n, 'jp').length;
           const names = {}; for (const p of all) { const k = p.name.replace(/\\s+-\\s+[A-Za-z]{0,6}\\s?\\d{1,4}[A-Za-z]{0,2}(?:\\s?\\/\\s?[A-Za-z]{0,6}\\d{1,4}[A-Za-z]{0,2})?\\s*$/, ''); names[k] = (names[k] || 0) + 1; }
           const types = {}; for (const p of all) types[p.ctype || '(none)'] = (types[p.ctype || '(none)'] || 0) + 1;
-          const POKE = /^(colorless|darkness|dark|dragon|fairy|fighting|fire|grass|lightning|metal|psychic|water)(\s|$)/i;
+          const POKE = /^(colorless|darkness|dark|dragon|fairy|fighting|fire|grass|lightning|metal|psychic|water)(\\s|$)/i;
           const odd = {}; for (const p of all) { const t = p.ctype || ''; if (t && !POKE.test(t)) odd[p.name + ' [' + t + ']'] = 1; }
           const noType = all.filter(p => !p.ctype && !p.group.jp).map(p => p.name).slice(0, 12);
-          const jpWords = all.filter(p => !p.ctype && p.group.jp && /\b(link|energy|stadium|supporter|tool|item|cape|badge|charm|pass|ticket|doll|plush|case|sleeve|deck|box|pack)\b/i.test(p.name)).map(p => p.name).slice(0, 15);
+          const jpWords = all.filter(p => !p.ctype && p.group.jp && /\\b(link|energy|stadium|supporter|tool|item|cape|badge|charm|pass|ticket|doll|plush|case|sleeve|deck|box|pack)\\b/i.test(p.name)).map(p => p.name).slice(0, 15);
           return {odd: Object.keys(odd).slice(0, 30), noTypeEn: noType, jpSuspicious: jpWords, total: all.length, en, jp, sets: new Set(all.map(p => p.group.id)).size, first_ms: Math.round(ms), distinct: Object.keys(names).length,
                   names: Object.entries(names).sort((a, b) => b[1] - a[1]).slice(0, 70), types}; }""", n)
         report["names"][n] = r
