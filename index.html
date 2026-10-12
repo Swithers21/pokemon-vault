@@ -7633,7 +7633,8 @@
     if (n.length < 2) return null;
     const body = n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+");
     // (TCGplayer writes the Nidorans both ways: "Nidoran F" and "NidoranF")
-    return new RegExp("(?:^|[^a-z0-9])" + (n === "nidoran" ? "nidoran[mf]?" : body.replace(/^nidoran\\s\+(?=[mf]$)/, "nidoran\\s*")) + "(?![a-z0-9])");
+    // (Porygon is not Porygon-Z)
+    return new RegExp("(?:^|[^a-z0-9])" + (n === "nidoran" ? "nidoran[mf]?" : body.replace(/^nidoran\\s\+(?=[mf]$)/, "nidoran\\s*")) + (n === "porygon" ? "(?![a-z0-9]|-z)" : "(?![a-z0-9])"));
   };
   // A card's own name for matching: no number, no "(Full Art)" tag
   const monHay = p => p.monHay != null ? p.monHay : (p.monHay = csNorm(withoutNumber(p.name).replace(/\([^()]*\)|\[[^\]]*\]/g, " ")));
@@ -7755,7 +7756,7 @@
   // Names to offer for what's typed (or, before anything is typed, the Pokémon you collect most)
   function monCandidates(text) {
     const t = String(text || "").trim(), by = new Map(), needle0 = t.length >= 2 ? csNorm(t) : "";
-    const add = (name, n) => { const k = csNorm(name); const e = by.get(k) || {name, n: 0}; e.n += n; by.set(k, e); };
+    const add = (name, n, typed) => { const k = csNorm(name); const e = by.get(k) || {name, n: 0, typed: false}; e.n += n; if (typed) e.typed = true; by.set(k, e); };
     if (t.length < 2) {
       for (const r of collection) {
         const p = r.productId && catalog ? catalog.byId.get(r.productId) : null;
@@ -7763,11 +7764,14 @@
       }
     } else {
       const needle = csNorm(t);
-      for (const p of searchByName(t, 800).items) if (monIsPokemon(p)) { const b = monBase(p); if (csNorm(b).includes(needle)) add(b, 1); }
-      // "Flying Pikachu" and "Armored Mewtwo" are Pikachu and Mewtwo cards: fold them into the plain name when that is on the list too
-      for (const [k, e] of Array.from(by)) {
-        const base = Array.from(by.keys()).find(o => o !== k && k.endsWith(" " + o));
-        if (base) { by.get(base).n += e.n; by.delete(k); }
+      for (const p of searchByName(t, 800).items) if (monIsPokemon(p)) { const b = monBase(p); if (csNorm(b).includes(needle)) add(b, 1, !!p.ctype); }
+      // "Pikachu Libre", "Flying Pikachu" and "Charizard X" are Pikachu and Charizard cards (a goal for the plain name already has them):
+      // fold them into the plain name when that is on the list too. (Nidoran M and F stay as they are.)
+      const keys = Array.from(by.keys()).sort((a, b) => b.length - a.length);
+      for (const k of keys) {
+        if (k.startsWith("nidoran ")) continue;
+        const base = keys.find(o => o !== k && o.length < k.length && k.includes(o) && by.has(o) && monRegex(o).test(k));
+        if (base) { const e = by.get(k); by.get(base).n += e.n; by.get(base).typed = by.get(base).typed || e.typed; by.delete(k); }
       }
       // (the plain "Nidoran" covers both the male and the female)
       const nm = by.get("nidoran m"), nf = by.get("nidoran f");
@@ -7776,7 +7780,8 @@
       if (!by.size && monPrints(lit, "").length) by.set(csNorm(lit), {name: lit, n: 1});
     }
     const rank = e => { const k = csNorm(e.name); return needle0 && k === needle0 ? 0 : needle0 && k.startsWith(needle0) ? 1 : 2; };
-    return Array.from(by.values()).sort((a, b) => rank(a) - rank(b) || b.n - a.n || a.name.localeCompare(b.name)).slice(0, 8);
+    // (names only Japanese trainer-less listings carry, which may include a few Trainers, come last)
+    return Array.from(by.values()).sort((a, b) => rank(a) - rank(b) || (b.typed - a.typed) || b.n - a.n || a.name.localeCompare(b.name)).slice(0, 8);
   }
   function openMonPicker() {
     if (!catalog) { toast("Pokémon goals need TCGplayer's card list. " + GET_DATA, {kind: "error"}); return; }
