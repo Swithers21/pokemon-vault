@@ -195,7 +195,7 @@ personal app: click **Continue**.
 - **Get it graded** (in a card's details): links to start a submission at PSA, Beckett, CGC, SGC and TAG, the card's
   details to paste into their form, and tracking while it's away ("I sent it", then "It's back" with the grade).
 - **Grading fees** (Settings): each company's price list (PSA, Beckett, CGC, SGC, TAG) is built in, as read on their
-  sites on Oct 8, 2026 (`GRADING_FEE_TABLE` in `index.html`: level, fee, declared-value cap, business days, paused).
+  sites on Oct 8, 2026 (Beckett, TAG and CGC were looked at again on Oct 12) (`GRADING_FEE_TABLE` in `index.html`: level, fee, declared-value cap, business days, paused).
   Pick the service level you use and its fee fills in; until then each company's usual level is assumed (PSA Standard
   $59.99, Beckett Express $79.95, CGC Economy $20, SGC Standard $50, TAG Priority $149). A fee you type wins. Add
   shipping per card. Worth grading lets you pick the company to estimate with, each card's details show every
