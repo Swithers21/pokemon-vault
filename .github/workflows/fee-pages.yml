@@ -1,0 +1,39 @@
+name: One-off copy of the grading price pages
+
+# A one-time look, run by hand (or by changing this file): it saves what each grading company's price page says to a
+# branch called "diagnostics", so the website's built-in fee table can be re-checked. It doesn't change the website.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fee-pages.yml"
+      - ".github/diag/dump_fee_pages.py"
+
+permissions: {}
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install a browser
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Copy the price pages
+        run: python .github/diag/dump_fee_pages.py
+      - name: Publish the copy on the diagnostics branch
+        run: |
+          cd out
+          git init -q -b diagnostics
+          git config user.name "Pokemon Vault diagnostics"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fee-pages.json
+          git commit -q -m "Grading price pages ($(date -u +%F))"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" diagnostics
