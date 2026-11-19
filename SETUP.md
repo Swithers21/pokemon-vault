@@ -130,6 +130,17 @@ personal app: click **Continue**.
   If the camera can't read the number, type it in or use a photo. If the card counts toward one of your goals, a note says
   so ("Counts toward your Pikachu goal", "Would finish your Mewtwo goal", or "Already covered" when you have it); the same
   note shows when you add the card.
+- **Rapid scan**: in the scanner, tick **Rapid scan**. Each card is added to your collection the moment its number is
+  read, as one copy, with the printing you used last (change it in the "Just added" list), the condition and the place
+  (binder, box) chosen above the list; the camera stays on for the next card. If several printings share the number,
+  the scanner shows them and waits for you to tap yours (or **Skip this card**). A card held up for a few seconds is
+  only added once; **+1** in the list adds another copy, and **Undo** takes a line back out. The tick, condition,
+  place and last printing are remembered on that device. Without the tick, scanning works as before.
+- **Prices that look inflated**: when TCGplayer's market price (what the card recently sold for) is at least double
+  the cheapest copy for sale now, and at least $5 more, the card is tagged **may be inflated** (collection, card
+  details, Card search, scan to check) and the note under the total says how many cards that is and how much of the
+  total could be too high. **Settings** > *Prices that look inflated* (or the link in that note) counts those cards at
+  their lowest listing instead; it's off by default and only changes that device. The rule is `shakySub` in `index.html`.
 - **Add several cards**: Add card > Add several cards at once. One card per line: `086/198 x2`, `3 025/198`, or a name
   and number such as `Charizard 4/102`.
 - **Sealed products**: Add card > **Add a sealed product** (booster boxes and packs, Elite Trainer Boxes, tins,
@@ -195,7 +206,7 @@ personal app: click **Continue**.
 - **Get it graded** (in a card's details): links to start a submission at PSA, Beckett, CGC, SGC and TAG, the card's
   details to paste into their form, and tracking while it's away ("I sent it", then "It's back" with the grade).
 - **Grading fees** (Settings): each company's price list (PSA, Beckett, CGC, SGC, TAG) is built in, as read on their
-  sites on Oct 8, 2026 (Beckett, TAG and CGC were looked at again on Oct 12) (`GRADING_FEE_TABLE` in `index.html`: level, fee, declared-value cap, business days, paused).
+  sites (PSA and CGC on Nov 19, 2026; Beckett, SGC and TAG on Oct 8: Beckett and SGC turn away automated readers and TAG's page shows no prices, so those three could not be looked at again; each company's line in Settings says when it was checked) (`GRADING_FEE_TABLE` in `index.html`: level, fee, declared-value cap, business days, paused).
   Pick the service level you use and its fee fills in; until then each company's usual level is assumed (PSA Standard
   $59.99, Beckett Express $79.95, CGC Economy $20, SGC Standard $50, TAG Priority $149). A fee you type wins. Add
   shipping per card. Worth grading lets you pick the company to estimate with, each card's details show every
@@ -207,6 +218,10 @@ personal app: click **Continue**.
   pages: it just tells you when to look. Some companies draw their prices with script or turn away automated downloads, so the
   update tries a headless browser for those; a page it still can't read is skipped. When the built-in list is updated (a newer
   checked date), the warning clears.
+  **Monthly re-check**: a scheduled task re-reads the pages once a month (the **Copy the grading price pages** workflow
+  saves what they say to a branch called `diagnostics`), compares them with the built-in list and updates it only where
+  the page states the price outright. Beckett and SGC can't be read automatically, so their dates only move when someone
+  looks at them by hand.
 - **Price over time** (in a card's details): a chart of its TCGplayer market price. The daily update keeps every
   evening's prices (120 days, then monthly) and publishes them with the website, so the charts fill in day by day.
 - **Share…** (select cards, or Show: Extras > Share trade binder, or the Want list tab) makes a link to a page with those
@@ -217,6 +232,21 @@ personal app: click **Continue**.
   folder (it needs Python 3) to download the prices next to it. Your collection is then saved in that browser only; the
   website is the better way to use it.
 
+## Automatic checks before an update goes live
+
+Every change to the website (and every evening's price update) is tried out before it is published:
+
+- **check** (Actions tab > Daily Pokemon prices): looks through the website's script for slips (`tests/lint_app.py`), then
+  opens the website in a real browser at desktop and phone size, with a made-up card list and a pretend camera, and
+  runs the tests in `tests/` (`tests/run_tests.py`: opening, finding and adding cards, totals, goals, the grading fee
+  list, rapid scan, inflated prices). On the evening price update only the quick ones run and a failure just warns.
+- **build** ends by opening the finished website with the real card list (`tests/smoke_built_site.py`): it must load,
+  find a card by number and by name, read a scanned number and add up a total.
+
+If either fails, nothing is published and the website that is live stays as it was; open the failed run on the
+Actions tab to see which check failed and why. To run them yourself (Python 3, `pip install playwright`,
+`playwright install chromium`): `python tests/run_tests.py` (`--smoke` for the quick ones, `--only rapid` for a few).
+
 ## If prices stop updating
 
 1. On GitHub, open the repository's **Actions** tab and click **Daily Pokemon prices**.
@@ -226,7 +256,8 @@ personal app: click **Continue**.
    one-line note twice a month to prevent that, but if GitHub shows "This scheduled workflow is disabled",
    click **Enable workflow**.
 4. The fee watch is optional: if a grading company's page is down or can't be read, that company is skipped for the
-   day and the website is published as usual.
+   day and the website is published as usual. The automatic checks are not optional: if **check** or the end of
+   **build** fails, the run stops before publishing (see above).
 5. Price comparisons (since the last update, 7 days, 30 days) are kept between runs in GitHub's cache. If the
    updates stopped for more than a week, they start over and fill in again day by day.
 

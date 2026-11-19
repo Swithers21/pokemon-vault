@@ -1,14 +1,10 @@
-name: One-off copy of the grading price pages
+name: Copy the grading price pages
 
-# A one-time look, run by hand (or by changing this file): it saves what each grading company's price page says to a
-# branch called "diagnostics", so the website's built-in fee table can be re-checked. It doesn't change the website.
+# Run by hand (Actions tab > this workflow > Run workflow), and by the monthly fee re-check: it saves what each grading company's
+# price page says (just the parts near prices and notices) to a branch called "diagnostics", so the website's built-in fee table can
+# be compared with the real wording. It doesn't change the website.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/fee-pages.yml"
-      - ".github/diag/dump_fee_pages.py"
 
 permissions: {}
 
@@ -16,7 +12,7 @@ jobs:
   copy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write   # (only to write the copy to the "diagnostics" branch)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,8 +23,8 @@ jobs:
           python -m pip install --quiet playwright
           python -m playwright install --with-deps chromium
       - name: Copy the price pages
-        run: python .github/diag/dump_fee_pages.py
-      - name: Publish the copy on the diagnostics branch
+        run: python fee_pages_copy.py
+      - name: Keep the copy on the diagnostics branch
         run: |
           cd out
           git init -q -b diagnostics

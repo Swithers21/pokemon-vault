@@ -129,6 +129,10 @@
   .value-number{font-size:clamp(42px,5.4vw,66px);font-weight:700;font-stretch:118%;line-height:1;letter-spacing:-.01em;margin-top:6px;font-variant-numeric:tabular-nums;color:#fefbed}
   .value-sub{color:var(--text-dim);font-size:13px;margin-top:8px}
   .value-sub:empty{display:none}
+  .shaky-note .link-btn{font-size:inherit}
+  .shaky-flag,.tile-price small.shaky-flag{color:var(--gold-hi);font-weight:600}
+  .shaky-flag{font-size:11.5px}
+  .shaky-notice{margin:8px 0 0}
   .hero-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:20px}
   .value-mode button{padding:6px 12px;font-size:12.5px}
   .tile-price .gv,.cell-gv{font-size:10.5px;color:var(--text-dim);font-weight:500;margin-left:4px}
@@ -235,9 +239,9 @@
   .sleeve:has(> img[data-stand])::after{content:"Similar photo";position:absolute;right:5px;top:5px;padding:3px 6px;border-radius:4px;background:rgba(5,9,16,.82);
     color:#f9eec8;font:600 9.5px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.02em;pointer-events:none}
   /* small thumbnails: just the shape */
-  :is(.c-thumb,.batch-row,.mover,.preview-table,.mv-row,.mini) .card-ph{padding:3px;gap:0;border-width:2px}
-  :is(.c-thumb,.batch-row,.mover,.preview-table,.mv-row,.mini) :is(.ph-name,.ph-sub){display:none}
-  :is(.c-thumb,.batch-row,.mover,.preview-table,.mv-row,.mini) .sleeve:has(> img[data-stand])::after{display:none}
+  :is(.c-thumb,.batch-row,.rapid-row,.mover,.preview-table,.mv-row,.mini) .card-ph{padding:3px;gap:0;border-width:2px}
+  :is(.c-thumb,.batch-row,.rapid-row,.mover,.preview-table,.mv-row,.mini) :is(.ph-name,.ph-sub){display:none}
+  :is(.c-thumb,.batch-row,.rapid-row,.mover,.preview-table,.mv-row,.mini) .sleeve:has(> img[data-stand])::after{display:none}
 
   /* ---------- binder ---------- */
   .binder{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:18px}
@@ -763,6 +767,19 @@
   .scan-view video{width:100%;height:100%;object-fit:cover;display:block}
   .scan-box{position:absolute;left:10%;right:10%;top:38%;height:24%;border:2px solid var(--gold-hi);border-radius:8px;box-shadow:0 0 0 999px rgba(0,0,0,.38)}
   .scan-status{margin:12px 0 0;font-size:14px;font-weight:600}
+  .rapid-box{margin-top:14px}
+  .rapid-box .grid-2{grid-template-columns:1fr 1fr}
+  .rapid-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 0;border-top:1px solid var(--line)}
+  .rapid-row > .sleeve{width:36px;flex:none;border-radius:3px;box-shadow:none}
+  .rapid-info{flex:1 1 110px;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:13px}
+  .rapid-info b{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rapid-info span{color:var(--text-dim);font-size:12px}
+  .rapid-row .r-qty{font-variant-numeric:tabular-nums;font-weight:700;min-width:26px;text-align:center}
+  .r-ctl{display:flex;align-items:center;gap:8px;flex:none}
+  .r-ctl .input{width:124px;padding:6px 24px 6px 8px;font-size:13px;background-position:right 8px center}
+  .r-ed-one{width:124px;font-size:13px;color:var(--text-dim);padding-left:8px}
+  .rapid-row .btn{padding:6px 12px}
+  @media (max-width:560px){.r-ctl{flex:1 1 100%;justify-content:flex-end}.r-ctl .input,.r-ed-one{margin-right:auto;flex:1 1 auto;width:auto;max-width:200px}}
 
 
   /* ---------- sub-views (Insights, Trades & sales) ---------- */
@@ -1496,6 +1513,7 @@
     setsMode: "number", setsSort: "complete", lastBackupAt: null, lastChangeAt: null, backupSnoozeUntil: 0,
     backupRemindDays: 7, wantAlertSeen: "", lookSeen: "", lookShown: "", salesYear: "", deckId: null,
     deckView: "check", mkView: "sets", goalsFold: false, mvPeriod: "m7", mvKind: "", mvFloor: 5, mvMine: "", mvSort: "pct", mkLine: "", mkKind: "", mkSortSets: "newest", mkSortSealed: "deal", mkLang: "", wantsView: "", csSort: "best", csMode: "cards", csSetSort: "number",
+    shakyLow: false, rapidScan: false, rapidCond: "Near Mint", rapidLoc: "", rapidEd: "",
     gradedView: false, psa10Mult: 4, psa10Floor: 25, gradePct: Object.assign({}, DEFAULT_GRADE_PCT), pcToken: "",
     insightView: "history", salesView: "trade", gradingCost: 30, gradingMin: 50, gradingFees: {}, gradingCo: "PSA", autoSignIn: true};
   const filters = {q: "", set: "", rarity: "", edition: "", language: "", location: "", show: ""};
@@ -2107,11 +2125,25 @@
   }
 
   /* ======================= Prices & totals ======================= */
+  // A "shaky" price: TCGplayer's market price (what a card recently sold for) is far above the cheapest copy for sale now,
+  // at least double and at least $5 more. A few unusual sales can hold the market price up for a while, so a card like that
+  // may be worth much less than shown. (Small amounts don't matter, so those aren't flagged.)
+  const SHAKY_RATIO = 2, SHAKY_GAP = 5;
+  function shakySub(sub) {
+    if (!sub || sub.market == null || sub.low == null || !(sub.low > 0)) return null;
+    return sub.market >= sub.low * SHAKY_RATIO && sub.market - sub.low >= SHAKY_GAP ? {market: sub.market, low: sub.low} : null;
+  }
+  const shakyWhy = sh => "TCGplayer's market price (" + usd(sh.market) + ") is far above the cheapest copy for sale (" + usd(sh.low) + "). A few unusual sales can hold it up, so this card may be worth less than shown.";
   function priceInfo(r) {
     if (catalog && r.productId) {
       const sub = catalogPrice(catalog.byId.get(r.productId), r.edition);
       if (sub && (sub.market != null || sub.low != null)) {
-        return {unit: sub.market != null ? sub.market : sub.low, kind: sub.market != null ? "market" : "low", from: "tcgplayer"};
+        const base = sub.market != null ? sub.market : sub.low, shaky = shakySub(sub);
+        // (with "Count shaky prices at the lowest listing" on in Settings, those cards are valued at it)
+        if (shaky && settings.shakyLow) return {unit: sub.low, kind: "low", from: "tcgplayer", base, shaky, capped: true};
+        const out = {unit: base, kind: sub.market != null ? "market" : "low", from: "tcgplayer", base};
+        if (shaky) out.shaky = shaky;
+        return out;
       }
     }
     if (r.snap && (r.snap.market != null || r.snap.low != null)) {
@@ -2141,11 +2173,33 @@
     if (settings.gradedView) { const gv = gradedValue(r); return gv ? gv.unit : null; }
     return settings.basis === "paid" ? (r.paid != null ? r.paid : null) : marketValue(r).unit;
   }
+  // The shaky price (see shakySub) this copy is valued at right now, or null: not shaky, or valued another way
+  // (what you paid, a graded value, the PSA 10 view, your own estimate or a saved CSV price).
+  function shakyOf(r) {
+    if (settings.gradedView || settings.basis === "paid" || (r.grade && r.grade.value != null)) return null;
+    const pi = priceInfo(r);
+    return pi.from === "tcgplayer" && pi.shaky ? pi : null;
+  }
+  // How much of the collection sits on shaky prices: {printings, cards, value (as counted now), gap (market minus lowest, as TCGplayer lists them)}
+  function shakyStats(list) {
+    const out = {printings: 0, cards: 0, value: 0, gap: 0, capped: 0};
+    for (const r of list || collection) {
+      const pi = shakyOf(r);
+      if (!pi) continue;
+      out.printings++;
+      out.cards += r.qty;
+      out.value += marketValue(r).unit * r.qty;
+      out.gap += (pi.shaky.market - pi.shaky.low) * conditionFactor(r) * r.qty;
+      if (pi.capped) out.capped++;
+    }
+    return out;
+  }
   // How this copy's value moved since an earlier TCGplayer price day (ref: m1, m7 or m30).
   function changeFor(r, ref) {
     if (!catalog || !r.productId || (r.grade && r.grade.value != null)) return null;
     const sub = catalogPrice(catalog.byId.get(r.productId), r.edition);
     if (!sub || sub.market == null || sub[ref] == null) return null;
+    if (settings.shakyLow && shakySub(sub)) return null;   // (valued at the lowest listing, so the market price's movement doesn't apply)
     const f = conditionFactor(r);
     const now = sub.market * f, then = sub[ref] * f;
     return {now, then, diff: now - then, pct: then > 0 ? (now - then) / then : null, marketNow: sub.market, marketThen: sub[ref]};
@@ -2704,7 +2758,16 @@
       parts.push("Shown now: " + usd(vt.value) + " across " + plural(vt.cards, "card"));
     }
     if (t.unpriced) parts.push(plural(t.unpriced, "card") + " without a " + (basisPaid ? "price paid" : "price") + " counted as $0");
-    $("valueSub").textContent = parts.join(". ");
+    let sub = esc(parts.join(". "));
+    const sh = shakyStats();
+    if (sh.printings) {
+      const note = settings.shakyLow
+        ? plural(sh.printings, "printing") + " (" + plural(sh.cards, "card") + ") counted at the lowest listing, because the market price looked inflated. "
+        : plural(sh.cards, "card") + " (" + usd(sh.value) + " of this total) " + (sh.cards === 1 ? "has a price that" : "have prices that") + " may be inflated: the market price is far above the cheapest copy for sale. Up to " + usd(sh.gap) + " of the total could be too high. ";
+      sub += (sub ? ". " : "") + '<span class="shaky-note">' + esc(note) + '<button type="button" class="link-btn" data-action="shaky-toggle">' +
+        (settings.shakyLow ? "Count them at market price again" : "Count them at the lowest listing instead") + "</button></span>";
+    }
+    $("valueSub").innerHTML = sub;
 
     let facts = '<div class="fact"><b>' + t.cards.toLocaleString() + '</b><span>cards</span></div>' +
       '<div class="fact"><b>' + collection.length.toLocaleString() + '</b><span>different ' + (collection.some(r => r.sealed) ? "items" : "printings") + "</span></div>";
@@ -2872,6 +2935,11 @@
     }
   }
 
+  // A small tag by the price of a card whose market price looks inflated (see shakySub)
+  function shakyFlagHTML(r) {
+    const pi = shakyOf(r);
+    return pi ? '<small class="shaky-flag" title="' + esc(shakyWhy(pi.shaky)) + '">' + (pi.capped ? "lowest listing" : "may be inflated") + "</small>" : "";
+  }
   const filtersActiveExceptShow = () => !!(filters.q.trim() || filters.set || filters.rarity || filters.edition || filters.language || filters.location);
   function priceHTML(r, extra) {
     const u = unitValue(r);
@@ -2883,7 +2951,7 @@
     }
     if (u == null) return '<span class="tile-price none">' + (settings.basis === "paid" ? "No price paid" : "No price yet") + "</span>";
     const note = extra ? "<small>" + esc(usd(u * extra)) + " extra</small>" : r.qty > 1 ? "<small>" + esc(usd(u * r.qty)) + " for " + r.qty + "</small>" : "";
-    return '<span class="tile-price">' + esc(usd(u)) + note + "</span>";
+    return '<span class="tile-price">' + esc(usd(u)) + note + shakyFlagHTML(r) + "</span>";
   }
   // Rare cards catch the light like their foil (CSS: .sleeve[data-foil]).
   function foilFor(rarity, sealed) {
@@ -2941,7 +3009,7 @@
           (r.grade ? esc(gradeLabel(r.grade)) + '<span class="cell-sub">graded</span>' : esc(r.condition)) +
           "</td><td>" + esc(r.language) + "</td>" + (showLoc ? "<td>" + esc(r.location) + "</td>" : "") +
           '<td class="num">' + r.qty + (extra ? '<span class="cell-sub">' + extra + " extra</span>" : "") +
-          '</td><td class="num">' + esc(u == null ? "" : usd(u)) + (settingsGradedNote(r)) +
+          '</td><td class="num">' + esc(u == null ? "" : usd(u)) + (settingsGradedNote(r)) + shakyFlagHTML(r) +
           '</td><td class="num">' + esc(u == null ? "" : usd(u * (settings.gradedView && !r.grade ? 1 : r.qty))) + "</td></tr>";
       }).join("") + "</tbody></table></div>";
   }
@@ -3502,6 +3570,13 @@
     }
     return html;
   }
+  // The explanation shown with a price table when the market price looks inflated (see shakySub); r: your copy, when it's one of yours
+  function shakyNoticeHTML(sub, r) {
+    const sh = shakySub(sub);
+    if (!sh) return "";
+    return '<p class="notice shaky-notice"><strong>This price may be inflated.</strong> ' + esc(shakyWhy(sh)) +
+      (r && settings.shakyLow ? " It is counted at the lowest listing in your total (see Settings)." : "") + "</p>";
+  }
   function openDetails(id, opts) {
     opts = opts || {};
     let r = collection.find(x => x.id === id);
@@ -3528,7 +3603,7 @@
       const changes = sub && sub.market != null ? PERIODS.filter(([k]) => sub[k] != null).map(([k]) =>
         "<span>" + esc(periodLabel(k)) + ": " + changeHTML(sub.market - sub[k], sub[k] > 0 ? (sub.market - sub[k]) / sub[k] : null, true) + "</span>") : [];
       if (changes.length) priceSection += '<div class="changes" aria-label="Market price change">' + changes.join("") + "</div>";
-      priceSection += '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ".</p>";
+      priceSection += '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ".</p>" + shakyNoticeHTML(sub, r);
     } else if (product && Object.keys(product.prices).length) {
       priceSection += '<table class="price-table"><thead><tr><th>Printing</th><th class="num">Market</th><th class="num">Lowest listing</th></tr></thead><tbody>' +
         printingsFor(product).map(k => {
@@ -3541,7 +3616,7 @@
       const changes = sub && sub.market != null ? PERIODS.filter(([k]) => sub[k] != null).map(([k]) =>
         "<span>" + esc(periodLabel(k)) + ": " + changeHTML(sub.market - sub[k], sub[k] > 0 ? (sub.market - sub[k]) / sub[k] : null, true) + "</span>") : [];
       if (changes.length) priceSection += '<div class="changes" aria-label="Market price change for your printing">' + changes.join("") + "</div>";
-      priceSection += '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ". Market price is what the card has recently sold for.</p>";
+      priceSection += '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ". Market price is what the card has recently sold for.</p>" + shakyNoticeHTML(sub, r);
     } else if (pi.from === "saved") {
       priceSection += "<p>" + esc(usd(pi.unit)) + ' <span class="small">from your CSV' + (pi.date ? ", " + esc(fmtDate(pi.date)) : "") + ".</span></p>" +
         (r.productId && !SITE ? '<p class="small">Run update_tcgplayer_data.py for today\'s price.</p>' : "");
@@ -4571,7 +4646,7 @@
           esc(s.market == null ? "no sales" : usd(s.market)) + '</td><td class="num">' + esc(s.low == null ? "" : usd(s.low)) + "</td></tr>"; }).join("") + "</tbody></table>"
         : '<p class="small">TCGplayer has no recent sales or listings for this card.</p>') +
       (changes.length ? '<div class="changes" aria-label="Market price change' + (eds.length > 1 ? " for " + esc(csPrinting(ed)) : "") + '">' + changes.join("") + "</div>" : "") +
-      '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ". Market price is what the card has recently sold for (Near Mint); lowest listing is the cheapest copy for sale now.</p></div>" +
+      '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ". Market price is what the card has recently sold for (Near Mint); lowest listing is the cheapest copy for sale now.</p>" + shakyNoticeHTML(sub, null) + "</div>" +
       (SITE ? '<div class="section"><h3>Price over time</h3><div id="cardHist" class="card-hist"><p class="small">Loading…</p></div></div>' : "") +
       '<div class="section"><h3>Graded value</h3><div id="gradedBox">' + gradedBoxHTML(r) + "</div></div>" +
       '<div class="section"><h3>Yours</h3>' +
@@ -6084,6 +6159,12 @@
         esc(c) + '" value="' + esc(settings.condPct[c]) + '"' + (settings.condAdjust ? "" : " disabled") + ">%</span></label>").join("") + "</div>" +
       '<p style="margin:10px 0 0"><button class="link-btn" type="button" id="sCondReset">Reset to 100, 85, 70, 50 and 30%</button></p></div>' +
 
+      '<div class="section"><h3>Prices that look inflated</h3>' +
+      '<p class="small" style="margin:0 0 10px">TCGplayer\'s market price is what a card recently sold for. When it is at least double the cheapest copy for sale (and at least $5 more), a few unusual sales may be holding it up, ' +
+      "so the card is tagged <b>may be inflated</b> and the total says how much of it that could be.</p>" +
+      '<label class="check-row"><input type="checkbox" class="check" id="sShakyLow"' + (settings.shakyLow ? " checked" : "") +
+      "><span>Count those cards at their lowest listing instead (this device only)</span></label></div>" +
+
       '<div class="section"><h3>Graded values (the PSA 10 view)</h3>' +
       '<p class="small" style="margin:0 0 10px">The <b>PSA 10 value</b> switch above your collection shows what one gem-mint copy of each card would be worth. ' +
       "Real graded prices come from PriceCharting (eBay sales by grade), looked up from this device with your own PriceCharting key (their Legendary plan) and kept private here. " +
@@ -6220,6 +6301,7 @@
       saveSettings();
       renderBackupBanner();
     });
+    $("sShakyLow").addEventListener("change", () => { settings.shakyLow = $("sShakyLow").checked; saveSettings(); render(); });
     const pctInputs = () => document.querySelectorAll("#drawerBody [data-cond]");
     $("sCondAdjust").addEventListener("change", () => {
       settings.condAdjust = $("sCondAdjust").checked;
@@ -6832,15 +6914,15 @@
   // (the company's estimate), paused = not taking cards when checked (its last posted price is kept),
   // usual = what Pokémon Vault assumes for that company until you choose a level.
   const GRADING_FEE_TABLE = {
-    PSA: {checked: "2026-10-08", source: "https://www.psacard.com/services/tradingcardgrading",
-      note: "The Value levels are paused; their last posted prices (February 2026) are kept here. The paused Value levels also needed a Collectors Club membership.",
+    PSA: {checked: "2026-11-19", source: "https://www.psacard.com/services/tradingcardgrading",
+      note: "Value reopened on October 29, 2026 at $39.99 (it was $32.99), and the Standard and Priority waits came down. Value Bulk is still paused (it is for Collectors Club members only). Value Plus and Value Max are no longer on PSA's price page; their last posted prices (February 2026) are kept here.",
       levels: [
         {name: "Value Bulk", fee: 24.99, max: 500, days: "", paused: true, note: "20 cards or more, Collectors Club members only"},
-        {name: "Value", fee: 32.99, max: 500, days: "", paused: true},
-        {name: "Value Plus", fee: 49.99, max: 500, days: "45", paused: true},
-        {name: "Value Max", fee: 64.99, max: 1000, days: "35", paused: true},
-        {name: "Standard", fee: 59.99, max: 1000, days: "90–100", usual: true},
-        {name: "Priority", fee: 79.99, max: 1500, days: "70–80"},
+        {name: "Value", fee: 39.99, max: 500, days: "90–100"},
+        {name: "Value Plus", fee: 49.99, max: 500, days: "45", paused: true, note: "not on PSA's page now"},
+        {name: "Value Max", fee: 64.99, max: 1000, days: "35", paused: true, note: "not on PSA's page now"},
+        {name: "Standard", fee: 59.99, max: 1000, days: "70–80", usual: true},
+        {name: "Priority", fee: 79.99, max: 1500, days: "50–60"},
         {name: "Express", fee: 199, max: 2500, days: "20–30"},
         {name: "Super Express", fee: 349, max: 5000, days: "10–15"},
         {name: "Premier", fee: 599, max: 10000, days: "7–10"}]},
@@ -6851,7 +6933,7 @@
         {name: "Standard", fee: 34.95, max: null, days: "45", paused: true},
         {name: "Express", fee: 79.95, max: null, days: "15", usual: true},
         {name: "Priority", fee: 124.95, max: null, days: "5", paused: true, note: "not on the temporary form"}]},
-    CGC: {checked: "2026-10-12", source: "https://www.cgcgrading.com/submit/services/",
+    CGC: {checked: "2026-11-19", source: "https://www.cgcgrading.com/submit/services/",
       note: "No membership needed; CGC's paid memberships take 10 to 20% off. Every level was open when checked.",
       levels: [
         {name: "Bulk Economy", fee: 17, max: 500, days: "150", note: "25 cards or more"},
@@ -9169,24 +9251,49 @@
     drawerCtx = {mode: "scan", batch: many, check};
     openDrawer(many ? "Scan several cards" : check ? "Scan to check" : "Scan a card",
       '<div class="scan-view" id="scanView"><video id="scanVideo" playsinline muted autoplay></video><div class="scan-box" id="scanBox" aria-hidden="true"></div></div>' +
-      '<p class="scan-status" id="scanStatus" role="status">Starting the camera…</p>' +
+      '<p class="scan-status" id="scanStatus" role="status">Starting the camera…</p>' + (many || check ? "" : '<div id="rapidTray"></div>') +
       (many ? '<p class="hint" style="margin:4px 0 0">Hold up one card at a time, with its number (at the bottom, like 025/198) inside the box. Each card it reads goes into the list; ' +
           "then hold up the next one. For more copies of the same card, change how many in the list.</p>" +
           '<div class="btn-row"><button class="btn btn-primary" type="button" id="scanList">' + batchListLabel() + "</button></div>"
         : check ? '<p class="hint" style="margin:4px 0 0">Hold a card close, with its number (at the bottom of the card, like 025/198) inside the box, to see what it\'s worth and whether you already have it. ' +
           'Nothing is added unless you tap <b>Add</b>. <button type="button" class="link-btn" id="scanByName">Search by name instead</button></p>'
         : '<p class="hint" style="margin:4px 0 0">Hold the card close, with its number (at the bottom of the card, like 025/198) inside the box. Good light helps. ' +
-          'Have a stack? <button type="button" class="link-btn" id="scanMany">Scan several in a row</button> · Just checking a price? <button type="button" class="link-btn" id="scanCheck">Scan to check</button></p>') +
+          'Have a stack? <button type="button" class="link-btn" id="scanMany">Scan several in a row</button> · Just checking a price? <button type="button" class="link-btn" id="scanCheck">Scan to check</button></p>' +
+          '<div class="rapid-box"><label class="check-row"><input type="checkbox" class="check" id="scanRapid"' + (settings.rapidScan ? " checked" : "") +
+          "><span><b>Rapid scan:</b> add each card to your collection as soon as it's read</span></label>" +
+          '<div id="rapidOpts"' + (settings.rapidScan ? "" : " hidden") + '><p class="hint" style="margin:6px 0 8px">Each card is added as one copy, with the printing you used last (change it in the list below), ' +
+          "and the camera stays on for the next card. If several printings share a number, you pick yours.</p>" +
+          '<div class="grid-2"><label class="field"><span>Condition</span><select class="input" id="rapidCond">' + options(CONDITIONS, settings.rapidCond) + "</select></label>" +
+          locationFieldHTML("rapidLoc", settings.rapidLoc).replace("Location (optional): binder, box or deck", "Put them in (optional)") + "</div></div>" +
+          "</div>") +
       '<div class="btn-row"><button class="btn' + (many ? "" : " btn-primary") + '" type="button" id="scanRead" disabled>Read it now</button>' +
       '<button class="btn" type="button" id="scanPhoto">Use a photo instead</button><input type="file" id="scanFile" accept="image/*" hidden>' +
       '<button class="btn" type="button" id="scanSwitch" hidden>Switch camera</button><button class="btn' + (check ? " btn-primary" : "") + '" type="button" id="scanAgain" hidden>' + (check ? "Check another card" : "Scan again") + "</button></div>" +
       '<form id="scanForm" class="lookup-row" style="margin-top:14px" hidden autocomplete="off"><input class="input" id="scanNumber" aria-label="Card number">' +
       '<button class="btn" type="submit">Find</button></form><div id="lookupOut"></div>');
-    scan = {stream: null, active: true, busy: false, timer: null, tries: 0, devices: [], deviceIndex: -1, batch: many, check, recent: {}};
+    scan = {stream: null, active: true, busy: false, timer: null, tries: 0, devices: [], deviceIndex: -1, batch: many, check, recent: {},
+      rapid: !!settings.rapidScan && !many && !check, tray: [], said: {}};
     if ($("scanList")) $("scanList").addEventListener("click", () => openBatch());
     if ($("scanMany")) $("scanMany").addEventListener("click", () => openScanner({batch: true}));
     if ($("scanCheck")) $("scanCheck").addEventListener("click", () => openScanner({check: true}));
     if ($("scanByName")) $("scanByName").addEventListener("click", () => { closeDrawer(); setTab("search"); if ($("csQ")) $("csQ").focus(); });
+    if ($("scanRapid")) {
+      $("scanRapid").addEventListener("change", () => {
+        if (!scan) return;
+        settings.rapidScan = scan.rapid = $("scanRapid").checked;
+        saveSettings();
+        $("rapidOpts").hidden = !scan.rapid;
+        $("lookupOut").innerHTML = "";
+        $("scanAgain").textContent = "Scan again";
+        $("scanAgain").hidden = true;
+        if (scan.stream && !scan.active) resumeScan();
+        $("scanStatus").textContent = scan.rapid ? "Rapid scan is on. Hold up a card." : "Rapid scan is off.";
+      });
+      $("rapidCond").addEventListener("change", () => { settings.rapidCond = $("rapidCond").value; saveSettings(); });
+      $("rapidLoc").addEventListener("input", () => { settings.rapidLoc = $("rapidLoc").value.trim(); });
+      $("rapidLoc").addEventListener("change", () => { settings.rapidLoc = $("rapidLoc").value.trim(); saveSettings(); });
+      renderRapidTray();
+    }
     $("scanRead").addEventListener("click", () => scanOnce(true));
     $("scanPhoto").addEventListener("click", () => $("scanFile").click());
     $("scanFile").addEventListener("change", () => { const f = $("scanFile").files[0]; $("scanFile").value = ""; if (f) scanPhoto(f); });
@@ -9199,6 +9306,14 @@
     $("scanForm").addEventListener("submit", e => {
       e.preventDefault();
       const typed = $("scanNumber").value;
+      if (scan && scan.rapid) {
+        const q = normNumber(typed);
+        if (!q) return;
+        const list = catalog ? findByNumber(q).filter(p => !p.sealed) : [];
+        rapidResult({number: q, products: list, sure: list.length > 0}, true);
+        $("scanNumber").value = "";
+        return;
+      }
       if (!(scan && scan.batch)) { if (scan && scan.check) runCheck(typed); else runNumberLookup(typed); return; }
       if (!normNumber(typed)) return;
       addBatchRows([batchRowFor(typed, 1)]);
@@ -9282,9 +9397,10 @@
     // the scanner was closed (or opened again), or a photo was picked, while this was being read
     if (scan !== mine || (!manual && !mine.active)) return null;
     // A number that can't be checked against TCGplayer's list has to be read the same way twice. So does every
-    // number when scanning several cards, where nobody checks each one before it goes into the list.
-    if (found && !manual && (!found.sure || mine.batch)) {
+    // number when scanning several cards or rapid scanning, where nobody checks each one before it goes in.
+    if (found && !manual && (!found.sure || mine.batch || mine.rapid)) {
       if (mine.pending !== found.number) { mine.pending = found.number; found = null; }
+      else mine.pending = null;
     }
     if (found) showScanResult(found);
     else if (manual) $("scanStatus").textContent = failed ? "Couldn't read that. Try again, or use a photo." : "No card number found. Move the card so the number sits inside the box.";
@@ -9311,6 +9427,7 @@
     scan.active = false;
     clearTimeout(scan.timer);
     if (scan.batch) { addScanToBatch(found); return; }
+    if (scan.rapid) { rapidResult(found); return; }
     if (scan.check) {
       $("scanStatus").textContent = "Found " + found.number + ".";
       $("scanForm").hidden = false;
@@ -9348,6 +9465,134 @@
       mine.tries = 0;
       scanLoop();
     }, again ? 300 : 1200);
+  }
+  /* ----- rapid scan: each card goes straight into the collection, one copy at a time, and the camera keeps looking ----- */
+  const rapidShown = () => window.matchMedia && window.matchMedia("(max-width: 700px)").matches ? 3 : 6;
+  function rapidRecord(p, edition, qty) {
+    const cond = CONDITIONS.includes(settings.rapidCond) ? settings.rapidCond : "Near Mint";
+    return upgradeRecord({id: newId(), productId: p.id, name: cleanName(p.name, p.rarity), productName: p.name, setName: p.group.name,
+      number: p.number, rarity: p.rarity, edition, condition: cond, language: productLanguage(p), qty,
+      location: settings.rapidLoc || "", snap: snapFromCatalog(p, edition), added: new Date().toISOString()});
+  }
+  // The copies of a "just added" line that are in the collection now
+  const rapidFind = e => { const key = recordKey(rapidRecord(catalog.byId.get(e.pid), e.ed, 1)); return collection.find(r => recordKey(r) === key); };
+  function rapidAdd(p) {
+    const eds = printingsFor(p);
+    const ed = settings.rapidEd && eds.includes(settings.rapidEd) ? settings.rapidEd : (eds[0] || "Normal");
+    const rec = rapidRecord(p, ed, 1);
+    const res = addOrMerge(rec);
+    save();
+    render();
+    const e = {key: newId(), pid: p.id, ed, qty: 1, num: p.number};
+    if (scan) { scan.tray.unshift(e); renderRapidTray(); }
+    return {entry: e, record: res.record, merged: res.merged};
+  }
+  function rapidRemove(e, copies) {
+    const rec = rapidFind(e);
+    if (!rec) return;
+    rec.qty -= copies;
+    if (rec.qty <= 0) collection = collection.filter(r => r !== rec);
+  }
+  function renderRapidTray() {
+    const box = $("rapidTray");
+    if (!box || !scan) return;
+    if (!scan.tray.length) { box.innerHTML = ""; return; }
+    const cards = scan.tray.reduce((n, e) => n + e.qty, 0);
+    const shown = rapidShown();
+    box.innerHTML = '<p class="results-head" style="margin:12px 0 2px">Just added: ' + plural(cards, "card") + "</p>" + scan.tray.slice(0, shown).map(e => {
+      const p = catalog.byId.get(e.pid);
+      const rec = rapidFind(e);
+      const unit = rec ? marketValue(rec).unit : null;
+      const eds = printingsFor(p);
+      return '<div class="rapid-row" data-key="' + esc(e.key) + '"><span class="sleeve">' + imgTag(productPics(p, "200w"), p.name) + "</span>" +
+        '<div class="rapid-info"><b>' + esc(cleanName(p.name, p.rarity)) + "</b><span>" + esc([p.group.name, p.number].join(" · ") + (unit != null ? " · " + usd(unit) : "")) + "</span></div>" +
+        '<span class="r-qty" aria-label="' + plural(e.qty, "copy", "copies") + '">&times;' + e.qty + "</span>" +
+        '<div class="r-ctl">' + (eds.length > 1 ? '<select class="input r-ed" aria-label="Printing of ' + esc(cleanName(p.name, p.rarity)) + '">' + options(eds, e.ed) + "</select>"
+          : '<span class="r-ed-one">' + esc(e.ed) + "</span>") +
+        '<button type="button" class="btn r-plus" title="One more copy of this card">+1</button>' +
+        '<button type="button" class="btn r-undo">Undo</button></div></div>';
+    }).join("") + (scan.tray.length > shown ? '<p class="small">Showing the last ' + shown + " of " + scan.tray.length + " cards.</p>" : "");
+    box.onclick = ev => {
+      const row = ev.target.closest(".rapid-row"), act = ev.target.closest(".r-plus, .r-undo");
+      const e = row && scan && scan.tray.find(x => x.key === row.dataset.key);
+      if (!e || !act) return;
+      if (act.classList.contains("r-plus")) {
+        const rec = rapidFind(e);
+        if (rec) rec.qty++; else addOrMerge(rapidRecord(catalog.byId.get(e.pid), e.ed, 1));
+        e.qty++;
+      } else {
+        rapidRemove(e, e.qty);
+        scan.tray = scan.tray.filter(x => x !== e);
+        delete scan.recent[e.num];   // (the same card can be scanned again right away)
+        $("scanStatus").textContent = "Removed " + cleanName(catalog.byId.get(e.pid).name, catalog.byId.get(e.pid).rarity) + ".";
+      }
+      save();
+      render();
+      renderRapidTray();
+    };
+    box.onchange = ev => {
+      const row = ev.target.closest(".rapid-row"), e = row && scan && scan.tray.find(x => x.key === row.dataset.key);
+      if (!e || !ev.target.classList.contains("r-ed")) return;
+      const p = catalog.byId.get(e.pid), ed = ev.target.value;
+      // all copies on this line move to the printing picked, which is also the one used for the next cards
+      rapidRemove(e, e.qty);
+      e.ed = ed;
+      settings.rapidEd = ed;
+      saveSettings();
+      addOrMerge(rapidRecord(p, ed, e.qty));
+      save();
+      render();
+      renderRapidTray();
+    };
+  }
+  // What was read: add it (when it's a single printing), or ask which printing, or say it isn't on TCGplayer.
+  // typed: the number was typed in (not seen by the camera), so it is never taken for the same card as before.
+  function rapidResult(found, typed) {
+    const mine = scan;
+    if (!mine) return;
+    const status = $("scanStatus");
+    const resume = ms => {
+      if (!mine.stream) return;   // (no camera: nothing to resume)
+      mine.timer = setTimeout(() => { if (scan !== mine) return; mine.active = true; mine.tries = 0; scanLoop(); }, ms);
+    };
+    // the same number seen again within 6 seconds is still the card held up before (mine.said: what was done with it)
+    const now = Date.now(), again = !typed && now - (mine.recent[found.number] || 0) < 6000;
+    mine.recent[found.number] = now;
+    if (again) {
+      if (mine.said[found.number] === "added") status.textContent = "Still seeing " + found.number + " (it's already added). Hold up the next card.";
+      resume(300);
+      return;
+    }
+    const cands = found.products.filter(p => !p.sealed);
+    mine.said[found.number] = "";
+    if (!found.sure || !cands.length) {
+      status.textContent = "Read " + found.number + ", but TCGplayer has no card with that number, so nothing was added. Hold up the next card" + (typed ? "." : ", or type the number below.");
+      $("scanForm").hidden = false;
+      resume(1500);
+      return;
+    }
+    if (cands.length > 1) {
+      // (the scanning waits until you pick a printing or skip the card)
+      status.textContent = cands.length + " printings have the number " + found.number + ". Tap yours to add it.";
+      const out = $("lookupOut");
+      const shown = cands.slice(0, 30);
+      out.innerHTML = resultsHTML(shown);
+      wireResults(out, shown, p => {
+        out.innerHTML = "";
+        $("scanAgain").hidden = true;
+        const r = rapidAdd(p);
+        mine.said[found.number] = "added";
+        status.textContent = "Added " + cleanName(p.name, p.rarity) + " (" + p.number + ", " + r.entry.ed + "). Next card…";
+        resume(1200);
+      });
+      $("scanAgain").textContent = "Skip this card";
+      $("scanAgain").hidden = !mine.stream;
+      return;
+    }
+    const p = cands[0], r = rapidAdd(p);
+    mine.said[found.number] = "added";
+    status.textContent = "Added " + cleanName(p.name, p.rarity) + " (" + p.number + ", " + r.entry.ed + ")" + (r.merged ? ". You now have " + r.record.qty : "") + ". Next card…";
+    resume(1200);
   }
   function resumeScan() {
     if (!scan) return;
@@ -9399,7 +9644,8 @@
     const prices = eds.length ? '<dl class="mk-prices">' + eds.map(ed => {
       const s = p.prices[ed], v = firstPrice(s);
       return "<dt>" + esc(csPrinting(ed).replace(" Edition", " Ed.")) + "</dt><dd>" + (v == null ? "no sales" : esc(usd(v))) +
-        (s.low != null && s.market != null && s.low !== s.market ? '<span class="small" style="display:block">low ' + esc(usd(s.low)) + "</span>" : "") + "</dd>";
+        (s.low != null && s.market != null && s.low !== s.market ? '<span class="small" style="display:block">low ' + esc(usd(s.low)) + "</span>" : "") +
+        (shakySub(s) ? '<span class="small shaky-flag" style="display:block" title="' + esc(shakyWhy(shakySub(s))) + '">may be inflated</span>' : "") + "</dd>";
     }).join("") + "</dl>" : '<span class="result-meta">No recent sales or listings</span>';
     return '<div class="result static check-card"><span class="sleeve"' + foilAttr(p.rarity) + ">" + imgTag(productPics(p, "200w"), name) + "</span>" +
       '<span class="result-name">' + esc(name) + "</span>" +
@@ -9766,7 +10012,7 @@
       ["Product ID", r => r.productId || ""], ["Product Name", r => r.productName], ["Card Name", r => r.name],
       ["Set Name", r => r.setName], ["Number", r => r.number], ["Rarity", r => r.rarity], ["Printing", r => r.edition],
       ["Condition", r => r.condition], ["Language", r => r.language], ["Quantity", r => r.qty],
-      ["TCG Market Price", r => { const pi = priceInfo(r); return pi.from === "manual" || pi.unit == null ? "" : pi.unit.toFixed(2); }],
+      ["TCG Market Price", r => { const pi = priceInfo(r); const v = pi.base != null ? pi.base : pi.unit; return pi.from === "manual" || v == null ? "" : v.toFixed(2); }],
       ["Price Paid", r => r.paid == null ? "" : r.paid], ["Value Estimate (USD)", r => r.manualPrice == null ? "" : r.manualPrice],
       ["Image URL", r => r.customImage || ""], ["Location", r => r.location], ["Graded By", r => r.grade ? r.grade.company : ""],
       ["Grade", r => r.grade ? r.grade.grade : ""], ["Cert Number", r => r.grade ? r.grade.cert : ""],
@@ -9916,6 +10162,13 @@
       saveSettings(); updateSortDirButton(); renderCollection();
     });
     $("basis").addEventListener("change", () => { settings.basis = $("basis").value; saveSettings(); render(); });
+    $("valueSub").addEventListener("click", e => {
+      if (!e.target.closest('[data-action="shaky-toggle"]')) return;
+      settings.shakyLow = !settings.shakyLow;
+      saveSettings();
+      render();
+      toast(settings.shakyLow ? "Cards with an inflated-looking market price now count at their lowest listing." : "Back to counting every card at its market price.");
+    });
     $("valueMode").addEventListener("click", e => {
       const b = e.target.closest("[data-mode]");
       if (!b) return;
@@ -10468,7 +10721,8 @@
     ideasState: () => ideas, imgTag, productPics, recordPics, namePics, imageFor, shareItem, shareWant, silentSignInDue, maybeSilentSignIn, pageBusy,
     viewBusy, loadNewData, applyNewData, readDataText, dataLoad: () => dataLoad, wantPrice, wantKind, wantSource, gotWant, openWantEdit, tookWant,
     wantFromProduct, upgradeWant, renderWants, csSearch, renderSearch, renderSearchResults, openPriceCard, cs: () => cs, csSetMatches, openSearchSet,
-    csSetCode, deckChecks, normCardName, mkLangOK, csHay, csFindSet, renderDecks, renderDeckIdeas, deckKind, scanIndex, productLanguage};
+    csSetCode, deckChecks, normCardName, mkLangOK, csHay, csFindSet, renderDecks, renderDeckIdeas, deckKind, scanIndex, productLanguage,
+    showScanResult, scanState: () => scan, shakySub, shakyOf, shakyStats, rapidAdd, renderSummary};
 
   document.addEventListener("DOMContentLoaded", init);
 })();

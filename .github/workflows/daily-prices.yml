@@ -4,6 +4,12 @@ name: Daily Pokemon prices
 # for the Pokemon Vault website and publishes the website with GitHub Pages. It also publishes right away whenever
 # the website's files change. "Run workflow" on the Actions tab runs it by hand.
 # Before the first run: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+#
+# Nothing goes live until it has been tried out first:
+#   - "check" opens the website in a browser (desktop and phone size, with a made-up card list and a pretend camera) and runs
+#     the tests in the tests folder. On the nightly price update only the quick ones run, and they can't hold the prices back.
+#   - "build" ends by opening the finished website, with today's real card list, to make sure it loads and works.
+# If either finds the website broken, nothing is published and the website that is live now stays as it is.
 
 on:
   schedule:
@@ -20,6 +26,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Look through the website's script for slips (names that don't exist and the like)
+        if: github.event_name != 'schedule'
+        run: python tests/lint_app.py
+
+      - name: Get a browser for the tests
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Try the website in a browser, desktop and phone size
+        continue-on-error: ${{ github.event_name == 'schedule' }}   # (the nightly run only warns: the same files passed when they were published)
+        run: python tests/run_tests.py ${{ github.event_name == 'schedule' && '--smoke' || '' }}
+
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -80,12 +112,15 @@ jobs:
           python card_history.py _site/history || echo "No price history files this time."
           ls -la _site
 
+      - name: Make sure the finished website opens and works (a broken one is not published)
+        run: python tests/smoke_built_site.py _site
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
   deploy:
-    needs: build
+    needs: [check, build]
     runs-on: ubuntu-latest
     permissions:
       pages: write

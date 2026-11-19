@@ -5,3 +5,4 @@ tcgplayer-cache/
 _site/
 __pycache__/
 fee-watch.json
+out/
