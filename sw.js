@@ -3,7 +3,7 @@
 // slow connection (a card shop, say) it uses the saved copy after a few seconds.
 const CACHE = "pokevault-v1";
 const KEEP = ["./", "index.html", "config.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png",
-  "icons/apple-touch-icon.png", "tcgplayer-data.js"];
+  "icons/apple-touch-icon.png", "tcgplayer-data.js", "zh-cards.js"];
 const PATIENCE = 3500;   // ms to wait for the internet before using the saved copy
 
 self.addEventListener("install", event => {

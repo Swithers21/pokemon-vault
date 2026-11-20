@@ -65,6 +65,8 @@ def main(site):
                         age = (datetime.now(timezone.utc) - datetime.fromisoformat(info["generated"].replace("Z", "+00:00"))).days
                         if age > 4:
                             warn("the card prices are %s days old (TCGCSV may be behind)" % age)
+                    if kind == "desktop":
+                        check_zh(page, os.path.exists(os.path.join(site, "zh-cards.js")))
                     # a real card: found by its number, read from a scan, added, valued
                     out = page.evaluate("""(info) => {
                       const CV = CardVault, res = {};
@@ -97,6 +99,26 @@ def main(site):
     if not problems:
         print("The built website opens and works (%s)." % ("real card list" if has_data else "no card list"))
     return 1 if problems else 0
+
+
+def check_zh(page, has_file):
+    """The Chinese card list is a bonus: when it is missing or odd the website just has no Chinese cards, so this only warns."""
+    if not has_file:
+        warn("no Chinese card list in this build (the website works without Chinese cards)")
+        return
+    z = page.evaluate("""() => {
+      const zh = CardVault.state().catalog.products.filter(p => p.zh), c = zh.find(p => !p.sealed && !p.noImg);
+      return {n: zh.length, sets: CardVault.state().catalog.groups.filter(g => g.zh).length, pic: c ? CardVault.productPics(c, 'in_400x400').list[0] : '',
+              priced: zh.some(p => Object.keys(p.prices).length)};
+    }""")
+    if not z["n"]:
+        warn("zh-cards.js is in the build but the website found no Chinese cards in it")
+    elif not str(z["pic"]).startswith("https://storage.googleapis.com/images.pricecharting.com/"):
+        warn("Chinese cards have no picture address: %r" % z["pic"])
+    elif z["priced"]:
+        warn("Chinese cards carry prices in the build: PriceCharting's prices must not be published")
+    else:
+        print("Chinese card list: %d cards in %d sets." % (z["n"], z["sets"]))
 
 
 def harness_problems(page, kind, problems):

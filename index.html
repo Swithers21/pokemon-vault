@@ -19,6 +19,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Fredoka:wght@400..700&display=swap" rel="stylesheet">
 <!-- Created by update_tcgplayer_data.py (on the website, by the daily update on GitHub). Pokémon Vault still opens if it's missing. -->
 <script defer src="tcgplayer-data.js"></script>
+<!-- Chinese (Simplified) card list (no prices), created by update_zh_cards.py. Also optional. -->
+<script defer src="zh-cards.js"></script>
 <style>
   :root{
     color-scheme:dark;
@@ -1383,7 +1385,7 @@
   <section id="panel-market" role="tabpanel" aria-labelledby="tab-market" hidden></section>
 
   <footer>
-    <p>Card photos, card numbers, rarities and market prices come from TCGplayer, through TCGCSV (tcgcsv.com), a free daily mirror of TCGplayer's catalog. <span class="local-only">Run update_tcgplayer_data.py to refresh them.</span><span class="site-only">They update every evening.</span> English and Japanese cards are both included.</p>
+    <p>Card photos, card numbers, rarities and market prices come from TCGplayer, through TCGCSV (tcgcsv.com), a free daily mirror of TCGplayer's catalog. <span class="local-only">Run update_tcgplayer_data.py to refresh them.</span><span class="site-only">They update every evening.</span> English and Japanese cards are both included. Chinese (Simplified) cards are not on TCGplayer: their list and pictures come from <a href="https://www.pricecharting.com" target="_blank" rel="noopener">PriceCharting</a>'s public set pages, and their prices from PriceCharting too, looked up on your device with your own key (Settings).</p>
     <p>Your collection is saved in this browser. <span class="local-only">Turn on automatic backup in Settings to also keep it in a file.</span><span class="site-only">Sync with Google Drive (Settings) to also keep it in your Google Drive.</span> Pokémon Vault isn't affiliated with TCGplayer, TCGCSV, Nintendo, Creatures, Game Freak or The Pokémon Company.</p>
   </footer>
 </div>
@@ -1445,7 +1447,8 @@
   // TCGplayer's names for the printings (finishes) of a Pokémon card, in the order they're offered.
   const PRINTINGS = ["Normal", "Holofoil", "Reverse Holofoil", "1st Edition", "1st Edition Holofoil", "Unlimited", "Unlimited Holofoil"];
   const CONDITIONS = ["Near Mint", "Lightly Played", "Moderately Played", "Heavily Played", "Damaged"];
-  const LANGUAGES = ["English", "Japanese"];
+  const ZH = "Chinese (Simplified)";
+  const LANGUAGES = ["English", "Japanese", ZH];
   // Rarities as TCGplayer words them, English sets and Japanese ones (these just fill the menus; any rarity in the price data is offered too).
   const BASE_RARITIES = ["Common", "Uncommon", "Rare", "Holo Rare", "Reverse Holo", "Double Rare", "Ultra Rare", "Illustration Rare",
     "Special Illustration Rare", "Hyper Rare", "ACE SPEC Rare", "Shiny Rare", "Shiny Ultra Rare", "Amazing Rare", "Radiant Rare",
@@ -1513,7 +1516,7 @@
     setsMode: "number", setsSort: "complete", lastBackupAt: null, lastChangeAt: null, backupSnoozeUntil: 0,
     backupRemindDays: 7, wantAlertSeen: "", lookSeen: "", lookShown: "", salesYear: "", deckId: null,
     deckView: "check", mkView: "sets", goalsFold: false, mvPeriod: "m7", mvKind: "", mvFloor: 5, mvMine: "", mvSort: "pct", mkLine: "", mkKind: "", mkSortSets: "newest", mkSortSealed: "deal", mkLang: "", wantsView: "", csSort: "best", csMode: "cards", csSetSort: "number",
-    shakyLow: false, rapidScan: false, rapidCond: "Near Mint", rapidLoc: "", rapidEd: "",
+    shakyLow: false, scanZh: false, rapidScan: false, rapidCond: "Near Mint", rapidLoc: "", rapidEd: "",
     gradedView: false, psa10Mult: 4, psa10Floor: 25, gradePct: Object.assign({}, DEFAULT_GRADE_PCT), pcToken: "",
     insightView: "history", salesView: "trade", gradingCost: 30, gradingMin: 50, gradingFees: {}, gradingCo: "PSA", autoSignIn: true};
   const filters = {q: "", set: "", rarity: "", edition: "", language: "", location: "", show: ""};
@@ -1547,8 +1550,18 @@
   function idOrNull(v) { const n = num(v); return n != null && n > 0 ? Math.round(n) : null; }
   function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 9); }
   function safeImg(u) { u = String(u || "").trim(); return /^(https?:\/\/|data:image\/)/i.test(u) ? u : ""; }
-  const tcgImg = (pid, size) => "https://tcgplayer-cdn.tcgplayer.com/product/" + pid + "_" + (size || "in_400x400") + ".jpg";
-  const tcgPage = pid => "https://www.tcgplayer.com/product/" + pid;
+  // Chinese cards aren't on TCGplayer. Their list (with a picture address for each) comes from zh-cards.js, built from
+  // PriceCharting's public set pages, and a Chinese card's product id is PriceCharting's id plus this (TCGplayer's ids are far smaller).
+  const ZH_ID_BASE = 1000000000;
+  const isZhId = id => typeof id === "number" && id >= ZH_ID_BASE;
+  const zhInfo = new Map();   // Chinese product id -> {pc: PriceCharting's id, img: picture code, slug, console}
+  const PC_IMG = "https://storage.googleapis.com/images.pricecharting.com/";
+  const zhImg = (pid, size) => { const i = zhInfo.get(pid); return i && i.img ? PC_IMG + i.img + "/" + (/1000|1600/.test(String(size)) ? 1600 : 240) + ".jpg" : ""; };
+  const zhPage = pid => { const i = zhInfo.get(pid); return i && i.slug ? "https://www.pricecharting.com/game/" + i.console + "/" + i.slug : "https://www.pricecharting.com/category/pokemon-cards"; };
+  const tcgImg = (pid, size) => isZhId(pid) ? zhImg(pid, size) : "https://tcgplayer-cdn.tcgplayer.com/product/" + pid + "_" + (size || "in_400x400") + ".jpg";
+  const tcgPage = pid => isZhId(pid) ? zhPage(pid) : "https://www.tcgplayer.com/product/" + pid;
+  // Where a card's price comes from, for the places that name it
+  const priceSource = pid => isZhId(pid) ? "PriceCharting" : "TCGplayer";
 
   // Pokémon card numbers: "025/198" (number and the set's printed size), "SWSH123", "TG05/TG30", "GG10/GG70", "SVP 045".
   function normNumber(s) {
@@ -1595,6 +1608,8 @@
   const fmtTime = d => d ? d.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit", second: "2-digit"}) : "";
   const localDay = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   const firstPrice = s => s ? (s.market != null ? s.market : s.low) : null;
+  // (a Chinese card has its one printing listed even before PriceCharting has given a price: that printing has no price entry yet)
+  const NO_PRICE = Object.freeze({market: null, low: null, m1: null, m7: null, m30: null});
   function download(blob, fileName) {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -1650,7 +1665,8 @@
   function normLanguage(raw) {
     const l = String(raw || "").trim().toLowerCase();
     if (!l) return "";
-    const map = {en: "English", english: "English", jp: "Japanese", ja: "Japanese", jpn: "Japanese", japanese: "Japanese"};
+    const map = {en: "English", english: "English", jp: "Japanese", ja: "Japanese", jpn: "Japanese", japanese: "Japanese",
+      zh: ZH, cn: ZH, chinese: ZH, "chinese (simplified)": ZH, "simplified chinese": ZH, "chinese simplified": ZH, "zh-cn": ZH, "zh-hans": ZH};
     return map[l] || "";
   }
 
@@ -1692,7 +1708,8 @@
     const cls = /^1st/i.test(ed) ? "ed ed-1st" : "ed";
     return '<span class="' + cls + '">' + esc(ed) + "</span>";
   }
-  const jpBadge = r => r && !r.sealed && r.language === "Japanese" ? '<span class="ed ed-jp" title="Japanese card">Japanese</span>' : "";
+  const jpBadge = r => r && !r.sealed && r.language === "Japanese" ? '<span class="ed ed-jp" title="Japanese card">Japanese</span>'
+    : r && !r.sealed && r.language === ZH ? '<span class="ed ed-jp" title="Chinese (Simplified) card">Chinese</span>' : "";
   const gradeBadge = g => g ? '<span class="ed ed-grade" title="Graded' + (g.cert ? ", cert " + esc(g.cert) : "") + '">' + esc(gradeLabel(g)) + "</span>" : "";
   function options(list, current, blankLabel) {
     let html = blankLabel != null ? '<option value="">' + esc(blankLabel) + "</option>" : "";
@@ -1766,7 +1783,7 @@
     if (g.mon != null) {   // a Pokémon goal: every print of one Pokémon, in any set ("lang": only English or only Japanese prints, or both)
       const mon = String(g.mon).replace(/\s+/g, " ").trim(), slug = monSlug(mon);
       if (!slug) return null;
-      return {id: "m" + slug, mon, name: mon, lang: g.lang === "en" || g.lang === "jp" ? g.lang : "", added: g.added || new Date().toISOString(), mod: modTime(g.mod)};
+      return {id: "m" + slug, mon, name: mon, lang: ["en", "jp", "zh", "all"].includes(g.lang) ? g.lang : "", added: g.added || new Date().toISOString(), mod: modTime(g.mod)};
     }
     const gid = idOrNull(g.groupId);
     if (gid == null) return null;
@@ -2016,6 +2033,7 @@
     if (ok) loadProblem = false;
     else toast("Couldn't save: this browser blocked or ran out of storage for Pokémon Vault. Use Export CSV to keep a copy.", {kind: "error", sticky: true});
     if (!(opts && opts.noBackup)) scheduleBackup();  // the backup file still gets the change
+    zhRefreshSoon();   // (a Chinese card just added gets its price)
     return ok;
   }
   // Settings-only changes (sort order, view...) don't need a backup.
@@ -2076,6 +2094,42 @@
       priceDay: generated ? utcDay(generated) : null,
       refDays: {m1: day(h.d1), m7: day(h.d7), m30: day(h.d30)}};
   }
+  // Chinese (Simplified) cards: zh-cards.js (the updater builds it from PriceCharting's public set pages) adds each set and
+  // card to the catalog, with a picture address but no prices. Their prices come from PriceCharting with your own key, looked
+  // up on this device (see pcLookup) and put on the card (zhInject), so every screen prices them like any other card.
+  let zhRaw = null;
+  function mergeChinese(cat, raw) {
+    if (!cat || !raw || !Array.isArray(raw.groups) || !Array.isArray(raw.cards)) return;
+    const groups = raw.groups.map(g => ({id: Number.isFinite(g[3]) ? g[3] : null, name: String(g[1] || g[0] || ""), abbr: String(g[1] || ""),
+      published: g[2] ? String(g[2]) + "T00:00:00" : "", jp: false, zh: true, console: String(g[0] || "")}));
+    const made = new Set();
+    for (const c of raw.cards) {
+      const g = groups[c[1]];
+      if (!g || g.id == null || !Number.isFinite(c[0])) continue;
+      const id = ZH_ID_BASE + c[0];
+      if (cat.byId.has(id)) continue;
+      const p = {id, group: g, name: String(c[2] || ""), number: String(c[3] || ""), rarity: "", prices: {}, sealed: c[6] === 1, zh: true};
+      if (!c[4]) p.noImg = true;
+      p.nameLower = p.name.toLowerCase();
+      zhInfo.set(id, {pc: c[0], img: String(c[4] || ""), slug: String(c[5] || ""), console: g.console});
+      cat.products.push(p);
+      cat.byId.set(id, p);
+      // (a Chinese card's number has no set size, so it is found by its first number only: see findByNumber)
+      if (p.number) pushMap(cat.byFirst, firstNumber(p.number), p);
+      made.add(g);
+    }
+    for (const g of made) cat.groups.push(g);
+    if (pcOn()) for (const [key, hit] of Object.entries(pcCache())) {
+      const m = /^p\|(\d+)\|/.exec(key);
+      if (m && hit && hit.p && +m[1] >= ZH_ID_BASE) zhInject(cat, +m[1], hit.p);
+    }
+  }
+  // A Chinese card's price from PriceCharting (the ungraded one), put where every screen reads prices
+  function zhInject(cat, pid, p) {
+    const prod = cat && cat.byId.get(pid);
+    if (!prod || !prod.zh) return;
+    prod.prices = p && p.raw != null ? {Normal: {market: p.raw, low: null, m1: null, m7: null, m30: null}} : {};
+  }
   function productsByGroup() {
     if (!catalog.byGroup) {
       catalog.byGroup = new Map();
@@ -2083,16 +2137,24 @@
     }
     return catalog.byGroup;
   }
-  const sortPrintings = list => list.slice().sort((a, b) =>
+  // (Chinese sets last: their numbers are only half a number, so they come up for many searches)
+  const sortPrintings = list => list.slice().sort((a, b) => (a.zh ? 1 : 0) - (b.zh ? 1 : 0) ||
     (b.group.published || "").localeCompare(a.group.published || "") || a.name.localeCompare(b.name));
   // A full number ("025/198") finds that card in each set that printed it; a bare number ("25") finds every card with it.
-  function findByNumber(q) {
+  // A Chinese card is listed under its number alone ("255"), so "255/204" falls back on those, when nothing else has it.
+  // only: "zh" finds Chinese cards alone (the scanner when it's told they're Chinese); "noZh" leaves Chinese cards out (reading a number
+  // off a camera, where a Chinese card would only be a wrong guess); anything else is what you'd type into a lookup.
+  function findByNumber(q, only) {
     if (!catalog || !q) return [];
+    const first = catalog.byFirst.get(firstNumber(q)) || [];
+    if (only === "zh") return sortPrintings(first.filter(p => p.zh));
     const exact = catalog.byNumber.get(normNumber(q));
     if (exact && exact.length) return sortPrintings(exact);
     const loose = catalog.byLoose.get(looseNumber(q));
     if (loose && loose.length) return sortPrintings(loose);
-    return String(q).indexOf("/") < 0 ? sortPrintings(catalog.byFirst.get(firstNumber(q)) || []) : [];
+    const slash = String(q).indexOf("/") >= 0;
+    if (only === "noZh") return slash ? [] : sortPrintings(first.filter(p => !p.zh));
+    return slash ? sortPrintings(first.filter(p => p.zh)) : sortPrintings(first);
   }
   function searchByName(q, limit) {
     const needle = csNorm(String(q || "").trim());
@@ -2108,6 +2170,7 @@
   }
   const EDITION_ORDER = ["Normal", "Holofoil", "Reverse Holofoil", "1st Edition", "1st Edition Holofoil", "Unlimited", "Unlimited Holofoil"];
   function printingsFor(product) {
+    if (product.zh) return ["Normal"];   // (PriceCharting prices a Chinese card once, not by printing)
     const keys = Object.keys(product.prices);
     return keys.sort((a, b) => {
       const ia = EDITION_ORDER.indexOf(a), ib = EDITION_ORDER.indexOf(b);
@@ -2136,7 +2199,10 @@
   const shakyWhy = sh => "TCGplayer's market price (" + usd(sh.market) + ") is far above the cheapest copy for sale (" + usd(sh.low) + "). A few unusual sales can hold it up, so this card may be worth less than shown.";
   function priceInfo(r) {
     if (catalog && r.productId) {
-      const sub = catalogPrice(catalog.byId.get(r.productId), r.edition);
+      const prod = catalog.byId.get(r.productId);
+      const sub = catalogPrice(prod, r.edition);
+      // a Chinese card: PriceCharting's ungraded price, from your own key (zhInject)
+      if (prod && prod.zh && sub && sub.market != null) return {unit: sub.market, kind: "market", from: "pricecharting", base: sub.market};
       if (sub && (sub.market != null || sub.low != null)) {
         const base = sub.market != null ? sub.market : sub.low, shaky = shakySub(sub);
         // (with "Count shaky prices at the lowest listing" on in Settings, those cards are valued at it)
@@ -2166,7 +2232,7 @@
     if (r.grade && r.grade.value != null) return {unit: r.grade.value, kind: "graded", from: "graded", raw: r.grade.value, factor: 1};
     const pi = priceInfo(r);
     if (pi.unit == null) return pi;
-    const f = pi.from === "tcgplayer" ? conditionFactor(r) : 1;
+    const f = pi.from === "tcgplayer" || pi.from === "pricecharting" ? conditionFactor(r) : 1;
     return Object.assign({}, pi, {raw: pi.unit, factor: f, unit: f === 1 ? pi.unit : round2(pi.unit * f)});
   }
   function unitValue(r) {
@@ -2326,7 +2392,9 @@
   function printingPhotos(key, rarity, exceptId, size, max) {
     if (!catalog || !key) return [];
     const r = String(rarity || "").toLowerCase();
-    const same = q => q.rarity.toLowerCase() === r ? 1 : 0;
+    // (a stand-in in the same language first: an English Pikachu's picture stands in for another English Pikachu before a Chinese one's)
+    const lang = isZhId(exceptId) ? 1 : 0;
+    const same = q => (q.rarity.toLowerCase() === r ? 1 : 0) + ((q.zh ? 1 : 0) === lang ? 2 : 0);
     return (photosByName().get(key) || []).filter(q => q.id !== exceptId && hasPhoto(q))
       .sort((a, b) => same(b) - same(a)).slice(0, max || 2).map(q => "~" + tcgImg(q.id, size));
   }
@@ -2426,13 +2494,21 @@
   }
   // Records added by hand (no TCGplayer product yet) get linked automatically when their card number, language and
   // name (and rarity) point to exactly one TCGplayer printing.
-  const productLanguage = p => p.group && p.group.jp ? "Japanese" : "English";
+  const productLanguage = p => p.group && p.group.zh ? ZH : p.group && p.group.jp ? "Japanese" : "English";
+  // A set's language as the screens say it: "Japanese", "Chinese", or "" for English (groupLangFull says English too)
+  const groupLang = g => g && g.zh ? "Chinese" : g && g.jp ? "Japanese" : "";
+  const groupLangFull = g => groupLang(g) || "English";
+  const groupTag = g => groupLang(g) ? " (" + groupLang(g) + ")" : "";
   function autoLink() {
     if (!catalog) return 0;
     let linked = 0;
     for (const r of collection) {
       if (r.productId || !r.number || r.customImage || r.sealed) continue;
-      let cands = (catalog.byNumber.get(normNumber(r.number)) || []).filter(p => productLanguage(p) === r.language && !p.sealed);
+      let cands;
+      if (r.language === ZH) {   // (a Chinese card's number is half a number: its name has to match too, and its set when there are several)
+        cands = (catalog.byFirst.get(firstNumber(r.number)) || []).filter(p => p.zh && !p.sealed && plainName(p.name).toLowerCase() === plainName(r.name).toLowerCase());
+        if (cands.length > 1 && r.setName) { const bySet = cands.filter(p => pcText(p.group.name) === pcText(r.setName)); if (bySet.length) cands = bySet; }
+      } else cands = (catalog.byNumber.get(normNumber(r.number)) || []).filter(p => productLanguage(p) === r.language && !p.sealed);
       if (cands.length > 1) cands = cands.filter(p => plainName(p.name).toLowerCase() === plainName(r.name).toLowerCase());
       if (cands.length > 1 && r.rarity) cands = cands.filter(p => p.rarity.toLowerCase() === r.rarity.toLowerCase());
       if (cands.length === 1) {
@@ -2719,6 +2795,7 @@
     try { next = buildCatalog(dataLoad.raw); } catch (e) { next = null; }
     dataLoad.raw = null;
     if (!next) return;
+    try { mergeChinese(next, zhRaw); } catch (e) { /* the Chinese cards are optional */ }
     const had = !!catalog;
     catalog = next;   // (lookups made from the old prices, like the sets list and the Market tab, are kept on it and go with it)
     setsCache = null;
@@ -3104,7 +3181,7 @@
       '<label class="field"><span>Card number</span></label>' +
       '<div class="lookup-row"><input class="input" id="lookupNumber" autofocus placeholder="e.g. 025/198 or SWSH123" value="' + esc(opts.number || "") + '" aria-label="Card number">' +
       '<button class="btn btn-primary" type="submit">Find</button></div>' +
-      '<p class="hint">It\'s printed at the bottom of the card, like 025/198 (English and Japanese cards both work).</p></form>' +
+      '<p class="hint">It\'s printed at the bottom of the card, like 025/198 (English, Japanese and Chinese cards work; for a Chinese card the first part, like 35, is enough).</p></form>' +
       '<div class="lookup-alt"><button type="button" class="link-btn" id="goName">Search by name instead</button>' +
       (opts.want ? '<button type="button" class="link-btn" id="goSealedWant">Add a sealed product instead (box, pack, tin, deck…)</button>' : "") +
       (opts.replaceId || opts.want ? "" : '<button type="button" class="link-btn" id="goBatch">Add several cards at once</button>' +
@@ -3148,19 +3225,19 @@
   function pricesSummary(p) {
     const keys = printingsFor(p);
     const parts = keys.map(k => {
-      const s = p.prices[k];
+      const s = p.prices[k] || NO_PRICE;
       const v = s.market != null ? s.market : s.low;
       return v == null ? null : (keys.length > 1 ? esc(k.replace(" Edition", " Ed.")) + " " : "") + esc(usd(v));
     }).filter(Boolean);
-    return parts.length ? parts.join("<br>") : '<span class="small">No recent sales</span>';
+    return parts.length ? parts.join("<br>") : '<span class="small">' + (p.zh ? (pcOn() ? "No PriceCharting price yet" : "Price: add your PriceCharting key (Settings)") : "No recent sales") + "</span>";
   }
   function resultsHTML(list) {
     return '<div class="results">' + list.map((p, i) =>
       '<button type="button" class="result" data-idx="' + i + '">' +
       '<span class="sleeve">' + imgTag(productPics(p, "in_400x400"), p.name) + "</span>" +
       '<span class="result-name">' + esc(cleanName(p.name, p.rarity)) + "</span>" +
-      '<span class="result-meta">' + esc(p.group.name + (p.group.jp ? " (Japanese)" : "")) + "</span>" +
-      '<span class="result-meta">' + esc(p.number) + ", " + esc(p.rarity || "rarity unknown") + "</span>" +
+      '<span class="result-meta">' + esc(p.group.name + groupTag(p.group)) + "</span>" +
+      '<span class="result-meta">' + esc(p.number) + (p.zh ? "" : ", " + esc(p.rarity || "rarity unknown")) + "</span>" +
       '<span class="result-price">' + pricesSummary(p) + "</span></button>").join("") + "</div>";
   }
   function wireResults(container, list, onPick) {
@@ -3214,7 +3291,7 @@
   }
   const pickedHeadHTML = (p, backLabel) =>
     '<div class="picked"><span class="sleeve' + (p.sealed ? " boxed" : "") + '">' + imgTag(productPics(p, "in_400x400"), p.name, true) + "</span><div>" +
-    "<h3>" + esc(p.sealed ? p.name : cleanName(p.name, p.rarity)) + "</h3><p>" + esc(p.group.name + (p.group.jp ? " (Japanese)" : "")) + "</p>" +
+    "<h3>" + esc(p.sealed ? p.name : cleanName(p.name, p.rarity)) + "</h3><p>" + esc(p.group.name + groupTag(p.group)) + "</p>" +
     "<p>" + (p.sealed ? esc(KIND_ONE[mkKind(p.name)] || "Sealed product") : esc(p.number) + ", " + esc(p.rarity)) + "</p>" +
     (backLabel ? '<p style="margin-top:8px"><button type="button" class="link-btn" id="backToSearch">' + esc(backLabel) + "</button></p>" : "") + "</div></div>";
   // "Lightly Played at 85% (Settings): $17.91" when played copies are valued below market.
@@ -3248,7 +3325,7 @@
       (want ? '<div class="notice" style="margin:0 0 14px">From your want list. Adding it to your collection takes it off the want list.</div>' : "") +
       (replacing ? "" : goalsNoteHTML(p, csOwnedMap(), "chk-goals-form")) +
       '<form id="pickedForm" class="stack">' +
-      '<div class="grid-2"><label class="field"><span>Printing</span><select class="input" id="fEd">' + options(available.concat(PRINTINGS), defaultEd) + "</select></label>" +
+      '<div class="grid-2"><label class="field"><span>Printing</span><select class="input" id="fEd">' + options(p.zh ? available : available.concat(PRINTINGS), defaultEd) + "</select></label>" +
       '<label class="field"><span>Condition</span><select class="input" id="fCond">' + options(CONDITIONS, v.condition) + "</select></label></div>" +
       '<div class="price-line" id="pickedPrice"></div>' +
       '<div class="grid-2"><label class="field"><span>Language</span><select class="input" id="fLanguage">' + options(LANGUAGES, v.language) + "</select></label>" +
@@ -3264,7 +3341,10 @@
       const sub = catalogPrice(p, ed);
       const exact = p.prices[ed];
       let html;
-      if (sub && (sub.market != null || sub.low != null)) {
+      if (p.zh) {   // a Chinese card: PriceCharting's price, from your key
+        html = sub && sub.market != null ? "PriceCharting price (ungraded): <b>" + esc(usd(sub.market)) + "</b>" + condNote(sub.market, $("fCond").value)
+          : '<span class="small">' + esc(zhNoPriceHTML(p.id)) + "</span>";
+      } else if (sub && (sub.market != null || sub.low != null)) {
         const price = firstPrice(sub);
         html = "TCGplayer " + (sub.market != null ? "market price" : "lowest listing") + (exact ? " for " + esc(ed) : "") + ": <b>" +
           esc(usd(price)) + "</b>" +
@@ -3279,6 +3359,7 @@
     $("fEd").addEventListener("change", updatePrice);
     $("fCond").addEventListener("change", updatePrice);
     updatePrice();
+    if (p.zh) zhEnsure(p.id).then(done => { if (done && $("pickedPrice") && drawerCtx && drawerCtx.product === p) updatePrice(); });
     if ($("backToSearch")) $("backToSearch").addEventListener("click", () => openAdd({number: p.number, replaceId: replacing ? replacing.id : null}));
     if ($("toWant")) $("toWant").addEventListener("click", () => openWantForm(p, null, {edition: $("fEd").value, notes: $("fNotes").value.trim()}));
     $("pickedForm").addEventListener("submit", e => {
@@ -3334,7 +3415,7 @@
           "</select></label>" + targetField + "</div>" +
           '<div class="price-line" id="wantPrice"></div>' +
           '<div class="grid-2">' + qtyField + notesField + "</div>") +
-      '<p class="hint" style="margin:0">Pokémon Vault flags ' + (sealed ? "it" : "the card") + " when TCGplayer's market price is at or below your target." +
+      '<p class="hint" style="margin:0">Pokémon Vault flags ' + (sealed ? "it" : "the card") + " when " + (p.zh ? "PriceCharting's" : "TCGplayer's market") + " price is at or below your target." +
       (owned ? " You already have " + (sealed ? owned : plural(owned, "copy", "copies") + " of this printing") + "." : "") + "</p>" +
       '<div class="form-actions"><button class="btn btn-primary" type="submit">' + (existing ? "Save" : "Add to want list") + "</button>" +
       (existing ? '<button class="btn" type="button" id="wGot">I got it</button><span class="spacer"></span><button class="btn btn-danger" type="button" id="wRemove">Remove</button>' : "") +
@@ -3343,7 +3424,8 @@
       const ed = $("wEd").value;
       const price = wantPrice({productId: p.id, edition: ed});
       const target = num($("wTarget").value);
-      let html = price == null ? '<span class="small">TCGplayer has no recent price for ' + (sealed ? "this product" : ed === "Any" ? "this card" : "this printing") + ".</span>"
+      let html = p.zh ? (price == null ? '<span class="small">' + esc(zhNoPriceHTML(p.id)) + "</span>" : "PriceCharting price: <b>" + esc(usd(price)) + "</b>")
+        : price == null ? '<span class="small">TCGplayer has no recent price for ' + (sealed ? "this product" : ed === "Any" ? "this card" : "this printing") + ".</span>"
         : "TCGplayer market price" + (sealed ? "" : ed === "Any" ? " (cheapest printing)" : " for " + esc(ed)) + ": <b>" + esc(usd(price)) + "</b>";
       if (price != null && target != null) {
         html += "<br>" + (price <= target ? '<span class="status"><span class="status-icon good" aria-hidden="true">&#10003;</span>At or below your target</span>'
@@ -3354,6 +3436,7 @@
     $("wEd").addEventListener("change", update);
     $("wTarget").addEventListener("input", update);
     update();
+    if (p.zh) zhEnsure(p.id).then(done => { if (done && $("wantPrice") && drawerCtx && drawerCtx.product === p) update(); });
     if ($("backToSearch")) $("backToSearch").addEventListener("click", () => sealed ? openSealedSearch(pre.query || "", {want: true}) : openAdd({number: p.number, want: true}));
     if ($("wGot")) $("wGot").addEventListener("click", () => gotWant(existing.id));
     if ($("wRemove")) $("wRemove").addEventListener("click", () => removeWant(existing.id));
@@ -3400,7 +3483,7 @@
       return '<button type="button" class="result" data-idx="' + i + '">' +
         '<span class="sleeve boxed">' + imgTag(productPics(p, "in_400x400"), p.name) + "</span>" +
         '<span class="result-name">' + esc(p.name) + "</span>" +
-        '<span class="result-meta">' + esc(p.group.name + (p.group.jp ? " (Japanese)" : "")) + "</span>" +
+        '<span class="result-meta">' + esc(p.group.name + groupTag(p.group)) + "</span>" +
         '<span class="result-price">' + (v == null ? '<span class="small">No recent sales</span>' : esc(usd(v))) + "</span></button>";
     }).join("") + "</div>";
   }
@@ -3442,7 +3525,7 @@
     const v = firstPrice(catalogPrice(p, ""));
     openDrawer("Add a sealed product",
       '<div class="picked"><span class="sleeve boxed">' + imgTag(productPics(p, "in_400x400"), p.name, true) + "</span><div>" +
-      "<h3>" + esc(p.name) + "</h3><p>" + esc(p.group.name + (p.group.jp ? " (Japanese)" : "")) + "</p>" +
+      "<h3>" + esc(p.name) + "</h3><p>" + esc(p.group.name + groupTag(p.group)) + "</p>" +
       (want ? "" : '<p style="margin-top:8px"><button type="button" class="link-btn" id="backToSearch">Pick a different product</button></p>') + "</div></div>" +
       (want ? fromWantNotice : "") +
       '<form id="sealedForm" class="stack">' +
@@ -3588,14 +3671,16 @@
     const bigPics = recordPics(r, "in_1000x1000"), big = firstPhoto(bigPics);
     const q = encodeURIComponent(("pokemon " + r.number + " " + lookupName(r.name)).trim());
     let links = "";
-    if (r.productId) links += '<a target="_blank" rel="noopener" href="' + esc(tcgPage(r.productId)) + '">View on TCGplayer</a>';
+    if (r.productId) links += '<a target="_blank" rel="noopener" href="' + esc(tcgPage(r.productId)) + '">View on ' + priceSource(r.productId) + "</a>";
     if (r.sealed) links += '<a target="_blank" rel="noopener" href="https://www.ebay.com/sch/i.html?_nkw=' + encodeURIComponent(r.name) + '">eBay</a>';
     else links += '<a target="_blank" rel="noopener" href="https://www.ebay.com/sch/i.html?_nkw=' + q + (/1st edition/i.test(r.edition) ? "+1st" : "") + '">eBay</a>' +
       '<a target="_blank" rel="noopener" href="https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=' + encodeURIComponent(lookupName(r.name)) + '">Cardmarket</a>' +
       '<a target="_blank" rel="noopener" href="https://auctions.yahoo.co.jp/search/search?p=' + encodeURIComponent(lookupName(r.name) + " " + firstNumber(r.number).replace("#", "")) + '">Yahoo! Auctions JP</a>';
 
-    let priceSection = '<div class="section"><h3>TCGplayer price</h3>';
-    if (r.sealed && product && Object.keys(product.prices).length) {
+    let priceSection = '<div class="section"><h3>' + priceSource(r.productId) + " price</h3>";
+    if (product && product.zh) {
+      priceSection += '<div id="zhPriceBox">' + zhPriceBoxHTML(r) + "</div>";
+    } else if (r.sealed && product && Object.keys(product.prices).length) {
       const sub = catalogPrice(product, "");
       priceSection += sub ? '<table class="price-table"><thead><tr><th>Sealed</th><th class="num">Market</th><th class="num">Lowest listing</th></tr></thead><tbody>' +
         '<tr class="mine"><td>Yours</td><td class="num">' + esc(sub.market == null ? "no sales" : usd(sub.market)) + '</td><td class="num">' + esc(sub.low == null ? "" : usd(sub.low)) +
@@ -3607,7 +3692,7 @@
     } else if (product && Object.keys(product.prices).length) {
       priceSection += '<table class="price-table"><thead><tr><th>Printing</th><th class="num">Market</th><th class="num">Lowest listing</th></tr></thead><tbody>' +
         printingsFor(product).map(k => {
-          const s = product.prices[k];
+          const s = product.prices[k] || NO_PRICE;
           const mine = k === r.edition || (Object.keys(product.prices).length === 1);
           return "<tr" + (mine ? ' class="mine"' : "") + "><td>" + esc(k) + (mine ? " (yours)" : "") + '</td><td class="num">' +
             esc(s.market == null ? "no sales" : usd(s.market)) + '</td><td class="num">' + esc(s.low == null ? "" : usd(s.low)) + "</td></tr>";
@@ -3650,7 +3735,7 @@
       '<div class="links">' + links + "</div>" + priceSection +
       '<div class="section"><h3>' + (r.sealed ? "Yours" : "Your copy") + '</h3><form id="editForm" class="stack">' +
       cardOnly('<div class="grid-2"><label class="field"><span>Printing</span><select class="input" id="eEd">' +
-      options((product ? printingsFor(product) : []).concat(PRINTINGS), r.edition) + "</select></label>" +
+      options(product && product.zh ? ["Normal"] : (product ? printingsFor(product) : []).concat(PRINTINGS), r.edition) + "</select></label>" +
       '<label class="field"><span>Condition</span><select class="input" id="eCond">' + options(CONDITIONS, r.condition) + "</select></label></div>") +
       '<div class="grid-2">' + cardOnly('<label class="field"><span>Language</span><select class="input" id="eLang">' + options(LANGUAGES, r.language) + "</select></label>") +
       '<label class="field"><span>Quantity</span><input class="input" id="eQty" type="number" min="1" step="1" value="' + r.qty + '"></label>' +
@@ -3658,14 +3743,14 @@
       cardOnly('<div class="grid-2"><label class="field"><span>Rarity</span><select class="input" id="eRarity">' + options(allRarities(), r.rarity, "Unknown") + "</select></label>" +
       '<label class="field"><span>Price you paid, each</span><input class="input" id="ePaid" type="number" min="0" step="0.01" value="' + (r.paid == null ? "" : r.paid) + '"></label></div>' +
       '') +
-      (r.productId ? "" : '<label class="field"><span>Value per card in US$ (your estimate)</span><input class="input" id="eValue" type="number" min="0" step="0.01" value="' + (r.manualPrice == null ? "" : r.manualPrice) + '"></label>') +
+      (r.productId && !(product && product.zh) ? "" : '<label class="field"><span>Value per card in US$ (your estimate' + (r.productId ? "; used while PriceCharting has no price" : "") + ')</span><input class="input" id="eValue" type="number" min="0" step="0.01" value="' + (r.manualPrice == null ? "" : r.manualPrice) + '"></label>') +
       cardOnly('<label class="field"><span>PSA 10 value, if you know it (US$; shown in the PSA 10 view)</span><input class="input" id="eG10" type="number" min="0" step="0.01" placeholder="' +
         esc((psa10Value(r) && psa10Value(r).from !== "yours") ? "now " + usd(psa10Value(r).unit) + (psa10Value(r).from === "estimate" ? " (estimate)" : "") : "") + '" value="' + (r.g10 == null ? "" : r.g10) + '"></label>') +
       locationFieldHTML("eLoc", r.location) +
       '<label class="field"><span>Notes</span><textarea class="input" id="eNotes">' + esc(r.notes) + "</textarea></label>" +
       cardOnly(gradeFieldsHTML("e", r.grade)) +
       '<details class="more"' + (photoOpen ? " open" : "") + "><summary>" + (r.productId ? "Use my own photo instead" : "Photo") + "</summary>" +
-      '<label class="field" style="margin-top:10px"><span>Image link (leave empty to use ' + (r.productId ? "TCGplayer's photo" : "no image") + ")</span>" +
+      '<label class="field" style="margin-top:10px"><span>Image link (leave empty to use ' + (r.productId ? priceSource(r.productId) + "'s photo" : "no image") + ")</span>" +
       '<input class="input" id="eImage" type="url" placeholder="https://" value="' + esc(r.customImage || "") + '"></label>' +
       "</details>" +
       '<div class="form-actions"><button class="btn btn-primary" type="submit">Save changes</button>' +
@@ -3679,7 +3764,9 @@
     if (product && SITE) loadCardHistory(r, product);
     if (!r.sealed && pcOn() && !pcBad() && normNumber(r.number)) {
       const h = pcCache()[pcKey(r)];
-      if (!h || Date.now() - h.t > PC_TTL) pcLookup(r).then(() => { const cur = collection.find(x => x.id === id); if (cur && drawerCtx && drawerCtx.id === id && $("gradedBox")) { $("gradedBox").innerHTML = gradedBoxHTML(cur); if (settings.gradedView) renderSoon(); } }).catch(() => {});
+      if (!h || Date.now() - h.t > PC_TTL) pcLookup(r).then(() => { const cur = collection.find(x => x.id === id); if (cur && drawerCtx && drawerCtx.id === id && $("gradedBox")) { $("gradedBox").innerHTML = gradedBoxHTML(cur); if (settings.gradedView || isZhId(cur.productId)) renderSoon(); } if (cur && drawerCtx && drawerCtx.id === id && $("zhPriceBox")) $("zhPriceBox").innerHTML = zhPriceBoxHTML(cur); }).catch(() => {});
+    } else if (r.sealed && isZhId(r.productId) && pcOn() && !pcBad() && pcStale(r)) {
+      pcLookup(r).then(() => { const cur = collection.find(x => x.id === id); if (cur && drawerCtx && drawerCtx.id === id && $("zhPriceBox")) $("zhPriceBox").innerHTML = zhPriceBoxHTML(cur); renderSoon(); }).catch(() => {});
     }
     if ($("changePrinting")) $("changePrinting").addEventListener("click", () => openAdd({number: r.number, replaceId: r.id}));
     $("deleteOne").addEventListener("click", () => deleteRecords([r.id]));
@@ -3749,7 +3836,8 @@
     if (keys.length > 3000) keys.sort((a, b) => (c[a].t || 0) - (c[b].t || 0)).slice(0, keys.length - 3000).forEach(k => delete c[k]);
     try { localStorage.setItem(PC_CACHE_KEY, JSON.stringify(c)); } catch (e) { /* optional */ }
   }
-  const pcKey = r => r.productId ? "p|" + r.productId + "|" + (r.edition || "") : "n|" + normNumber(r.number) + "|" + lookupName(r.name).toLowerCase() + "|" + (r.edition || "");
+  // (a Chinese card has one price, whatever its printing says)
+  const pcKey = r => isZhId(r.productId) ? "p|" + r.productId + "|Normal" : r.productId ? "p|" + r.productId + "|" + (r.edition || "") : "n|" + normNumber(r.number) + "|" + lookupName(r.name).toLowerCase() + "|" + (r.edition || "");
   const cents = v => { const n = num(v); return n != null && n > 0 ? round2(n / 100) : null; };
   // PriceCharting's price fields for trading cards (their documentation): ungraded, then each grade.
   const PC_FIELDS = {raw: "loose-price", "7": "cib-price", "8": "new-price", "9": "graded-price", "9.5": "box-only-price", "10": "manual-only-price",
@@ -3823,6 +3911,14 @@
   async function pcLookup(r, fresh) {
     const key = pcKey(r), hit = pcCache()[key];
     if (hit && !fresh && Date.now() - hit.t < (hit.p ? PC_TTL : 3 * 86400000)) return hit.p;
+    if (isZhId(r.productId)) {
+      // a Chinese card is PriceCharting's own item (its id is in the card's id): ask for it directly
+      const it = await pcFetch("product?id=" + encodeURIComponent(r.productId - ZH_ID_BASE));
+      const p = it && it.id ? pcPrices(it) : null;
+      pcPut(key, {t: Date.now(), p});
+      zhInject(catalog, r.productId, p);
+      return p;
+    }
     const q = (lookupName(r.name) + " " + firstNumber(r.number).replace("#", "") + " " + String(r.setName || "").replace(/^[A-Za-z0-9]{2,6}:\s*/, "")).replace(/\s+/g, " ").trim();
     const json = await pcFetch("products?q=" + encodeURIComponent(q));
     let it = pcMatch(json.products, r);
@@ -3835,9 +3931,14 @@
   const pcKnown = r => { const h = pcCache()[pcKey(r)]; return h && h.p ? h.p : null; };
   const pcOn = () => !!(settings.pcToken && settings.pcToken.trim());
   const pcBad = () => !!pc.bad && pc.bad === settings.pcToken;   // (a key that was refused; a new key starts over)
+  // The Chinese cards you own or want, as lookups (a Chinese card is priced by PriceCharting alone, so these refresh without the PSA 10 view)
+  const zhLookups = () => collection.filter(r => isZhId(r.productId)).concat(
+    wants.filter(w => isZhId(w.productId)).map(w => ({productId: w.productId, edition: "Normal", name: w.name || "", number: ""})));
+  const pcStale = r => { const h = pcCache()[pcKey(r)]; return !h || Date.now() - h.t > (h.p ? PC_TTL : 3 * 86400000); };
   async function refreshGradedPrices(force) {
     if (!pcOn() || pc.refreshing || pcBad()) return 0;
-    const list = collection.filter(r => !r.sealed && normNumber(r.number)).filter(r => { const h = pcCache()[pcKey(r)]; return force || !h || Date.now() - h.t > (h.p ? PC_TTL : 3 * 86400000); });
+    const graded = collection.filter(r => !r.sealed && !isZhId(r.productId) && normNumber(r.number));
+    const list = zhLookups().concat(settings.gradedView ? graded : []).filter(r => force || pcStale(r));
     if (!list.length) return 0;
     pc.refreshing = true;
     let done = 0;
@@ -3848,11 +3949,47 @@
         seen.add(pcKey(r));
         try { await pcLookup(r, true); done++; }
         catch (e) { if (e && e.name === "TokenError") break; if (typeof navigator !== "undefined" && navigator.onLine === false) break; }
-        if (done % 10 === 0 && settings.gradedView) renderSoon();
+        if (done % 10 === 0) renderSoon();
       }
     } finally { pc.refreshing = false; }
-    if (done && settings.gradedView) renderSoon();
+    if (done) renderSoon();
     return done;
+  }
+  // One Chinese card's price now (the card was just added or opened): looks it up if it isn't fresh, then redraws
+  let zhEnsureTimer = null;
+  function zhEnsure(pid) {
+    if (!isZhId(pid) || !pcOn() || pcBad()) return Promise.resolve(false);
+    const r = {productId: pid, edition: "Normal"};
+    if (!pcStale(r)) return Promise.resolve(false);
+    return pcLookup(r, true).then(() => { renderSoon(); return true; }, () => false);
+  }
+  // A Chinese card's price section (its details page): PriceCharting's ungraded price and the grades it has, or why there is none
+  function zhPriceBoxHTML(r) {
+    const z = pcOn() && !pcBad() ? pcKnown(r) : null;
+    const link = '<a href="' + esc(zhPage(r.productId)) + '" target="_blank" rel="noopener">PriceCharting</a>';
+    if (!z || z.raw == null) return '<p class="small">' + esc(zhNoPriceHTML(r.productId)) + "</p>" + (r.manualPrice != null ? "<p>" + esc(usd(r.manualPrice)) + ' <span class="small">(your estimate)</span></p>' : "");
+    const rows = [["raw", "Ungraded"], ["9", "Grade 9"], ["9.5", "Grade 9.5"], ["10", "PSA 10"]].filter(([k]) => z[k] != null);
+    return '<table class="price-table"><thead><tr><th>' + link + '</th><th class="num">Price</th></tr></thead><tbody>' +
+      rows.map(([k, label]) => "<tr" + (k === "raw" ? ' class="mine"' : "") + "><td>" + esc(label) + '</td><td class="num">' + esc(usd(z[k])) + "</td></tr>").join("") + "</tbody></table>" +
+      '<p class="small">From ' + link + " (eBay sales" + (z.vol ? ", about " + plural(Math.round(z.vol), "sale") + " a year" : "") + "), looked up with your key and kept on this device.</p>";
+  }
+  // What to say about a Chinese card that has no price on it right now
+  function zhNoPriceHTML(pid) {
+    if (!pcOn()) return "Chinese cards are priced by PriceCharting: add your PriceCharting key in Settings (it stays on this device) to see this card's price.";
+    if (pcBad()) return "PriceCharting didn't accept your key (see Settings).";
+    return pcCache()[pcKey({productId: pid})] ? "PriceCharting has no recent price for this card." : "Checking PriceCharting…";
+  }
+  // After a change (a Chinese card added, say): look up the ones that have no recent price, a moment later
+  function zhRefreshSoon() {
+    if (!pcOn() || pcBad() || pc.refreshing) return;
+    clearTimeout(zhEnsureTimer);
+    zhEnsureTimer = setTimeout(() => { if (zhLookups().some(pcStale)) refreshGradedPrices(); }, 1500);
+  }
+  // Without a key PriceCharting's prices go away from this device (the Chinese cards stay, unpriced)
+  function pcForget() {
+    pc.cache = {};
+    try { localStorage.removeItem(PC_CACHE_KEY); } catch (e) { /* ignore */ }
+    if (catalog) for (const p of catalog.products) if (p.zh) p.prices = {};
   }
   // The share of a PSA 10 price that another grade gets (Settings), e.g. "9.5" -> 50%.
   function gradeShare(grade) {
@@ -4014,7 +4151,7 @@
     const owned = collection.filter(r => r.productId === p.id).reduce((t, r) => t + r.qty, 0);
     return '<div class="result static"><span class="sleeve boxed">' + imgTag(productPics(p, "in_400x400"), p.name) + "</span>" +
       '<span class="result-name">' + esc(p.name) + "</span>" +
-      '<span class="result-meta">' + esc([showSet ? x.set.group.name : "", x.set.group.jp ? "Japanese" : "", mkKindName(x.kind)].filter(Boolean).join(" · ")) + "</span>" +
+      '<span class="result-meta">' + esc([showSet ? x.set.group.name : "", groupLang(x.set.group), mkKindName(x.kind)].filter(Boolean).join(" · ")) + "</span>" +
       (x.low == null && x.market == null ? '<span class="result-meta">No listings or recent sales</span>'
         : '<dl class="mk-prices">' + (x.low != null ? "<dt>Lowest listing</dt><dd class=\"" + (x.suspect ? "" : "low") + "\">" + esc(usd(x.low)) + "</dd>" : "") +
           (x.market != null ? "<dt>Market price</dt><dd>" + esc(usd(x.market)) + "</dd>" : "") + "</dl>") +
@@ -4077,7 +4214,7 @@
     renderMarketList();
   }
   // English or Japanese sets only, when the language switch says so
-  const mkLangOK = g => !settings.mkLang || (g.jp ? "jp" : "en") === settings.mkLang;
+  const mkLangOK = g => !g.zh && (!settings.mkLang || (g.jp ? "jp" : "en") === settings.mkLang);   // (Chinese sets have no TCGplayer prices to compare)
   function renderMarketList() {
     const box = $("mkList");
     if (!box || !catalog) return;
@@ -4185,7 +4322,7 @@
   function mvRowHTML(e, haveOf) {
     const p = e.p, name = p.sealed ? p.name : cleanName(p.name, p.rarity), have = haveOf(e);
     const multi = Object.keys(p.prices).length > 1;
-    const sub = [p.sealed ? "" : p.number, p.group.name + (p.group.jp ? " (Japanese)" : ""), multi ? csPrinting(e.ed).replace(" Edition", " Ed.") : ""].filter(Boolean).join(", ");
+    const sub = [p.sealed ? "" : p.number, p.group.name + groupTag(p.group), multi ? csPrinting(e.ed).replace(" Edition", " Ed.") : ""].filter(Boolean).join(", ");
     return '<button type="button" class="mover" data-mv-open="' + esc(p.id + "|" + e.ed) + '"><span class="sleeve' + (p.sealed ? " boxed" : "") + '"' + (p.sealed ? "" : foilAttr(p.rarity)) + ">" + imgTag(productPics(p, "200w"), name) + "</span>" +
       '<span style="min-width:0"><span class="mover-name">' + esc(name) + (have ? ' <span class="cs-own">You have ' + have + "</span>" : "") + '</span><span class="mover-sub">' + esc(sub) + "</span></span>" +
       '<span class="mover-amt">' + changeHTML(e.diff, e.pct, true) + "<small>" + esc(usd(e.then)) + " to " + esc(usd(e.now)) + "</small></span></button>";
@@ -4211,7 +4348,7 @@
     const year = s.group.published ? String(s.group.published).slice(0, 4) : "";
     const top = s.top;
     return '<article class="set-row mk-row"><button type="button" class="set-toggle" aria-expanded="' + open + '" data-mk-set="' + gid + '">' +
-      '<span style="min-width:0"><span class="set-name">' + esc(s.group.name) + '</span><span class="set-sub">' + esc([s.group.abbr, year, plural(s.cards.length, "card"), s.group.jp ? "Japanese" : ""].filter(Boolean).join(", ")) +
+      '<span style="min-width:0"><span class="set-name">' + esc(s.group.name) + '</span><span class="set-sub">' + esc([s.group.abbr, year, plural(s.cards.length, "card"), groupLang(s.group)].filter(Boolean).join(", ")) +
       '<span class="mk-line">' + esc(mkLineName(s.line)) + "</span></span></span>" +
       '<span class="mk-top">' + (top ? "Top card: <b>" + esc(cleanName(top.product.name, top.product.rarity)) + '</b> <span class="gold">' + esc(usd(top.price)) + "</span>" : "No prices yet") + "</span>" +
       '<span class="set-cost">' + (s.cheapBox ? "<b>" + esc(usd(s.cheapBox.best)) + "</b><small>" + (/mini/i.test(s.cheapBox.p.name) ? "mini box" : "booster box") + "</small>"
@@ -4249,7 +4386,7 @@
   function csHay(p) {
     if (!catalog.csHay) catalog.csHay = new Map();
     let h = catalog.csHay.get(p.id);
-    if (h == null) { h = csNorm(p.name + " " + p.number + " " + p.group.name + " " + (p.group.abbr || "") + " " + p.rarity + " " + (p.group.jp ? "japanese" : "english")); catalog.csHay.set(p.id, h); }
+    if (h == null) { h = csNorm(p.name + " " + p.number + " " + p.group.name + " " + (p.group.abbr || "") + " " + p.rarity + " " + (p.group.zh ? "chinese simplified" : p.group.jp ? "japanese" : "english")); catalog.csHay.set(p.id, h); }
     return h;
   }
   // Every printing of a card (English and Japanese), by its name
@@ -4363,7 +4500,7 @@
     return '<div class="cs-start"><p>Type a card\'s name (or part of it), its number from the bottom of the card, or a set. Add more words to narrow it down, like <b>charizard ex 151</b> or <b>japanese pikachu</b>. ' +
       'To see every card in a set, switch to <button type="button" class="link-btn" data-cs-mode="sets">Sets</button>.</p>' +
       chips("Looked up recently", recent.map(x => x.n)) + chips("Your most valuable cards", yours) +
-      '<p class="small">Numbers like <b>025/198</b> or <b>SWSH123</b> find the card in every set that printed it, English and Japanese. Add <b>japanese</b> or <b>english</b> to a search to see only those.</p></div>';
+      '<p class="small">Numbers like <b>025/198</b> or <b>SWSH123</b> find the card in every set that printed it, English, Japanese and Chinese. Add <b>japanese</b>, <b>english</b> or <b>chinese</b> to a search to see only those.</p></div>';
   }
   function renderSearchResults() {
     const out = $("csOut");
@@ -4412,7 +4549,7 @@
       const key = esc(p.id + "|" + x.ed);
       const year = p.group.published ? String(p.group.published).slice(0, 4) : "";
       return '<tr><td class="c-thumb"><span class="sleeve"' + foilAttr(p.rarity) + ">" + imgTag(productPics(p, "200w"), p.name) + "</span></td>" +
-        '<td><button type="button" class="cell-name" data-cs-open="' + key + '">' + esc(p.group.name) + '</button><span class="cell-sub">' + esc([p.number, p.rarity, year, p.group.jp ? "Japanese" : ""].filter(Boolean).join(" · ")) +
+        '<td><button type="button" class="cell-name" data-cs-open="' + key + '">' + esc(p.group.name) + '</button><span class="cell-sub">' + esc([p.number, p.rarity, year, groupLang(p.group)].filter(Boolean).join(" · ")) +
         (have ? ' <span class="cs-own">You have ' + have + "</span>" : "") + "</span></td>" +
         '<td data-label="Printing"' + (x.ed ? "" : " data-empty") + ">" + esc(csPrinting(x.ed)) + "</td>" +
         '<td class="num" data-label="Market">' + (s.market != null ? '<b class="gold">' + esc(usd(s.market)) + "</b>" : '<span class="small">No sales</span>') + "</td>" +
@@ -4456,7 +4593,7 @@
     const t = String(text || "").trim();
     if (t.length < 2) return [];
     const phrase = csNorm(t), words = phrase.split(/\s+/).filter(Boolean);
-    const hay = s => csNorm(s.group.name + " " + csSetCode(s) + " " + (s.group.jp ? "japanese" : "english"));
+    const hay = s => csNorm(s.group.name + " " + csSetCode(s) + " " + (s.group.zh ? "chinese simplified" : s.group.jp ? "japanese" : "english"));
     const rank = s => (csNorm(csSetCode(s)) === phrase || csNorm(s.group.name) === phrase ? 0 : csNorm(s.group.name).startsWith(phrase) ? 1 : 2);
     return csSets().filter(s => words.every(w => hay(s).includes(w)))
       .map(s => ({s, r: rank(s)})).sort((a, b) => a.r - b.r || csSetDay(b.s).localeCompare(csSetDay(a.s))).map(x => x.s);
@@ -4477,7 +4614,7 @@
     const pr = csSetProgress(s, owned), top = s.top;
     return '<article class="set-row mk-row cs-set"><button type="button" class="set-toggle" data-cs-set="' + s.group.id + '">' +
       '<span style="min-width:0"><span class="set-name">' + esc(s.group.name) + '</span><span class="set-sub">' +
-      esc([csSetCode(s), year, plural(csSetCount(s), "card"), s.group.jp ? "Japanese" : ""].filter(Boolean).join(", ")) + '<span class="mk-line">' + esc(mkLineName(s.line)) + "</span></span></span>" +
+      esc([csSetCode(s), year, plural(csSetCount(s), "card"), groupLang(s.group)].filter(Boolean).join(", ")) + '<span class="mk-line">' + esc(mkLineName(s.line)) + "</span></span></span>" +
       '<span class="mk-top">' + (top ? "Top card: <b>" + esc(cleanName(top.product.name, top.product.rarity)) + '</b> <span class="gold">' + esc(usd(top.price)) + "</span>" : "No prices yet") + "</span>" +
       '<span class="set-cost">' + (pr.have ? "<b>" + pr.have + " of " + pr.total + "</b><small>you have</small>" : "<small>none yet</small>") + "</span>" +
       '<span class="caret go" aria-hidden="true"></span></button></article>';
@@ -4512,7 +4649,7 @@
     if (!list.length) return "";
     const more = m.length - list.length;
     return '<div class="cs-chips cs-setchips"><span class="small">Sets:</span>' + list.map(s =>
-      '<button type="button" class="chip" data-cs-set="' + s.group.id + '">' + esc(s.group.name) + (s.group.jp ? " (Japanese)" : "") + (csSetCode(s) ? " · " + esc(csSetCode(s)) : "") + "</button>").join("") +
+      '<button type="button" class="chip" data-cs-set="' + s.group.id + '">' + esc(s.group.name) + groupTag(s.group) + (csSetCode(s) ? " · " + esc(csSetCode(s)) : "") + "</button>").join("") +
       (more > 0 ? '<button type="button" class="chip" data-cs-mode="sets">' + more + " more</button>" : "") + "</div>";
   }
   function csFindSet(key) {
@@ -4544,7 +4681,7 @@
       const opt = (list, cur) => list.map(([k, l]) => '<option value="' + esc(k) + '"' + (k === cur ? " selected" : "") + ">" + esc(l) + "</option>").join("");
       const day = s.group.published ? parseDay(String(s.group.published).slice(0, 10)) : null;
       out.innerHTML = back + '<div class="cs-set-head"><h3 class="cs-set-title">' + esc(s.group.name) + "</h3>" +
-        '<p class="cs-set-sub">' + esc([csSetCode(s), day ? "released " + fmtDate(day) : "", mkLineName(s.line), plural(csSetCount(s), "card"), s.group.jp ? "Japanese" : "English"].filter(Boolean).join(" · ")) + "</p></div>" +
+        '<p class="cs-set-sub">' + esc([csSetCode(s), day ? "released " + fmtDate(day) : "", mkLineName(s.line), plural(csSetCount(s), "card"), groupLangFull(s.group)].filter(Boolean).join(" · ")) + "</p></div>" +
         '<div id="csSetFacts" class="cs-set-facts"></div>' +
         '<div class="cs-set-tools"><input class="search" id="csSetFind" type="search" autocomplete="off" placeholder="Find in this set" aria-label="Find in this set" value="' + esc(cs.setFind || "") + '">' +
         '<select class="select" id="csSetRarity" aria-label="Rarity">' + opt([["", "All rarities"]].concat(rarities.map(r => [r, r])), cs.setRarity || "") + "</select>" +
@@ -4632,22 +4769,25 @@
     const bigPics = productPics(p, "in_1000x1000"), big = firstPhoto(bigPics);
     const changes = sub && sub.market != null ? PERIODS.filter(([k]) => sub[k] != null).map(([k]) =>
       "<span>" + esc(periodLabel(k)) + ": " + changeHTML(sub.market - sub[k], sub[k] > 0 ? (sub.market - sub[k]) / sub[k] : null, true) + "</span>") : [];
-    openDrawer("Card price",
-      (opts && opts.back ? '<p class="cs-back"><button type="button" class="link-btn" id="pcBack">← ' + esc(opts.back) + "</button></p>" : "") +
-      '<a href="' + esc(big || "#") + '" target="_blank" rel="noopener" class="detail-img" title="Open full-size image"' + (big ? "" : ' onclick="return false"') + ">" +
-      '<span class="sleeve"' + foilAttr(p.rarity) + ">" + imgTag(bigPics, name, true) + "</span></a>" +
-      '<h3 class="detail-title">' + esc(name) + "</h3>" +
-      '<p class="detail-sub"><button type="button" class="link-btn" id="csSetLink" title="Every card in this set">' + esc(p.group.name) + "</button>" + (p.group.published ? " (" + esc(String(p.group.published).slice(0, 4)) + ")" : "") + (p.group.jp ? " · Japanese" : "") + "<br>" + esc(p.number || "No card number") + (p.rarity ? ", " + esc(p.rarity) : "") + "</p>" +
-      '<div class="links"><a target="_blank" rel="noopener" href="' + esc(tcgPage(p.id)) + '">View on TCGplayer</a>' +
-      '<a target="_blank" rel="noopener" href="https://www.ebay.com/sch/i.html?_nkw=' + q + (/1st edition/i.test(ed) ? "+1st" : "") + '">eBay</a>' +
-      '<a target="_blank" rel="noopener" href="https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=' + encodeURIComponent(name) + '">Cardmarket</a></div>' +
+    // (a Chinese card has PriceCharting's prices from your key; every other card has TCGplayer's table)
+    const priceHTML = p.zh ? '<div class="section"><h3>PriceCharting price</h3><div id="zhPriceBox">' + zhPriceBoxHTML(r) + "</div></div>" :
       '<div class="section"><h3>TCGplayer price</h3>' + (eds.length ? '<table class="price-table"><thead><tr><th>Printing</th><th class="num">Market</th><th class="num">Lowest listing</th></tr></thead><tbody>' +
         eds.map(k => { const s = p.prices[k]; return "<tr" + (k === ed && eds.length > 1 ? ' class="mine"' : "") + "><td>" + esc(csPrinting(k)) + '</td><td class="num">' +
           esc(s.market == null ? "no sales" : usd(s.market)) + '</td><td class="num">' + esc(s.low == null ? "" : usd(s.low)) + "</td></tr>"; }).join("") + "</tbody></table>"
         : '<p class="small">TCGplayer has no recent sales or listings for this card.</p>') +
       (changes.length ? '<div class="changes" aria-label="Market price change' + (eds.length > 1 ? " for " + esc(csPrinting(ed)) : "") + '">' + changes.join("") + "</div>" : "") +
-      '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ". Market price is what the card has recently sold for (Near Mint); lowest listing is the cheapest copy for sale now.</p>" + shakyNoticeHTML(sub, null) + "</div>" +
-      (SITE ? '<div class="section"><h3>Price over time</h3><div id="cardHist" class="card-hist"><p class="small">Loading…</p></div></div>' : "") +
+      '<p class="small">From TCGplayer, ' + esc(fmtDate(catalog.generated)) + ". Market price is what the card has recently sold for (Near Mint); lowest listing is the cheapest copy for sale now.</p>" + shakyNoticeHTML(sub, null) + "</div>";
+    openDrawer("Card price",
+      (opts && opts.back ? '<p class="cs-back"><button type="button" class="link-btn" id="pcBack">← ' + esc(opts.back) + "</button></p>" : "") +
+      '<a href="' + esc(big || "#") + '" target="_blank" rel="noopener" class="detail-img" title="Open full-size image"' + (big ? "" : ' onclick="return false"') + ">" +
+      '<span class="sleeve"' + foilAttr(p.rarity) + ">" + imgTag(bigPics, name, true) + "</span></a>" +
+      '<h3 class="detail-title">' + esc(name) + "</h3>" +
+      '<p class="detail-sub"><button type="button" class="link-btn" id="csSetLink" title="Every card in this set">' + esc(p.group.name) + "</button>" + (p.group.published ? " (" + esc(String(p.group.published).slice(0, 4)) + ")" : "") + (groupLang(p.group) ? " · " + groupLang(p.group) : "") + "<br>" + esc(p.number || "No card number") + (p.rarity ? ", " + esc(p.rarity) : "") + "</p>" +
+      '<div class="links"><a target="_blank" rel="noopener" href="' + esc(tcgPage(p.id)) + '">View on ' + priceSource(p.id) + "</a>" +
+      '<a target="_blank" rel="noopener" href="https://www.ebay.com/sch/i.html?_nkw=' + q + (/1st edition/i.test(ed) ? "+1st" : "") + '">eBay</a>' +
+      '<a target="_blank" rel="noopener" href="https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=' + encodeURIComponent(name) + '">Cardmarket</a></div>' +
+      priceHTML +
+      (SITE && !p.zh ? '<div class="section"><h3>Price over time</h3><div id="cardHist" class="card-hist"><p class="small">Loading…</p></div></div>' : "") +
       '<div class="section"><h3>Graded value</h3><div id="gradedBox">' + gradedBoxHTML(r) + "</div></div>" +
       '<div class="section"><h3>Yours</h3>' +
       (mine.length ? '<ul class="cs-mine">' + mine.map(x => "<li><span>" + esc([x.qty > 1 ? x.qty + " ×" : "", x.edition, x.grade ? gradeLabel(x.grade) : x.condition].filter(Boolean).join(" ")) +
@@ -4661,10 +4801,10 @@
     $("csHave").addEventListener("click", () => { drawerCtx = null; openPickedForm(p, {edition: r.edition || null}); });
     $("csWant").addEventListener("click", () => { const w = wants.find(x => x.productId === p.id); if (w) openWantForm(p, w); else openWantForm(p, null, {edition: r.edition}); });
     $("drawerBody").querySelectorAll("[data-cs-mine]").forEach(b => b.addEventListener("click", () => openDetails(b.dataset.csMine)));
-    if (SITE) loadCardHistory(r, p);
-    if (pcOn() && !pcBad() && normNumber(p.number)) {
+    if (SITE && !p.zh) loadCardHistory(r, p);
+    if (pcOn() && !pcBad() && (normNumber(p.number) || p.zh)) {
       const h = pcCache()[pcKey(r)];
-      if (!h || Date.now() - h.t > PC_TTL) pcLookup(r).then(() => { if (drawerCtx && drawerCtx.id === id && $("gradedBox")) $("gradedBox").innerHTML = gradedBoxHTML(r); }).catch(() => {});
+      if (!h || Date.now() - h.t > PC_TTL) pcLookup(r).then(() => { if (drawerCtx && drawerCtx.id === id && $("gradedBox")) $("gradedBox").innerHTML = gradedBoxHTML(r); if (p.zh && drawerCtx && drawerCtx.id === id && $("zhPriceBox")) $("zhPriceBox").innerHTML = zhPriceBoxHTML(r); }).catch(() => {});
     }
   }
 
@@ -4685,7 +4825,7 @@
   // "3 cards", or "3 items" once the list has sealed products too
   const wantCount = n => plural(n, wants.some(wantIsSealed) ? "item" : "card");
   // Where a want's price comes from, for the list
-  const wantSource = w => w.productId ? "TCGplayer" : "";
+  const wantSource = w => w.productId ? priceSource(w.productId) : "";
   // The current TCGplayer market price for the printing you want (the cheapest printing when any will do).
   function wantPrice(w) {
     if (!w.productId) { const b = catalog ? cheapestByName(normCardName(w.name)) : null; return b ? b.price : null; }   // (a card known only by name)
@@ -4933,7 +5073,7 @@
   function shareWant(w, opts) {
     const it = {n: w.name, no: w.number || "", s: w.setName || "", r: w.rarity || "", e: w.edition && w.edition !== "Any" ? w.edition : "", q: w.qty || 1};
     if (w.productId) it.p = w.productId;
-    { const wp = catalog && w.productId ? catalog.byId.get(w.productId) : null; if (wp && wp.group && wp.group.jp) it.l = "Japanese"; }
+    { const wp = catalog && w.productId ? catalog.byId.get(w.productId) : null; if (wp && wp.group && groupLang(wp.group)) it.l = groupLang(wp.group) === "Chinese" ? ZH : "Japanese"; }
     if (wantIsSealed(w)) it.b = 1;
     const im = wantPics(w, "in_400x400").list.map(u => shareImg(String(u || "").replace(/^~/, ""))).find(Boolean);
     if (im && !(w.productId && im === tcgImg(w.productId, "in_400x400"))) it.i = im;
@@ -6165,9 +6305,12 @@
       '<label class="check-row"><input type="checkbox" class="check" id="sShakyLow"' + (settings.shakyLow ? " checked" : "") +
       "><span>Count those cards at their lowest listing instead (this device only)</span></label></div>" +
 
-      '<div class="section"><h3>Graded values (the PSA 10 view)</h3>' +
+      '<div class="section"><h3>PriceCharting: Chinese cards and graded values</h3>' +
+      '<p class="small" style="margin:0 0 10px"><b>Chinese (Simplified) cards</b> aren\'t on TCGplayer, so their prices come from <a href="https://www.pricecharting.com" target="_blank" rel="noopener">PriceCharting</a> (the ungraded price, from eBay sales). ' +
+      "Pokémon Vault asks PriceCharting for them from this device with your own PriceCharting key (their Legendary plan). The prices stay on this device: " +
+      "they are never put on the website, a share link or the phone copy. Without a key, Chinese cards show their picture but no price (you can type your own estimate on a card).</p>" +
       '<p class="small" style="margin:0 0 10px">The <b>PSA 10 value</b> switch above your collection shows what one gem-mint copy of each card would be worth. ' +
-      "Real graded prices come from PriceCharting (eBay sales by grade), looked up from this device with your own PriceCharting key (their Legendary plan) and kept private here. " +
+      "Real graded prices come from PriceCharting too (eBay sales by grade), with the same key. " +
       "Without one, it's a rough estimate from the raw market price, plus any PSA 10 values you type on a card.</p>" +
       '<label class="field"><span>PriceCharting key (optional; from pricecharting.com, Subscriptions > API)</span><input class="input" id="sPcToken" type="password" autocomplete="off" value="' + esc(settings.pcToken || "") + '"></label>' +
       '<div id="pcNote">' + pcNoteHTML() + "</div>" +
@@ -6330,7 +6473,9 @@
     const pcWire = () => { const b = $("pcRefresh"); if (b) b.addEventListener("click", () => { b.disabled = true; refreshGradedPrices(true).then(() => { if ($("pcNote")) { $("pcNote").innerHTML = pcNoteHTML(); pcWire(); } }); }); };
     pcWire();
     $("sPcToken").addEventListener("change", () => {
+      const before = settings.pcToken;
       settings.pcToken = $("sPcToken").value.trim();
+      if (!pcOn() && before) { pcForget(); render(); }   // (no key: PriceCharting's prices go from this device)
       save({quiet: true});
       if ($("pcNote")) { $("pcNote").innerHTML = pcNoteHTML(); pcWire(); }
       if (pcOn()) refreshGradedPrices().then(() => { if ($("pcNote")) { $("pcNote").innerHTML = pcNoteHTML(); pcWire(); } });
@@ -6354,8 +6499,12 @@
   function pcNoteHTML() {
     if (!pcOn()) return "";
     if (pcBad()) return '<div class="status-line off" style="margin-top:8px"><span class="dot" aria-hidden="true"></span><span>PriceCharting didn\'t accept this key. Check it on pricecharting.com (Subscriptions > API).</span></div>';
-    const known = collection.filter(r => !r.sealed && pcKnown(r)).length, total = collection.filter(r => !r.sealed).length;
-    return '<div class="status-line on" style="margin-top:8px"><span class="dot" aria-hidden="true"></span><span>Graded prices from PriceCharting: ' + known + " of " + plural(total, "card") + " matched so far" +
+    const zhAll = collection.filter(r => isZhId(r.productId)), zhKnown = zhAll.filter(r => pcKnown(r)).length;
+    const rest = collection.filter(r => !r.sealed && !isZhId(r.productId));
+    const known = rest.filter(r => pcKnown(r)).length;
+    return '<div class="status-line on" style="margin-top:8px"><span class="dot" aria-hidden="true"></span><span>' +
+      (zhAll.length ? "Chinese cards priced by PriceCharting: " + zhKnown + " of " + zhAll.length + ". " : "") +
+      "Graded prices from PriceCharting: " + known + " of " + plural(rest.length, "card") + " matched so far" +
       (pc.refreshing ? " (checking…)" : "") + '. Prices refresh about once a day. <button type="button" class="link-btn" id="pcRefresh">Check all now</button></span></div>';
   }
   // Condition percentages changed: today's value-history point and every total follow.
@@ -7306,6 +7455,7 @@
           const p = catalog.byId.get(+key);
           t.get.push({key: newId(), productId: p.id, edition: printingsFor(p).filter(k => k !== "Normal")[0] || "", condition: "Near Mint", qty: 1});
           t.q2 = ""; $("tradeGetQ").value = ""; $("tradeGetResults").innerHTML = "";
+          if (p.zh) zhEnsure(p.id).then(done => { if (done) refreshTrade(side); });   // (a Chinese card's price is looked up)
         }
         refreshTrade(side);
         $(side === "give" ? "tradeGiveQ" : "tradeGetQ").focus();
@@ -7482,7 +7632,7 @@
     const shown = done ? 100 : Math.floor(s.have / s.total * 100);
     const year = s.group.published ? String(s.group.published).slice(0, 4) : "";
     return '<article class="set-row" data-gid="' + gid + '"><button type="button" class="set-toggle" aria-expanded="' + open + '" data-set="' + gid + '">' +
-      '<span style="min-width:0"><span class="set-name">' + esc(s.group.name) + '</span><span class="set-sub">' + esc([s.group.abbr, year, s.group.jp ? "Japanese" : ""].filter(Boolean).join(", ")) + "</span></span>" +
+      '<span style="min-width:0"><span class="set-name">' + esc(s.group.name) + '</span><span class="set-sub">' + esc([s.group.abbr, year, groupLang(s.group)].filter(Boolean).join(", ")) + "</span></span>" +
       '<span class="set-prog"><span class="progress" aria-hidden="true"><span style="width:' + (s.have / s.total * 100).toFixed(1) + '%"></span></span>' +
       '<span class="set-count"><b>' + s.have + " of " + s.total + "</b> (" + shown + "%)</span></span>" +
       '<span class="set-cost">' + (done ? "<b>Complete</b>" : "<b>" + esc(usd(s.cost)) + "</b><small>to finish" + (s.unpriced ? ", " + s.unpriced + " unpriced" : "") + "</small>") + "</span>" +
@@ -7600,7 +7750,7 @@
     const act = goalAddAllHTML(st, gid);
     return '<article class="goal' + (done ? " goal-done" : "") + '" data-goal="' + gid + '"><div class="goal-top">' +
       '<span style="min-width:0"><span class="set-name">' + esc(s.group.name) + (done ? '<span class="goal-badge">Complete</span>' : "") + '</span><span class="set-sub">' +
-      esc([csSetCode(s), year, s.group.jp ? "Japanese" : "English"].filter(Boolean).join(", ")) + "</span></span>" +
+      esc([csSetCode(s), year, groupLangFull(s.group)].filter(Boolean).join(", ")) + "</span></span>" +
       '<span class="set-prog"><span class="progress" aria-hidden="true"><span style="width:' + pct.toFixed(1) + '%"></span></span>' +
       '<span class="set-count"><b>' + st.have + " of " + st.total + "</b> (" + (done ? 100 : Math.floor(pct)) + "%)</span></span>" +
       '<span class="set-cost">' + (done ? "<b>Done</b>" : "<b>" + esc(usd(st.cost)) + "</b><small>to finish" + (st.unpriced ? ", " + st.unpriced + " unpriced" : "") + "</small>") + "</span></div>" +
@@ -7693,7 +7843,7 @@
       out.innerHTML = (head ? '<p class="results-head">' + esc(head) + "</p>" : "") + list.map(s => {
         const pr = csSetProgress(s, owned), on = !!goalFor(s.group.id);
         return '<div class="goal-pick-row"><span style="min-width:0"><span class="set-name">' + esc(s.group.name) + '</span><span class="set-sub">' +
-          esc([csSetCode(s), csSetDay(s).slice(0, 4), plural(csSetCount(s), "card"), s.group.jp ? "Japanese" : "English"].filter(Boolean).join(", ")) +
+          esc([csSetCode(s), csSetDay(s).slice(0, 4), plural(csSetCount(s), "card"), groupLangFull(s.group)].filter(Boolean).join(", ")) +
           (pr.have ? " · you have " + pr.have : "") + "</span></span>" +
           (on ? '<span class="on-list">Goal set</span>' : '<button type="button" class="btn" data-goal-add="' + s.group.id + '">Set as goal</button>') + "</div>";
       }).join("");
@@ -7708,7 +7858,7 @@
   const monNotMon = p => p.sealed || (p.ctype ? MON_NOT.test(p.ctype) : MON_NOT_NAME.test(p.name));
   const monOpen = new Set(), monMini = new Set(), monView = new Map();
   const MON_SHOWS = [["missing", "Missing"], ["have", "The ones I have"], ["all", "All prints"]];
-  const MON_LANGS = [["", "English and Japanese"], ["en", "English only"], ["jp", "Japanese only"]];
+  const MON_LANGS = [["", "English and Japanese"], ["en", "English only"], ["jp", "Japanese only"], ["zh", "Chinese only"], ["all", "English, Japanese and Chinese"]];
   const monLangText = l => (MON_LANGS.find(x => x[0] === l) || MON_LANGS[0])[1];
   const monRegex = name => {
     const n = csNorm(name).replace(/\s+/g, " ").trim();
@@ -7733,7 +7883,8 @@
     if (re) {
       for (const p of catalog.products) {
         if (monNotMon(p)) continue;
-        if (lang === "en" ? p.group.jp : lang === "jp" ? !p.group.jp : false) continue;
+        // ("" is English and Japanese, as before Chinese cards came along; "all" adds Chinese)
+        if (lang === "en" ? p.group.jp || p.group.zh : lang === "jp" ? !p.group.jp : lang === "zh" ? !p.group.zh : lang === "all" ? false : p.group.zh) continue;
         if (re.test(monHay(p))) out.push(p);
       }
       out.sort((a, b) => String(b.group.published || "").localeCompare(String(a.group.published || "")) ||
@@ -7817,7 +7968,7 @@
       const have = owned.get(p.id), b = monCheapest(p), editions = Object.keys(p.prices).length;
       return '<div class="result static"><span class="sleeve">' + imgTag(productPics(p, "200w"), p.name) + "</span>" +
         '<span class="result-name">' + esc(cleanName(p.name, p.rarity)) + "</span>" +
-        '<span class="result-meta">' + esc([p.group.name + (p.group.jp ? " (Japanese)" : ""), p.number, p.rarity].filter(Boolean).join(", ")) + "</span>" +
+        '<span class="result-meta">' + esc([p.group.name + groupTag(p.group), p.number, p.rarity].filter(Boolean).join(", ")) + "</span>" +
         '<span class="result-price">' + (b ? esc(usd(b.price)) + (editions > 1 ? ' <span class="small">' + esc(b.edition) + "</span>" : "") : '<span class="small">No recent sales</span>') + "</span>" +
         '<span class="result-actions">' + (have ? '<span class="on-list">You have ' + (have > 1 ? have : "it") + "</span>"
           : (monIsWanted(p, wanted) ? '<span class="on-list">On want list</span>' : '<button class="btn" type="button" data-want="' + p.id + '">Want</button>') +
@@ -7965,7 +8116,7 @@
   }
   // Where to buy a sealed product
   function wantShopLink(w) {
-    if (w.productId) return {url: tcgPage(w.productId), label: "TCGplayer"};
+    if (w.productId) return {url: tcgPage(w.productId), label: priceSource(w.productId)};
     return null;
   }
   // Editing a want: the TCGplayer form (printing, target...) for a TCGplayer product, else target, quantity and notes.
@@ -8059,7 +8210,7 @@
           else status = esc(usd(st.price - w.target)) + ' <span class="small">above target</span>';
           const shop = sealed ? wantShopLink(w) : null;
           const wp = catalog && w.productId ? catalog.byId.get(w.productId) : null;
-          const sub = sealed ? [w.setName] : [w.setName, w.number, w.rarity, wp && wp.group && wp.group.jp ? "Japanese" : ""];
+          const sub = sealed ? [w.setName] : [w.setName, w.number, w.rarity, wp && wp.group ? groupLang(wp.group) : ""];
           return '<tr class="' + (st.hit ? "hit" : "") + '" data-want-row="' + esc(w.id) + '"><td class="c-thumb"><span class="sleeve' + (sealed ? " boxed" : "") + '">' +
             imgTag(wantPics(w, "200w"), w.name) + "</span></td>" +
             '<td><button type="button" class="cell-name" data-want-action="edit" data-id="' + esc(w.id) + '">' + esc(w.name) + (w.qty > 1 ? " ×" + w.qty : "") + '</button><span class="cell-sub">' +
@@ -8507,7 +8658,7 @@
     // English printings first (a deck list is for English cards); a Japanese one only when no English one has a price
     let best = null, bestJp = null;
     for (const p of productsByName().get(key) || []) {
-      const jp = !!(p.group && p.group.jp);
+      const jp = !!(p.group && (p.group.jp || p.group.zh));
       for (const ed in p.prices) {
         const v = firstPrice(p.prices[ed]);
         if (v == null) continue;
@@ -8941,10 +9092,10 @@
     const pick = cands.length > 1 ? '<select class="input b-pick" data-f="pid" aria-label="Which printing of ' + esc(label) + '">' +
       (p ? "" : '<option value="">Pick the printing (' + cands.length + " on TCGplayer)</option>") +
       cands.map(c => '<option value="' + c.id + '"' + (c.id === r.pid ? " selected" : "") + ">" +
-        esc((oneNumber ? (c.rarity || "rarity unknown") + " · " + c.group.name : c.group.name + " · " + c.number + " · " + (c.rarity || "rarity unknown")) + (c.group.jp ? " · Japanese" : "")) + "</option>").join("") + "</select>" : "";
+        esc((oneNumber ? (c.rarity || "rarity unknown") + " · " + c.group.name : c.group.name + " · " + c.number + " · " + (c.rarity || "rarity unknown")) + (groupLang(c.group) ? " · " + groupLang(c.group) : "")) + "</option>").join("") + "</select>" : "";
     if (pick) cls += " has-pick";
     if (p) {
-      info = "<b>" + esc(label) + "</b><span>" + esc([p.group.name, p.number, p.rarity || "", p.group.jp ? "Japanese" : ""].filter(Boolean).join(" · ")) + "</span>";
+      info = "<b>" + esc(label) + "</b><span>" + esc([p.group.name, p.number, p.rarity || "", groupLang(p.group)].filter(Boolean).join(" · ")) + "</span>";
     } else if (r.cands.length) {
       cls += " need";
       info = "<b>" + esc(r.input) + "</b><span>" + (oneNumber ? "This number has " + cands.length + " printings" : cands.length + " printings have this name") + ". Which one is yours?</span>";
@@ -9166,9 +9317,12 @@
     const re2 = /\b(SWSH|SVP|SMP|SM|XY|BW|DP|HGSS|SV|TG|GG|RC|PR-?[A-Z]{1,2}|H)[ -]?([0-9OQDILSBZG]{1,3})(?:\/([A-Z]{1,4}[0-9OQDILSBZG]{1,3}))?(?![0-9A-Z])/g;
     while ((m = re2.exec(up))) codes.push(m[1] + digitsOf(m[2]) + (m[3] ? "/" + m[3] : ""));
     if (catalog) {
+      // (told it's Chinese cards: a Chinese card's number is half a number, so every Chinese card with it is a candidate, and you pick yours)
+      const only = scan && scan.zh ? "zh" : "noZh";
       // 1) an exact reading
-      for (const [a, b] of reads) { const hits = findByNumber(a + "/" + b); if (hits.length) return {number: hits[0].number, products: hits, sure: true}; }
-      for (const code of codes) { const hits = findByNumber(code); if (hits.length) return {number: hits[0].number, products: hits, sure: true}; }
+      for (const [a, b] of reads) { const hits = findByNumber(a + "/" + b, only); if (hits.length) return {number: hits[0].number, products: hits, sure: true}; }
+      for (const code of codes) { const hits = findByNumber(code, only); if (hits.length) return {number: hits[0].number, products: hits, sure: true}; }
+      if (only === "zh") return reads.length ? {number: reads[0][0] + "/" + reads[0][1], products: [], sure: false} : codes.length ? {number: codes[0], products: [], sure: false} : null;
       // 2) the closest card number TCGplayer has: one digit off in all
       let best = null;
       const idx = scanIndex();
@@ -9183,7 +9337,7 @@
           }
         }
       }
-      if (best && !best.amb) { const hits = findByNumber(best.number); if (hits.length) return {number: hits[0].number, products: hits, sure: true}; }
+      if (best && !best.amb) { const hits = findByNumber(best.number, "noZh"); if (hits.length) return {number: hits[0].number, products: hits, sure: true}; }
     }
     // 3) a number that looks right but can't be checked (no TCGplayer data, or a card it doesn't list)
     if (reads.length) return {number: reads[0][0] + "/" + reads[0][1], products: [], sure: false};
@@ -9266,13 +9420,22 @@
           '<div class="grid-2"><label class="field"><span>Condition</span><select class="input" id="rapidCond">' + options(CONDITIONS, settings.rapidCond) + "</select></label>" +
           locationFieldHTML("rapidLoc", settings.rapidLoc).replace("Location (optional): binder, box or deck", "Put them in (optional)") + "</div></div>" +
           "</div>") +
+      '<label class="check-row" style="margin-top:10px"><input type="checkbox" class="check" id="scanZh"' + (settings.scanZh ? " checked" : "") +
+      "><span>These are <b>Chinese (Simplified)</b> cards: look the number up among them</span></label>" +
       '<div class="btn-row"><button class="btn' + (many ? "" : " btn-primary") + '" type="button" id="scanRead" disabled>Read it now</button>' +
       '<button class="btn" type="button" id="scanPhoto">Use a photo instead</button><input type="file" id="scanFile" accept="image/*" hidden>' +
       '<button class="btn" type="button" id="scanSwitch" hidden>Switch camera</button><button class="btn' + (check ? " btn-primary" : "") + '" type="button" id="scanAgain" hidden>' + (check ? "Check another card" : "Scan again") + "</button></div>" +
       '<form id="scanForm" class="lookup-row" style="margin-top:14px" hidden autocomplete="off"><input class="input" id="scanNumber" aria-label="Card number">' +
       '<button class="btn" type="submit">Find</button></form><div id="lookupOut"></div>');
     scan = {stream: null, active: true, busy: false, timer: null, tries: 0, devices: [], deviceIndex: -1, batch: many, check, recent: {},
-      rapid: !!settings.rapidScan && !many && !check, tray: [], said: {}};
+      rapid: !!settings.rapidScan && !many && !check, tray: [], said: {}, zh: !!settings.scanZh};
+    $("scanZh").addEventListener("change", () => {
+      if (!scan) return;
+      settings.scanZh = scan.zh = $("scanZh").checked;
+      saveSettings();
+      scan.pending = null;
+      $("scanStatus").textContent = scan.zh ? "Looking among Chinese (Simplified) cards. Hold up a card." : "Looking among English and Japanese cards.";
+    });
     if ($("scanList")) $("scanList").addEventListener("click", () => openBatch());
     if ($("scanMany")) $("scanMany").addEventListener("click", () => openScanner({batch: true}));
     if ($("scanCheck")) $("scanCheck").addEventListener("click", () => openScanner({check: true}));
@@ -9642,14 +9805,14 @@
     const k = sub ? ["m7", "m1", "m30"].find(x => sub[x] != null && sub.market != null) : null;
     const chg = k ? '<span class="result-meta">' + (eds.length > 1 ? esc(csPrinting(top.ed).replace(" Edition", " Ed.")) + ", " : "") + esc(periodLabel(k).replace(/^Since/, "since")) + ": " + changeHTML(sub.market - sub[k], sub[k] > 0 ? (sub.market - sub[k]) / sub[k] : null, true) + "</span>" : "";
     const prices = eds.length ? '<dl class="mk-prices">' + eds.map(ed => {
-      const s = p.prices[ed], v = firstPrice(s);
+      const s = p.prices[ed] || NO_PRICE, v = firstPrice(s);
       return "<dt>" + esc(csPrinting(ed).replace(" Edition", " Ed.")) + "</dt><dd>" + (v == null ? "no sales" : esc(usd(v))) +
         (s.low != null && s.market != null && s.low !== s.market ? '<span class="small" style="display:block">low ' + esc(usd(s.low)) + "</span>" : "") +
         (shakySub(s) ? '<span class="small shaky-flag" style="display:block" title="' + esc(shakyWhy(shakySub(s))) + '">may be inflated</span>' : "") + "</dd>";
     }).join("") + "</dl>" : '<span class="result-meta">No recent sales or listings</span>';
     return '<div class="result static check-card"><span class="sleeve"' + foilAttr(p.rarity) + ">" + imgTag(productPics(p, "200w"), name) + "</span>" +
       '<span class="result-name">' + esc(name) + "</span>" +
-      '<span class="result-meta">' + esc(p.group.name + (p.group.jp ? " (Japanese)" : "")) + "</span>" +
+      '<span class="result-meta">' + esc(p.group.name + groupTag(p.group)) + "</span>" +
       '<span class="result-meta">' + esc(p.number) + ", " + esc(p.rarity || "rarity unknown") + "</span>" + prices + chg + goalsNoteHTML(p, owned) +
       '<span class="result-actions">' + (have ? '<span class="chk-own">You have ' + have + "</span>" : '<span class="on-list">Not in your collection</span>') +
       (wanted.has(p.id) ? '<span class="on-list">On want list</span>' : '<button class="btn" type="button" data-chk-want="' + p.id + '">Want</button>') +
@@ -10341,7 +10504,7 @@
       }
       const g = monGoalFor(el.dataset.monLang);
       if (!g) return;
-      g.lang = el.value === "en" || el.value === "jp" ? el.value : "";
+      g.lang = ["en", "jp", "zh", "all"].includes(el.value) ? el.value : "";
       save();
       goalsChanged();
       const again = document.querySelector('[data-mon-lang="' + g.id + '"]');
@@ -10684,7 +10847,10 @@
   function startApp() {
     try { catalog = buildCatalog(window.TCG_DATA); } catch (e) { catalog = null; }
     window.TCG_DATA = null; // free the raw copy; the catalog keeps what it needs
+    zhRaw = window.ZH_DATA || null;   // (kept: a later TCGplayer update builds the catalog again)
+    window.ZH_DATA = null;
     loadState();
+    try { mergeChinese(catalog, zhRaw); } catch (e) { /* the Chinese cards are optional */ }
     if (settings.lookShown) { settings.lookSeen = settings.lookShown; settings.lookShown = ""; saveSettings(); }   // ("Since you last looked": last time's prices were seen)
     const linked = autoLink();
     if (linked) save();
@@ -10699,8 +10865,9 @@
     snapshotToday();
     loadFeeWatch();
     // Graded prices refresh in the background, about once a day, when online.
-    setTimeout(() => { if (settings.gradedView) refreshGradedPrices(); }, 2500);
-    window.addEventListener("online", () => { if (settings.gradedView) refreshGradedPrices(); });
+    // (Chinese cards are priced by PriceCharting alone, so they refresh whether or not the PSA 10 view is on)
+    setTimeout(() => { if (settings.gradedView || zhLookups().length) refreshGradedPrices(); }, 2500);
+    window.addEventListener("online", () => { if (settings.gradedView || zhLookups().length) refreshGradedPrices(); });
     if (loadProblem) toast("Pokémon Vault couldn't read your saved collection, so it started empty. Your backup file wasn't changed: restore it from Settings.", {kind: "error", sticky: true});
     if (!storageOK) toast("This browser is blocking storage, so changes won't be kept after you close the page. Use Export CSV to keep a copy.", {kind: "error", sticky: true});
     if (linked) toast("Linked " + plural(linked, "card") + " to TCGplayer printings by card number.");
@@ -10722,7 +10889,7 @@
     viewBusy, loadNewData, applyNewData, readDataText, dataLoad: () => dataLoad, wantPrice, wantKind, wantSource, gotWant, openWantEdit, tookWant,
     wantFromProduct, upgradeWant, renderWants, csSearch, renderSearch, renderSearchResults, openPriceCard, cs: () => cs, csSetMatches, openSearchSet,
     csSetCode, deckChecks, normCardName, mkLangOK, csHay, csFindSet, renderDecks, renderDeckIdeas, deckKind, scanIndex, productLanguage,
-    showScanResult, scanState: () => scan, shakySub, shakyOf, shakyStats, rapidAdd, renderSummary};
+    showScanResult, scanState: () => scan, shakySub, shakyOf, shakyStats, rapidAdd, renderSummary, pcKnown, zhLookups, pcForget, isZhId, zhInfo};
 
   document.addEventListener("DOMContentLoaded", init);
 })();

@@ -69,6 +69,28 @@ SEALED = [
 ]
 
 
+# Chinese (Simplified) cards, as update_zh_cards.py writes them: [PriceCharting id, set index, name, number, picture code, page name, 1 for sealed]
+ZH_GROUPS = [  # PriceCharting's set page name, set name, release day, a steady id for the set
+    ["pokemon-chinese-csv8c", "CSV8C", "2026-03-13", 5000001],
+    ["pokemon-chinese-gem-pack", "Gem Pack", "2025-05-01", 5000002],
+]
+ZH_CARDS = [
+    [12353505, 0, "Carmine", "255", "inbukwejsstzqsxh", "carmine-255", 0],
+    [12353504, 0, "Milotic", "244", "pgt2khtresq6xkik", "milotic-244", 0],
+    [13643801, 0, "Joltik", "9", "corrj3rqchoajamn3g7e", "joltik-9", 0],
+    [14000001, 0, "Pikachu", "25", "pikachuimgaaaa01", "pikachu-25", 0],     # the same number as the English Pikachu 025/165
+    [14000002, 1, "Pikachu", "25", "pikachuimgbbbb02", "pikachu-25", 0],
+    [14000003, 1, "Pikachu (Reverse Holo)", "26", "", "pikachu-reverse-holo-26", 0],   # no picture
+    [14000010, 1, "Gem Pack Booster Box", "", "", "gem-pack-booster-box", 1],
+]
+
+
+def build_zh(now=None):
+    now = now or datetime.now(timezone.utc).replace(microsecond=0)
+    return {"format": 1, "source": "made-up test data", "generated": now.isoformat(), "builtAt": now.isoformat(),
+            "groups": ZH_GROUPS, "cards": ZH_CARDS}
+
+
 def build(now=None):
     now = now or datetime.now(timezone.utc).replace(microsecond=0)
     today = now.date()
@@ -105,9 +127,14 @@ def build(now=None):
     }
 
 
-def write(out_dir, now=None):
+def write(out_dir, now=None, zh=True):
     data = build(now)
     os.makedirs(out_dir, exist_ok=True)
+    if zh:
+        with open(os.path.join(out_dir, "zh-cards.js"), "w", encoding="ascii") as f:
+            f.write("window.ZH_DATA = ")
+            json.dump(build_zh(now), f, ensure_ascii=True, separators=(",", ":"))
+            f.write(";\n")
     with open(os.path.join(out_dir, "tcgplayer-data.js"), "w", encoding="ascii") as f:
         f.write("window.TCG_DATA = ")
         json.dump(data, f, ensure_ascii=True, separators=(",", ":"))

@@ -9,6 +9,7 @@ import os
 import shutil
 import tempfile
 import threading
+import urllib.parse
 
 from playwright.sync_api import sync_playwright
 
@@ -44,8 +45,8 @@ def serve(directory):
         server.server_close()
 
 
-def make_site(dest, mock=True, data_dir=None):
-    """Copy the website into dest. With mock data (the default) or the data files found in data_dir."""
+def make_site(dest, mock=True, data_dir=None, zh=True):
+    """Copy the website into dest. With mock data (the default) or the data files found in data_dir. zh=False leaves the Chinese list out."""
     os.makedirs(os.path.join(dest, "icons"), exist_ok=True)
     for name in SITE_FILES:
         shutil.copy(os.path.join(ROOT, name), dest)
@@ -53,12 +54,12 @@ def make_site(dest, mock=True, data_dir=None):
     for name in os.listdir(icons):
         shutil.copy(os.path.join(icons, name), os.path.join(dest, "icons"))
     if data_dir:
-        for name in ("tcgplayer-data.js", "tcgplayer-data-version.js"):
+        for name in ("tcgplayer-data.js", "tcgplayer-data-version.js", "zh-cards.js"):
             if os.path.exists(os.path.join(data_dir, name)):
                 shutil.copy(os.path.join(data_dir, name), dest)
     elif mock:
         import make_mock_data
-        make_mock_data.write(dest)
+        make_mock_data.write(dest, zh=zh)
     else:
         # no card list at all: the website has to cope
         pass
@@ -92,11 +93,26 @@ class Browser:
         page.problems = errors
         page.on("pageerror", lambda e: errors.append("page error: %s" % e))
         page.on("console", lambda m: errors.append("console error: %s" % m.text) if m.type == "error" and "Failed to load resource" not in m.text else None)
-        # nothing outside the local copy is reachable (pictures, fonts, the real text reader): answer those with nothing
+        # nothing outside the local copy is reachable (pictures, fonts, the real text reader): answer those with nothing.
+        # PriceCharting is pretended: page.pc_key is the one key it accepts, page.pc_items maps a PriceCharting id to the fields
+        # of its answer, and page.pc_calls lists what was asked.
+        page.pc_key, page.pc_items, page.pc_calls = "TESTKEY", {}, []
         def outside(route):
             url = route.request.url
             if url.startswith(base) or url.startswith("data:") or url.startswith("blob:"):
                 route.continue_()
+            elif url.startswith("https://www.pricecharting.com/api/"):
+                parts = urllib.parse.urlparse(url)
+                q = urllib.parse.parse_qs(parts.query)
+                page.pc_calls.append(url)
+                if (q.get("t") or [""])[0] != page.pc_key:
+                    status, body = 403, {"error": "Unknown access token", "error-message": "Unknown access token", "status": "error"}
+                elif parts.path.endswith("/product"):
+                    item = page.pc_items.get(int((q.get("id") or ["0"])[0]))
+                    status, body = (200, dict(item, status="success")) if item else (404, {"status": "error", "error-message": "No such product"})
+                else:
+                    status, body = 200, {"status": "success", "products": []}
+                route.fulfill(status=status, headers={"access-control-allow-origin": "*"}, content_type="application/json", body=json.dumps(body))
             else:
                 route.abort()
         page.route("**/*", outside)

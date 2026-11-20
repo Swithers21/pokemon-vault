@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import harness  # noqa: E402
 import test_core  # noqa: F401,E402
 import test_features  # noqa: F401,E402
+import test_chinese  # noqa: F401,E402
 
 
 def main():
@@ -40,12 +41,14 @@ def main():
         return 1
 
     failures, started = [], time.time()
-    with tempfile.TemporaryDirectory() as with_data, tempfile.TemporaryDirectory() as without_data:
+    with tempfile.TemporaryDirectory() as with_data, tempfile.TemporaryDirectory() as without_data, tempfile.TemporaryDirectory() as without_zh:
         harness.make_site(with_data)
         harness.make_site(without_data, mock=False)
-        with harness.serve(with_data) as url, harness.serve(without_data) as url_no_data:
+        harness.make_site(without_zh, zh=False)
+        with harness.serve(with_data) as url, harness.serve(without_data) as url_no_data, harness.serve(without_zh) as url_no_zh:
             browser = harness.Browser(url, headless=not args.headed)
             browser.no_data_url = url_no_data
+            browser.no_zh_url = url_no_zh
             try:
                 for t, kind in jobs:
                     label = "%s [%s]" % (t["name"], kind)

@@ -1,7 +1,8 @@
 # Pokémon Vault website: setup
 
 Pokémon Vault as a website you can add to your iPhone's home screen, with your collection synced through
-Google Drive and TCGplayer prices (English and Japanese cards) updated every evening by GitHub.
+Google Drive and TCGplayer prices (English and Japanese cards) updated every evening by GitHub. Chinese (Simplified)
+cards are tracked too, priced by PriceCharting with your own key (see "Chinese cards" below).
 
 This is a separate app from any other "vault" you may have. It has its own repository, its own saved data and its own
 Google Drive file, so the two never touch each other.
@@ -18,7 +19,8 @@ In this guide, `YOUR-USERNAME` is your GitHub username. The website's address wi
 - **GitHub Actions**: every evening it downloads the day's TCGplayer prices (through TCGCSV) for English and Japanese
   Pokémon cards and publishes the website with them. It checks again overnight in case TCGCSV was late. An open
   Pokémon Vault picks up new prices by itself (within half an hour, or as soon as you switch back to it): nothing to
-  reload or tap. It also looks at each grading company's public price page (`fee_watch.py`) so Pokémon Vault can warn
+  reload or tap. Once a week it also refreshes the list of Chinese cards (`update_zh_cards.py`, see "Chinese cards"). It
+  also looks at each grading company's public price page (`fee_watch.py`) so Pokémon Vault can warn
   you when a company's fees may have changed (see "Grading fees" below).
 
 ## 1. GitHub: the website
@@ -106,7 +108,28 @@ personal app: click **Continue**.
 
 - **English and Japanese**: both come from TCGplayer (its "Pokemon" and "Pokemon Japan" lists). Each card is marked
   Japanese where it is, the Market and the Sets lists have an All / English / Japanese switch, and a card's language is
-  filled in for you when you pick it. Korean and other languages aren't included.
+  filled in for you when you pick it. Korean and other languages aren't included. Chinese is the exception to
+  "everything from TCGplayer": see the next item.
+- **Chinese cards (Simplified Chinese)**: TCGplayer has no Chinese Pokémon cards, so these work a little differently.
+  - *The card list and pictures*: once a week the daily update reads PriceCharting's public set pages ("Pokemon Chinese
+    CSV8C" and so on) and saves each card's set, name, number and picture address in `zh-cards.js` next to the
+    website. Every Chinese card has its own exact picture (small in lists, large when you open it). If PriceCharting
+    can't be read, the last list stays; if it has no picture for a card, none is made up.
+  - *Prices*: PriceCharting's terms don't allow publishing its prices, so **Chinese prices are never on the website**.
+    Instead, Pokémon Vault asks PriceCharting from your own browser, with your own PriceCharting key (Settings >
+    PriceCharting), for the cards you own or want, once a day at most (it is limited to one call a second, so a big
+    collection fills in over a few minutes). The prices are kept only on that device, count in your totals, goals,
+    trades and want list like any other price, and are removed again when you clear the key. They are the ungraded
+    price (PSA 10 and other grades show on a card's page when PriceCharting has them), are not on share pages, and
+    Chinese sets are left out of the Market tab (which compares TCGplayer prices). Without a key Chinese cards still
+    work, they just say they have no price. The key needs the same PriceCharting subscription as graded values.
+  - *Adding cards*: a Chinese card's number has no set size (`255`, not `255/204`), so type just the first part: every
+    Chinese card with that number is listed and you pick yours. The camera scanner ignores Chinese cards unless you tick
+    **Chinese cards** in the scanner, so English scans never turn into a wrong Chinese match. Pokémon goals have a
+    "Chinese only" and an "English, Japanese and Chinese" choice; the original choice is unchanged.
+  - *Licence*: the list of names, numbers and picture addresses comes from PriceCharting's public pages. The pictures
+    are loaded straight from PriceCharting's own image storage, not copied. PriceCharting's terms are strict about
+    prices and quiet about this; if you share the website widely, ask PriceCharting for written permission.
 - **Card numbers**: type the number from the card, like `025/198`, with or without the zeros. Promos and galleries work
   too (`SWSH123`, `SVP045`, `TG05/TG30`). If several sets share a number, Pokémon Vault lists them and you pick one.
 - **Printings**: the finish TCGplayer prices separately: Normal, Holofoil, Reverse Holofoil, 1st Edition, Unlimited and
@@ -239,9 +262,12 @@ Every change to the website (and every evening's price update) is tried out befo
 - **check** (Actions tab > Daily Pokemon prices): looks through the website's script for slips (`tests/lint_app.py`), then
   opens the website in a real browser at desktop and phone size, with a made-up card list and a pretend camera, and
   runs the tests in `tests/` (`tests/run_tests.py`: opening, finding and adding cards, totals, goals, the grading fee
-  list, rapid scan, inflated prices). On the evening price update only the quick ones run and a failure just warns.
+  list, rapid scan, inflated prices, Chinese cards with a pretend PriceCharting), and tries the Chinese list updater
+  against pretend PriceCharting pages (`tests/test_zh_update.py`). On the evening price update only the quick ones run
+  and a failure just warns.
 - **build** ends by opening the finished website with the real card list (`tests/smoke_built_site.py`): it must load,
-  find a card by number and by name, read a scanned number and add up a total.
+  find a card by number and by name, read a scanned number and add up a total. It also checks that the Chinese list is
+  there and carries no prices (a missing Chinese list only warns).
 
 If either fails, nothing is published and the website that is live stays as it was; open the failed run on the
 Actions tab to see which check failed and why. To run them yourself (Python 3, `pip install playwright`,
@@ -258,7 +284,9 @@ Actions tab to see which check failed and why. To run them yourself (Python 3, `
 4. The fee watch is optional: if a grading company's page is down or can't be read, that company is skipped for the
    day and the website is published as usual. The automatic checks are not optional: if **check** or the end of
    **build** fails, the run stops before publishing (see above).
-5. Price comparisons (since the last update, 7 days, 30 days) are kept between runs in GitHub's cache. If the
+5. The Chinese card list is optional too: if PriceCharting can't be read, the website keeps the last list (**Run
+   workflow** after a day or two tries again; the list is only refreshed when it is a week old).
+6. Price comparisons (since the last update, 7 days, 30 days) are kept between runs in GitHub's cache. If the
    updates stopped for more than a week, they start over and fill in again day by day.
 
 ## Turning it off
